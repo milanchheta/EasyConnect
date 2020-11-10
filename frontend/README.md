@@ -1,1 +1,1 @@
-# EasyConnect
+# Frontend
