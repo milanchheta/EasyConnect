@@ -1,7 +1,8 @@
 from scholarly import scholarly
 import requests
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 from flask import Response
+from tokenizor import populate_keyword
 
 def getAurthorObj(name):
     search_query = scholarly.search_author(name)
@@ -39,3 +40,14 @@ def getAllAbstract(pubList):
 # pubList=getPublicationList(author)
 # interests=getAuthorInterests(author)
 # absList=getAllAbstract(pubList)
+
+if __name__ == "__main__":
+    with open('researcher_list.txt', 'r') as f:
+        for name in f:
+            author = getAurthorObj(name)
+            pub_list = getPublicationList(author)
+            abs_val = getAllAbstract(pub_list)
+            for key in abs_val:
+                keywords = populate_keyword(abs_val[key])
+                print(key, keywords)
+        #TODO: update mongo DB with title, keyword list for prof list.
