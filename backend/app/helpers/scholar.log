@@ -972,3 +972,36 @@ INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_c
 INFO:scholarly:Session proxy config is {}
 INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=Lzw8EnkAAAAJ:-7ulzOJl1JYC
 INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Adeel%20Bhutta
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Found 1 authors
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=3RVoZ8AAAAAJ&pagesize=100
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:qjMakFHDy7sC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:UeHWp8X0CEIC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:9yKSN-GCB0IC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:2osOgNQ5qMEC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:YsMSGLbcyi4C
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:u-x6o8ySG0sC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:d1gkVwhDpl0C
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:Y0pCki6q_DkC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:eQOLeE2rZwMC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:Tyk-4Ss8FVUC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:zYLM7Y9cAGgC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:IjCSPb-OGe4C
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:W7OEmFMy1HYC
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=3RVoZ8AAAAAJ:WF5omc3nYNoC
+INFO:scholarly:Session proxy config is {}
