@@ -163,3 +163,36 @@ INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=Lzw8EnkAA
 INFO:scholarly:Session proxy config is {}
 INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=Lzw8EnkAAAAJ:U_HPUtbDl20C
 INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Patrick%20Shih
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Found 2 authors
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=Lzw8EnkAAAAJ&pagesize=100
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=Lzw8EnkAAAAJ&cstart=100&pagesize=100
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Patrick%20Shih
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Found 2 authors
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=Lzw8EnkAAAAJ&pagesize=100
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=Lzw8EnkAAAAJ&cstart=100&pagesize=100
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Patrick%20Shih
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Found 2 authors
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=Lzw8EnkAAAAJ&pagesize=100
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=Lzw8EnkAAAAJ&cstart=100&pagesize=100
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=view_citation&citation_for_view=Lzw8EnkAAAAJ:U_HPUtbDl20C
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Patrick%20Shih
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Found 2 authors
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=Lzw8EnkAAAAJ&pagesize=100
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&user=Lzw8EnkAAAAJ&cstart=100&pagesize=100
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Getting https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Patrick%20Shih
+INFO:scholarly:Session proxy config is {}
+INFO:scholarly:Found 2 authors
