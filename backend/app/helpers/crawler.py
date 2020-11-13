@@ -1,21 +1,16 @@
 from scholarly import scholarly
+import requests
+from bs4 import BeautifulSoup
+from flask import Response
 
-search_query = scholarly.search_author('Patrick Shih')
-author = next(search_query)
+def getAurthorObj(name):
+    search_query = scholarly.search_author()
+    author = next(search_query).fill()
+    return author
 
-print(author)
+def getAbstract(url):
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    results = soup.find('div', class_='abstractSection').get_text()
+    return results
 
-# print("++++++++++++++++++++++++++++")
-
-
-# print([pub.bib for pub in author.publications])
-# print("++++++++++++++++++++++++++++")
-
-
-# pub = author.publications[0].fill()
-
-# print((pub))
-# print("++++++++++++++++++++++++++++")
-
-
-# print([citation.bib['title'] for citation in pub.citedby])
