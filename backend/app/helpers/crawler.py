@@ -5,7 +5,7 @@ from tokenizor import populate_keyword
 import json
 import pymongo
 
-mongoClient = pymongo.MongoClient("mongodb+srv://root:<pwd>@cluster0.uqeev.mongodb.net/<DBName>?retryWrites=true&w=majority")
+mongoClient = pymongo.MongoClient("mongodb+srv://root:root@cluster0.uqeev.mongodb.net/EasyConnectDB?retryWrites=true&w=majority")
 
 def databaseSetup():
     dbList = mongoClient.list_database_names()
@@ -17,9 +17,12 @@ def databaseSetup():
     return myDB['ScholarList']
 
 def getAurthorObj(name):
-    search_query = scholarly.search_author(name)
-    author = next(search_query).fill()
-    return author
+    try:
+        search_query = scholarly.search_author(name)
+        author = next(search_query).fill()
+        return author
+    except:
+        return None
 
 def getAuthorInterests(author):
     return author.interests
@@ -46,24 +49,20 @@ if __name__ == "__main__":
     with open('researchersList.json', 'r') as f:
         data=json.load(f)
     for department in data:
+        print('---------------{}--------------------'.format(department))
         for entry in data[department]:
+            print('---------------{}'.format(entry))
             author = getAurthorObj(entry["name"])
+            if author==None:
+                continue
             pub_list = getPublicationList(author)
             abs_val = getAllAbstract(pub_list)
-            #entry["name"]: [{title: key, keyword_list: keywords},...]
             researcher = {}
             researcher[entry["name"]] = []
             for key in abs_val:
-                res = {}
                 keywords = populate_keyword(abs_val[key])
-                res["title"] = key
-                res["keywords"] = keywords
-                researcher[entry["name"]].append(res)
-                break
-            break
-        payload.append(researcher)
-        break
+                researcher[entry["name"]].append({"title":key,"keywords":keywords})
+            payload.append(researcher)
     with open('payload.txt', 'w+') as f:
         f.write(str(payload))
     collection.insert_many(payload)
-        # TODO: update mongo DB with title, keyword list for prof list.
