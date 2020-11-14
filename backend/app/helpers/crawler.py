@@ -3,18 +3,7 @@ import requests
 from flask import Response
 from tokenizor import populate_keyword
 import json
-import pymongo
-
-mongoClient = pymongo.MongoClient("mongodb+srv://root:root@cluster0.uqeev.mongodb.net/EasyConnectDB?retryWrites=true&w=majority")
-
-def databaseSetup():
-    dbList = mongoClient.list_database_names()
-    myDB = mongoClient['EasyConnectDB']
-    if myDB in dbList:
-        if 'ScholarList' not in myDB.list_collection_names():
-            myCol = myDB['ScholarList']
-
-    return myDB['ScholarList']
+from dbConfig import databaseSetup
 
 def getAurthorObj(name):
     try:
@@ -44,8 +33,9 @@ def getAllAbstract(pubList):
     return res
 
 if __name__ == "__main__":
-    collection = databaseSetup()
-    payload = []
+    dbObj = databaseSetup()
+    collection=dbObj['ScholarList']
+    # print(col.find_one({},{"Adeel Bhutta":1}))
     with open('researchersList.json', 'r') as f:
         data=json.load(f)
     for department in data:
