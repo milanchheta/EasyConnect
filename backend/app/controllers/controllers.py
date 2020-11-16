@@ -42,13 +42,15 @@ SECRET_KEY="Authentication Secret Goes Here"
 # recommendations->{
 #     user_id: id
 #     keywords (based on interests or uploaded papers if any): []
-#     researchers:[]
-#     papers:[]??????
+#     researchers:[] => Professor names list.
+#     papers:[]?????? Names of recommended papers => {Professor name, title}
 # }
 
 # scholars->{
-#     (Professor name):{title:[(Keywords)], interests:[], scholars_link:link },...
+#     (Professor name):{title:[(Keywords)], interests:[], scholars_link:link }, id: uuid,...
 # }
+
+# TODO: add email or id to the scholar list.
 
 # connected_users->{
 #     user_id:id
@@ -66,6 +68,8 @@ SECRET_KEY="Authentication Secret Goes Here"
 #     user_name:
 #     mesasge: string
 # }
+
+
 
 
 @main.route('/', methods = ['GET'])
@@ -89,6 +93,8 @@ def register_user():
     scholars_link=data['scholars_link']
     interests=data['interests']
     id = str(uuid.uuid4())
+
+    # TODO: verify scholar link.
 
     user_exists=Users_collections.find_one({"email": email})
 
@@ -114,8 +120,7 @@ def login_user():
 
     if check_password_hash(user['password'], password): 
         token = jwt.encode({ 
-            'public_id': user['id'], 
-            'exp' : datetime.utcnow() + timedelta(minutes = 30) 
+            'user': user 
         }, SECRET_KEY) 
    
         resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 201) 
@@ -130,51 +135,71 @@ def get_recommendations():
     resp = Response("recommendations endpoint", status=200, mimetype='application/json')
     return resp
 
-@main.route('/profile', methods = ['GET'])
+@main.route('/profile', methods = ['GET', 'PUT'])
 def get_user_profile():
-    args=request.args
-    resp = Response("profile endpoint", status=200, mimetype='application/json')
-    return resp
+    if request.method == 'GET':
+        args=request.args
+        resp = Response("profile endpoint", status=200, mimetype='application/json')
+        return resp
+    if request.method == 'PUT':
+        args=request.args
+        resp = Response("profile endpoint", status=200, mimetype='application/json')
+        return resp
 
-@main.route('/profile', methods = ['PUT'])
-def update_user_profile():
-    args=request.args
-    resp = Response("profile endpoint", status=200, mimetype='application/json')
-    return resp
-
-@main.route('/connect', methods = ['POST'])
+@main.route('/connect', methods = ['POST', 'GET'])
 def connect_user():
-    args=request.args
-    resp = Response("connect endpoint", status=200, mimetype='application/json')
-    return resp
+    if request.method == 'POST':
+        args=request.args
+        data = request.get_json()
+        jwt_user_token = data['user']
+        connect_email = data['email'] #or id
+        
+        connecting_user = Connected_users_collections.find_one({'email': connect_email})
+        if connecting_user:
+            pass
+        resp = Response("connect endpoint", status=200, mimetype='application/json')
+        return resp
+    if request.method == 'GET':
+        args=request.args
+        resp = Response("connect endpoint", status=200, mimetype='application/json')
+        return resp
+
 
 @main.route('/isconnected', methods = ['GET'])
 def get_connected_status():
     args=request.args
     resp = Response("isconnected endpoint", status=200, mimetype='application/json')
     return resp
-
-@main.route('/connect', methods = ['GET'])
-def get_connected_list():
-    args=request.args
-    resp = Response("connect endpoint", status=200, mimetype='application/json')
-    return resp
-
-@main.route('/message', methods = ['POST'])
+    
+@main.route('/message', methods = ['POST', 'GET'])
 def send_message():
-    args=request.args
-    resp = Response("message endpoint", status=200, mimetype='application/json')
-    return resp
+    if request.method == 'POST':
+        args=request.args
+        resp = Response("message endpoint", status=200, mimetype='application/json')
+        return resp
+    
+    if request.method == "GET":
+        args=request.args
+        resp = Response("message endpoint", status=200, mimetype='application/json')
+        return resp
 
-@main.route('/message', methods = ['GET'])
-def get_message():
-    args=request.args
-    resp = Response("message endpoint", status=200, mimetype='application/json')
-    return resp
-
-@main.route('/requests', methods = ['GET'])
+@main.route('/requests', methods = ['GET', 'POST'])
 def get_connection_requests():
+    if request.method == 'POST':
+        data = request.get_json()
+        pass
+
+    if request.method == 'GET':
+        pass
+
     args=request.args
     resp = Response("requests endpoint", status=200, mimetype='application/json')
     return resp
+
+@main.route('/upload', methods = ['POST'])
+def upload_paper():
+    if request.method == 'POST':
+        f = request.files['the_file']
+        data = request.get_json()
+
 
