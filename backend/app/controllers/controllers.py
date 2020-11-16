@@ -1,6 +1,11 @@
-from flask import Blueprint,request,Response
+from flask import Blueprint,request,Response,jsonify
 from ..helpers.dbConfig import databaseSetup
 import json
+from  werkzeug.security import generate_password_hash, check_password_hash 
+import jwt 
+from datetime import datetime, timedelta 
+from functools import wraps 
+import uuid
 dbObj = databaseSetup()
 main = Blueprint('main', __name__)
 
@@ -10,7 +15,7 @@ Connected_users_collections=dbObj["connected_users"]
 User_requests_collections=dbObj["user_requests"]
 User_messages_collections=dbObj["user_messages"]
 ScholarList_collections=dbObj["ScholarList"]
-
+SECRET_KEY="Authentication Secret Goes Here"
 
 # Register - Post
 # Login - Post
@@ -26,6 +31,7 @@ ScholarList_collections=dbObj["ScholarList"]
 # Collections:-
 
 # users->{
+        # id:
 #     full_name: string
 #     email: string
 #     password: string
@@ -45,7 +51,8 @@ ScholarList_collections=dbObj["ScholarList"]
 # }
 
 # connected_users->{
-#     user_id:[]
+#     user_id:id
+#     connected_to:[]
 # }
 
 # user_requests:{
@@ -59,6 +66,7 @@ ScholarList_collections=dbObj["ScholarList"]
 #     user_name:
 #     mesasge: string
 # }
+
 
 @main.route('/', methods = ['GET'])
 def index():
@@ -80,12 +88,14 @@ def register_user():
     full_name=data['full_name']
     scholars_link=data['scholars_link']
     interests=data['interests']
+    id = str(uuid.uuid4())
 
     user_exists=Users_collections.find_one({"email": email})
 
     if not user_exists:  
-        user_data={"email":email,"password":password,"full_name":full_name,"scholars_link":scholars_link,"interests":interests}
+        user_data={"id":id,"email":email,"password":generate_password_hash(password) ,"full_name":full_name,"scholars_link":scholars_link,"interests":interests}
         user_id=Users_collections.insert_one(user_data)
+
         resp = Response('User Registered Successfully', status=201, mimetype='application/json')
     else: 
         resp = Response('User already exists. Please Log in.', status=202, mimetype='application/json')
@@ -93,8 +103,25 @@ def register_user():
 
 @main.route('/login', methods = ['GET','POST'])
 def login_user():
-    args=request.args
-    resp = Response("login endpoint", status=200, mimetype='application/json')
+    data=request.get_json()
+    email=data['email']
+    password=data['password']
+    user=Users_collections.find_one({"email": email})
+    print(user)
+    if not user: 
+        resp = Response('User does not exist', 401, {'WWW-Authenticate' : 'Basic realm ="User does not exist"'})
+        return resp
+
+    if check_password_hash(user['password'], password): 
+        token = jwt.encode({ 
+            'public_id': user['id'], 
+            'exp' : datetime.utcnow() + timedelta(minutes = 30) 
+        }, SECRET_KEY) 
+   
+        resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 201) 
+        return resp
+
+    resp=('Wrong Password', 403, {'WWW-Authenticate' : 'Basic realm ="Wrong Password !!"'}) 
     return resp
 
 @main.route('/recommendations', methods = ['GET'])
