@@ -15,6 +15,7 @@ Connected_users_collections=dbObj["connected_users"]
 User_requests_collections=dbObj["user_requests"]
 User_messages_collections=dbObj["user_messages"]
 ScholarList_collections=dbObj["ScholarList"]
+
 SECRET_KEY="Authentication Secret Goes Here"
 
 # Register - Post
@@ -112,15 +113,14 @@ def login_user():
     data=request.get_json()
     email=data['email']
     password=data['password']
-    user=Users_collections.find_one({"email": email})
-    print(user)
+    user=Users_collections.find_one({"email": email},{'_id': False})
     if not user: 
         resp = Response('User does not exist', 401, {'WWW-Authenticate' : 'Basic realm ="User does not exist"'})
         return resp
 
     if check_password_hash(user['password'], password): 
         token = jwt.encode({ 
-            'user': user 
+            'user':user
         }, SECRET_KEY) 
    
         resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 201) 
@@ -165,11 +165,11 @@ def connect_user():
         return resp
 
 
-@main.route('/isconnected', methods = ['GET'])
-def get_connected_status():
-    args=request.args
-    resp = Response("isconnected endpoint", status=200, mimetype='application/json')
-    return resp
+# @main.route('/isconnected', methods = ['GET'])
+# def get_connected_status():
+#     args=request.args
+#     resp = Response("isconnected endpoint", status=200, mimetype='application/json')
+#     return resp
     
 @main.route('/message', methods = ['POST', 'GET'])
 def send_message():
@@ -184,16 +184,41 @@ def send_message():
         return resp
 
 @main.route('/requests', methods = ['GET', 'POST'])
-def get_connection_requests():
+def connection_requests():
     if request.method == 'POST':
         data = request.get_json()
-        pass
+        requesting_user=jwt.decode(data['requesting_user_jwt'], SECRET_KEY)["user"]
+        requesting_user_data={"id":requesting_user['id'], "email":requesting_user['email'],"full_name":requesting_user['full_name']}
+        requested_to=data['id']
+        user=User_requests_collections.find_one({"user_id": requested_to})
+
+        if not user:
+            user={}
+            user['user_id']=requested_to
+            user['connected_to']=[requesting_user_data]
+            User_requests_collections.insert_one(user)
+            resp = Response("Request Sent Successfully", status=200, mimetype='application/json')
+            return resp
+        user['connected_to'].append(requesting_user_data)
+        User_requests_collections.update_one({"user_id": requested_to}, {"$set":{"connected_to":user['connected_to']}})
+        resp = Response("Request Sent Successfully", status=200, mimetype='application/json')
+        return resp
 
     if request.method == 'GET':
-        pass
-
-    args=request.args
-    resp = Response("requests endpoint", status=200, mimetype='application/json')
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            jwt_token = auth_header.split(" ")[1]                
+            user_data=jwt.decode(jwt_token, SECRET_KEY)
+        user=None
+        if user_data!=None:
+            user_data=user_data["user"]
+            user=User_requests_collections.find_one({"user_id": user_data['id']})
+            print("here",user)
+        print(user_data)
+        if user!=None:
+            resp=Response(json.dumps(user['connected_to']), status=200, mimetype='application/json')
+        else:
+            resp = Response(json.dumps([]), status=200, mimetype='application/json')
     return resp
 
 @main.route('/upload', methods = ['POST'])
