@@ -1,8 +1,16 @@
 from flask import Blueprint,request,Response
 from ..helpers.dbConfig import databaseSetup
-
+import json
 dbObj = databaseSetup()
 main = Blueprint('main', __name__)
+
+Users_collections=dbObj["users"]
+Recommendations_collections=dbObj["recommendations"]
+Connected_users_collections=dbObj["connected_users"]
+User_requests_collections=dbObj["user_requests"]
+User_messages_collections=dbObj["user_messages"]
+ScholarList_collections=dbObj["ScholarList"]
+
 
 # Register - Post
 # Login - Post
@@ -54,22 +62,33 @@ main = Blueprint('main', __name__)
 
 @main.route('/', methods = ['GET'])
 def index():
-    args=request.args
     resp = Response("Ok", status=200, mimetype='application/json')
     return resp
 
 
 @main.route('/test', methods = ['GET'])
 def test_connection():
-    args=request.args
     resp = Response("EasyConnect server is up and working!", status=200, mimetype='application/json')
     return resp
 
 
 @main.route('/register', methods = ['POST'])
 def register_user():
-    args=request.args
-    resp = Response("register endpoint", status=200, mimetype='application/json')
+    data=request.get_json()
+    email=data['email']
+    password=data['password']
+    full_name=data['full_name']
+    scholars_link=data['scholars_link']
+    interests=data['interests']
+
+    user_exists=Users_collections.find_one({"email": email})
+
+    if not user_exists:  
+        user_data={"email":email,"password":password,"full_name":full_name,"scholars_link":scholars_link,"interests":interests}
+        user_id=Users_collections.insert_one(user_data)
+        resp = Response('User Registered Successfully', status=201, mimetype='application/json')
+    else: 
+        resp = Response('User already exists. Please Log in.', status=202, mimetype='application/json')
     return resp
 
 @main.route('/login', methods = ['GET','POST'])
