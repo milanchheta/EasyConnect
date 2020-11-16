@@ -149,23 +149,26 @@ def get_recommendations():
 
 # Header format:
 # Authorization: Bearer <jwt_token>
-@main.route('/update_interests', methods = ['GET'])
+@main.route('/update_interests', methods = ['POST'])
 def update_recomendations():
-    args = request.args
+
+    data = request.get_json()
+    interests = data['interests']
     auth_header = request.headers.get('Authorization')
     if auth_header:
         auth_token = auth_header.split(" ")[1]
     else:
         auth_token = ''
     if auth_token != '':
-        user = jwt.decode(auth_token, SECRET_KEY)
+        user = jwt.decode(auth_token, SECRET_KEY)["user"]
+        recommendation_col = Recommendations_collections.find_one({"user_id": user["id"]})
 
-        # update Recommendations_collections
-        recommendation_col = Recommendations_collections.find_one({id: user["id"]})
-        new_recommendation = recommendation_col.copy()
-        new_recommendation["interests"] = user["interests"]
-        payload = {"$set": new_recommendation}
-        Recommendations_collections.update_one(recommendation_col, payload)
+        #Update user collection
+        user_update = user.copy()
+        user_update["interests"] = interests
+
+        req = {"$set": user_update}
+        Users_collections.update(user, req)
 
         # Get the scholars list.
         scholar_list = ScholarList_collections.find()
@@ -173,12 +176,36 @@ def update_recomendations():
         scholar_cosine_rel = []
         for scholar in scholar_list:
             cosine_sum = 0
+               
             for paper in scholar["papers"]:
-                cosine_sum += compute_similarity(user["interests"], paper["keywords"])
+                cosine_sum += compute_similarity(interests, paper["keywords"])
+            
             scholar_cosine_rel.append((scholar["researcher"], cosine_sum))
 
         # Find the top 10 scholars with cosine sum and update the recommendation.
-        
+        new_scholar = sorted(scholar_cosine_rel, key=lambda item: item[1])
+
+        # print(new_scholar[:10])
+        resp = [item[0] for item in new_scholar[:10]]
+
+        # update Recommendations_collections
+        if recommendation_col:
+            new_recommendation = recommendation_col.copy()
+            new_recommendation["interests"] = interests
+            new_recommendation["researchers"] = resp
+            payload = {"$set": new_recommendation}
+            Recommendations_collections.update_one(recommendation_col, payload)
+
+        # Otherwise create new recommendation.
+        else:
+            new_recommendation = {}
+            new_recommendation["user_id"] = user["id"]
+            new_recommendation["keywords"] = []
+            new_recommendation["interests"] = interests
+            new_recommendation["researchers"] = resp
+            Recommendations_collections.insert_one(new_recommendation)
+
+        return Response("Update interests", status=200, mimetype='application/json')
 
 @main.route('/profile', methods = ['GET', 'PUT'])
 def get_user_profile():
