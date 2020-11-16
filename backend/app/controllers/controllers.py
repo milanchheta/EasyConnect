@@ -14,7 +14,8 @@ Users_collections=dbObj["users"]
 Recommendations_collections=dbObj["recommendations"]
 Connected_users_collections=dbObj["connected_users"]
 User_requests_collections=dbObj["user_requests"]
-User_messages_collections=dbObj["user_messages"]
+User_messages_collections=dbObj["user_message_pair"]
+User_messages_rooms_collections=dbObj["user_message_room"]
 ScholarList_collections=dbObj["ScholarList"]
 
 SECRET_KEY="Authentication Secret Goes Here"
@@ -65,10 +66,16 @@ SECRET_KEY="Authentication Secret Goes Here"
 # requests:[{user_id:, user_name:},...]
 # }
 
-# user_messages->{
-#     user_id: id
-#     time: timestamp
-#     user_name:
+# message_pairs->{
+#     user_1:
+#     user_2:
+#     id:
+# }
+# message_room->{
+#     id:
+#     sender: id
+#     receiver: id
+#     timestamp:
 #     mesasge: string
 # }
 
@@ -201,15 +208,40 @@ def get_user_profile():
 #     return resp
     
 @main.route('/message', methods = ['POST', 'GET'])
-def send_message():
+def message():
+
+    ## send message
     if request.method == 'POST':
         args=request.args
+        user_id=args['user_id']
+        data=request.get_json()
+        message_room_id=data["message_room_id"]
+        message=data["message"]
+        message_pair=User_messages_rooms_collections.find_one({"message_room_id":message_room_id},{"_id":False})
+        message_pair["messages"].append({"sender_id":user_id,"message":message, "timestamp":datetime.now()})
+        User_messages_rooms_collections.update_one({"message_room_id":message_room_id},{"$set":{"messages":message_pair["messages"]}})
         resp = Response("message endpoint", status=200, mimetype='application/json')
         return resp
-    
+    ## get message room id
     if request.method == "GET":
         args=request.args
-        resp = Response("message endpoint", status=200, mimetype='application/json')
+        user_id=args['user_id']
+        connection_id=args['connection_id']
+        message_pair=User_messages_collections.find_one({"user_1": user_id,"user_2":connection_id })
+        if not message_pair:
+            message_pair=User_messages_collections.find_one({"user_2": user_id,"user_1":connection_id })
+        if not message_pair:
+            message_room_id=str(uuid.uuid4())
+            User_messages_collections.insert_one({"user_2": user_id,"user_1":connection_id, "message_room_id":message_room_id})
+            User_messages_rooms_collections.insert_one({"message_room_id":message_room_id,"messages":[]})
+            resp = Response(json.dumps({"message_room_id":message_room_id,"messages":[]}), status=200, mimetype='application/json')
+
+        else:
+            message_room_id=message_pair['message_room_id']
+            message_pair=User_messages_rooms_collections.find_one({"message_room_id":message_room_id},{"_id":False})
+            print(message_pair)
+            resp=Response(json.dumps(message_pair), status=200, mimetype='application/json')
+
         return resp
         
 @main.route('/connect', methods = ['POST', 'GET'])
