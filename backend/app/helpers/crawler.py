@@ -38,9 +38,15 @@ if __name__ == "__main__":
     # print(col.find_one({},{"Adeel Bhutta":1}))
     with open('researchersList.json', 'r') as f:
         data=json.load(f)
+    payload=[]
     for department in data:
+        i=0
         print('---------------{}--------------------'.format(department))
         for entry in data[department]:
+            i+=1
+            if i==3:
+                break
+            j=0
             print('---------------{}'.format(entry))
             author = getAurthorObj(entry["name"])
             if author==None:
@@ -48,11 +54,20 @@ if __name__ == "__main__":
             pub_list = getPublicationList(author)
             abs_val = getAllAbstract(pub_list)
             researcher = {}
-            researcher[entry["name"]] = []
+            papers=[]
+
+            researcher['researcher'] = entry["name"]
+            researcher['scholars_link'] = "https://scholar.google.com/citations?user="+author.id
+            researcher['iu_link'] = entry['url']
             for key in abs_val:
+                j+=1
+                if j==3:
+                    break
                 keywords = populate_keyword(abs_val[key])
-                researcher[entry["name"]].append({"title":key,"keywords":keywords})
+                papers.append({"title":key,"keywords":keywords})
+            researcher['papers']=papers
             payload.append(researcher)
     with open('payload.txt', 'w+') as f:
         f.write(str(payload))
     collection.insert_many(payload)
+ 
