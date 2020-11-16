@@ -49,3 +49,21 @@ def populate_keyword(abstract):
     keywords = [word[0] for word in selected]
 
     return keywords
+
+def compute_similarity(user_keywords, researcher_keywords):
+    user_list = []
+    researcher_list = []
+    rvector = user_keywords.union(researcher_keywords)  
+    for word in rvector: 
+        if word in user_keywords: user_list.append(1) # create a vector 
+        else: user_list.append(0) 
+        if word in researcher_keywords: researcher_list.append(1) 
+        else: researcher_list.append(0) 
+
+    c = 0
+    
+    # cosine formula  
+    for i in range(len(rvector)): 
+            c+= user_list[i]*researcher_list[i] 
+    cosine = c / float((sum(user_list)*sum(researcher_list))**0.5) 
+    return cosine 

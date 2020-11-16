@@ -1,5 +1,6 @@
 from flask import Blueprint,request,Response,jsonify
 from ..helpers.dbConfig import databaseSetup
+from ..helpers.tokenizor import compute_similarity
 import json
 from  werkzeug.security import generate_password_hash, check_password_hash 
 import jwt 
@@ -42,8 +43,9 @@ SECRET_KEY="Authentication Secret Goes Here"
 # recommendations->{
 #     user_id: id
 #     keywords (based on interests or uploaded papers if any): []
+#     interests: []
 #     researchers:[] => Professor names list.
-#     papers:[]?????? Names of recommended papers => {Professor name, title}
+#     papers:[]?????? Names of recommended papers => {Professor name, [title]}
 # }
 
 # scholars->{
@@ -69,7 +71,17 @@ SECRET_KEY="Authentication Secret Goes Here"
 #     mesasge: string
 # }
 
-
+"""
+scholar List design:
+{
+    researcher: <name>,
+    scholars_link: <link>,
+    papers: [
+        title: <title>,
+        keywords: []
+    ]
+}
+"""
 
 
 @main.route('/', methods = ['GET'])
@@ -135,6 +147,39 @@ def get_recommendations():
     resp = Response("recommendations endpoint", status=200, mimetype='application/json')
     return resp
 
+# Header format:
+# Authorization: Bearer <jwt_token>
+@main.route('/update_interests', methods = ['GET'])
+def update_recomendations():
+    args = request.args
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(" ")[1]
+    else:
+        auth_token = ''
+    if auth_token != '':
+        user = jwt.decode(auth_token, SECRET_KEY)
+
+        # update Recommendations_collections
+        recommendation_col = Recommendations_collections.find_one({id: user["id"]})
+        new_recommendation = recommendation_col.copy()
+        new_recommendation["interests"] = user["interests"]
+        payload = {"$set": new_recommendation}
+        Recommendations_collections.update_one(recommendation_col, payload)
+
+        # Get the scholars list.
+        scholar_list = ScholarList_collections.find()
+
+        scholar_cosine_rel = []
+        for scholar in scholar_list:
+            cosine_sum = 0
+            for paper in scholar["papers"]:
+                cosine_sum += compute_similarity(user["interests"], paper["keywords"])
+            scholar_cosine_rel.append((scholar["researcher"], cosine_sum))
+
+        # Find the top 10 scholars with cosine sum and update the recommendation.
+        
+
 @main.route('/profile', methods = ['GET', 'PUT'])
 def get_user_profile():
     if request.method == 'GET':
@@ -165,11 +210,11 @@ def connect_user():
         return resp
 
 
-@main.route('/isconnected', methods = ['GET'])
-def get_connected_status():
-    args=request.args
-    resp = Response("isconnected endpoint", status=200, mimetype='application/json')
-    return resp
+# @main.route('/isconnected', methods = ['GET'])
+# def get_connected_status():
+#     args=request.args
+#     resp = Response("isconnected endpoint", status=200, mimetype='application/json')
+#     return resp
     
 @main.route('/message', methods = ['POST', 'GET'])
 def send_message():
