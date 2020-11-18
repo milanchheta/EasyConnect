@@ -202,14 +202,14 @@ def update_recomendations(user, interests):
         for paper in scholar["papers"]:
             cosine_sum += compute_similarity(interests, paper["keywords"])
         
-        scholar_cosine_rel.append((scholar["researcher"], cosine_sum))
+        scholar_cosine_rel.append((scholar, cosine_sum))
 
     # Find the top 10 scholars with cosine sum and update the recommendation.
     new_scholar = sorted(scholar_cosine_rel, key=lambda item: item[1])
 
     # print(new_scholar[:10])
     resp = [item[0] for item in new_scholar[:10]]
-
+    print(res)
     # update Recommendations_collections
     if recommendation_col:
         new_recommendation = recommendation_col.copy()

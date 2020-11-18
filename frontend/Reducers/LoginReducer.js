@@ -5,7 +5,6 @@ const initialState = {
 };
 
 const loginReducer = (state = initialState, action) => {
-  console.log(action);
   switch (action.type) {
     case "ON_CHANGE_LOGIN_EMAIL":
       return {

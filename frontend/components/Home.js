@@ -2,13 +2,16 @@ import React, { useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import jwt_decode from "jwt-decode";
 import { updateRecommendations } from "../Actions/RecommendationsAction.js";
+
 const styles = StyleSheet.create({});
 
 export default function Home(props) {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state) => state.login.jwtToken);
+  const recommendations = useSelector(
+    (state) => state.recommendations.recommendations
+  );
 
   useEffect(() => {
     if (jwtToken != "") {
@@ -28,11 +31,24 @@ export default function Home(props) {
     } else {
       props.navigation.push("Login");
     }
-  });
+  }, []);
 
   return (
     <View>
-      <Text>home</Text>
+      <Text>
+        {recommendations.map((el, idx) => {
+          return recommendation({ el, idx });
+        })}
+        HI
+      </Text>
+    </View>
+  );
+}
+
+function recommendation(props) {
+  return (
+    <View key={props.idx}>
+      <Text>{props.el}</Text>
     </View>
   );
 }
