@@ -12,6 +12,9 @@ export const storeJwtToken = (token) => ({
   data: token,
 });
 
+export const logout = (token) => ({
+  type: "USER_LOGGED_OUT",
+});
 // export const onSubmit = () => ({
 //   type: "ON_SUBMIT_LOGIN",
 //   data: token,

@@ -4,7 +4,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import { rootReducer } from "./Reducers/Rootreducer";
 
 const persistConfig = {
-  key: "root132",
+  key: "root32",
   storage: AsyncStorage,
 };
 

@@ -173,7 +173,6 @@ def get_recommendations():
 
         user = jwt.decode(auth_token, SECRET_KEY)["user"]
         recommendations = Recommendations_collections.find_one({"user_id": user["id"]}, {"_id": 0})
-        print(recommendations)
 
         if recommendations:
             resp = Response(json.dumps(recommendations), status=200, mimetype='application/json')
@@ -193,8 +192,8 @@ def update_recomendations(user, interests):
     recommendation_col = Recommendations_collections.find_one({"user_id": user["id"]})
 
     # Get the scholars list.
-    scholar_list = ScholarList_collections.find()
-
+    scholar_list = ScholarList_collections.find({},{'_id': 0})
+    print(scholar_list)
     scholar_cosine_rel = []
     for scholar in scholar_list:
         cosine_sum = 0

@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { updateRecommendations } from "../Actions/RecommendationsAction.js";
+import { logout } from "../Actions/LoginAction.js";
 
 const styles = StyleSheet.create({});
 
@@ -12,7 +13,10 @@ export default function Home(props) {
   const recommendations = useSelector(
     (state) => state.recommendations.recommendations
   );
-
+  const logOut = () => {
+    dispatch(logout());
+    props.navigation.push("Login");
+  };
   useEffect(() => {
     if (jwtToken != "") {
       axios
@@ -32,23 +36,28 @@ export default function Home(props) {
       props.navigation.push("Login");
     }
   }, []);
+  console.log("recommnedatiosn", recommendations);
 
   return (
     <View>
       <Text>
-        {recommendations.map((el, idx) => {
+        {recommendations[0].map((el, idx) => {
           return recommendation({ el, idx });
         })}
         HI
       </Text>
+      <TouchableOpacity onPress={() => logOut()}>
+        <Text>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 function recommendation(props) {
+  console.log(props.el);
   return (
     <View key={props.idx}>
-      <Text>{props.el}</Text>
+      <Text>{props.el["researcher"]}</Text>
     </View>
   );
 }
