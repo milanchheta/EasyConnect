@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -7,8 +7,13 @@ import {
   Text,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { updateLoginEmail, updateLoginPassword } from "../Actions/LoginAction";
+import {
+  updateLoginEmail,
+  updateLoginPassword,
+  storeJwtToken,
+} from "../Actions/LoginAction";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 const styles = StyleSheet.create({});
 
@@ -16,18 +21,34 @@ export default function Login(props) {
   const dispatch = useDispatch();
   const loginEmail = useSelector((state) => state.login.loginEmail);
   const loginPassword = useSelector((state) => state.login.loginPassword);
+  const jwtToken = useSelector((state) => state.login.jwtToken);
 
-  const onSubmit = async () => {
-    const res = await axios.post(
-      "http://127.0.0.1:5000/login",
-      { email: loginEmail, password: loginPassword },
-      {
-        headers: {
-          "content-type": "application/json",
-        },
-      }
-    );
-    console.log(res);
+  useEffect(() => {
+    if (jwtToken != "") {
+      var decoded = jwt_decode(jwtToken);
+      props.navigation.navigate("Home");
+    }
+  });
+
+  const onSubmit = () => {
+    axios
+      .post(
+        "http://127.0.0.1:5000/login",
+        { email: loginEmail, password: loginPassword },
+        {
+          headers: {
+            "content-type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        let jwt_token = response["data"]["token"];
+        dispatch(storeJwtToken(jwt_token));
+        props.navigation.navigate("Home");
+      })
+      .catch((err) => {
+        console.log("Invalid Credentials");
+      });
   };
   return (
     <View>
@@ -50,6 +71,13 @@ export default function Login(props) {
             }}
           >
             <Text>Submit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.navigate("Home");
+            }}
+          >
+            <Text>Create an account?</Text>
           </TouchableOpacity>
         </View>
       </View>

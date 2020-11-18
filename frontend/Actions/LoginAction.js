@@ -7,3 +7,12 @@ export const updateLoginPassword = (password) => ({
   type: "ON_CHANGE_LOGIN_PASSWORD",
   data: password,
 });
+export const storeJwtToken = (token) => ({
+  type: "STORE_JWT",
+  data: token,
+});
+
+// export const onSubmit = () => ({
+//   type: "ON_SUBMIT_LOGIN",
+//   data: token,
+// });
