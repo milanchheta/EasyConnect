@@ -11,7 +11,7 @@ from flask_cors import CORS, cross_origin
 
 dbObj = databaseSetup()
 main = Blueprint('main', __name__)
-cors = CORS(main)
+# cors = CORS(main)
 # main.config['CORS_HEADERS'] = 'Content-Type'
 
 

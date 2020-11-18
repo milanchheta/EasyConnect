@@ -53,7 +53,7 @@ export default function Register(props) {
         })
         .then((response) => {
           console.log("Registered Succesfully.", response);
-          props.navigation.navigate("Login");
+          props.navigation.push("Login");
         })
         .catch((error) => {
           console.log("Invalid Register Attempt ", error);

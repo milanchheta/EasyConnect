@@ -1,22 +1,39 @@
-import React, { useEffect } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  FlatList,
+  SafeAreaView,
+  StatusBar,
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { updateRecommendations } from "../Actions/RecommendationsAction.js";
 import { logout } from "../Actions/LoginAction.js";
 
-const styles = StyleSheet.create({});
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+  },
+  item: {
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 25,
+  },
+});
 export default function Home(props) {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state) => state.login.jwtToken);
   const recommendations = useSelector(
     (state) => state.recommendations.recommendations
   );
-  const logOut = () => {
-    dispatch(logout());
-    props.navigation.push("Login");
-  };
+
   useEffect(() => {
     if (jwtToken != "") {
       axios
@@ -36,29 +53,38 @@ export default function Home(props) {
       props.navigation.push("Login");
     }
   }, []);
-  console.log("recommnedatiosn", recommendations);
+
+  const onProfileClick = (item) => {
+    console.log("go to profile");
+  };
+
+  const logOut = () => {
+    dispatch(logout());
+    props.navigation.push("Login");
+  };
+
+  const Item = ({ item, onPress, style }) => (
+    <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
+      <Text style={styles.title}>{item.researcher}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderItem = ({ item }) => {
+    return <Item item={item} onPress={() => onProfileClick(item)} />;
+  };
 
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       <Text>
-        {recommendations &&
-          recommendations.map((el, idx) => {
-            return recommendation({ el, idx });
-          })}
-        HI
+        <FlatList
+          data={recommendations}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.scholars_link}
+        />
       </Text>
       <TouchableOpacity onPress={() => logOut()}>
         <Text>Logout</Text>
       </TouchableOpacity>
-    </View>
-  );
-}
-
-function recommendation(props) {
-  console.log(props.el);
-  return (
-    <View key={props.idx}>
-      <Text>{props.el["researcher"]}</Text>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -31,22 +31,21 @@ export default function Login(props) {
   });
 
   const onSubmit = () => {
+    let payload = { email: loginEmail, password: loginPassword };
     axios
-      .post(
-        "http://127.0.0.1:5000/login",
-        { email: loginEmail, password: loginPassword },
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-        }
-      )
+      .post("http://127.0.0.1:5000/login", payload, {
+        headers: {
+          "content-type": "application/json",
+        },
+      })
       .then((response) => {
         let jwt_token = response["data"]["token"];
         dispatch(storeJwtToken(jwt_token));
-        props.navigation.navigate("Home");
+        props.navigation.push("Home");
       })
       .catch((err) => {
+        console.log();
+        console.log(err);
         console.log("Invalid Credentials");
       });
   };
