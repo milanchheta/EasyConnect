@@ -74,7 +74,7 @@ export default function Login(props) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              props.navigation.push("Home");
+              props.navigation.push("Register");
             }}
           >
             <Text>Create an account?</Text>
