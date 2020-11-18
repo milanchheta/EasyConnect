@@ -26,7 +26,7 @@ export default function Login(props) {
   useEffect(() => {
     if (jwtToken != "") {
       var decoded = jwt_decode(jwtToken);
-      props.navigation.navigate("Home");
+      props.navigation.push("Home");
     }
   });
 
@@ -74,7 +74,7 @@ export default function Login(props) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              props.navigation.navigate("Home");
+              props.navigation.push("Home");
             }}
           >
             <Text>Create an account?</Text>
