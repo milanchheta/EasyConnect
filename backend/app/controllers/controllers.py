@@ -153,7 +153,7 @@ def login_user():
             'user':user
         }, SECRET_KEY) 
    
-        resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 201) 
+        resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 200) 
         return resp
 
     resp=('Wrong Password', 403, {'WWW-Authenticate' : 'Basic realm ="Wrong Password !!"'}) 
@@ -209,7 +209,7 @@ def update_recomendations(user, interests):
 
     # print(new_scholar[:10])
     resp = [item[0] for item in new_scholar[:10]]
-    print(res)
+    # print(res)
     # update Recommendations_collections
     if recommendation_col:
         new_recommendation = recommendation_col.copy()
