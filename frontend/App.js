@@ -7,7 +7,8 @@ import { store, persistor } from "./store.js";
 import { PersistGate } from "redux-persist/integration/react";
 
 import Login from "./components/Login";
-import Register from "./components/Register.js";
+import Register from "./components/Register";
+import Home from "./components/Home";
 
 const Stack = createStackNavigator();
 
@@ -17,8 +18,17 @@ export default function App() {
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login">
-            {/* <Stack.Screen name="Login" component={Login} /> */}
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerLeft: null }}
+            />
             <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen
+              name="Home"
+              options={{ headerLeft: null }}
+              component={Home}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

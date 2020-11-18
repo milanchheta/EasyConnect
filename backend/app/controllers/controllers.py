@@ -7,8 +7,13 @@ import jwt
 from datetime import datetime, timedelta 
 from functools import wraps 
 import uuid
+from flask_cors import CORS, cross_origin
+
 dbObj = databaseSetup()
 main = Blueprint('main', __name__)
+cors = CORS(main)
+# main.config['CORS_HEADERS'] = 'Content-Type'
+
 
 Users_collections=dbObj["users"]
 Recommendations_collections=dbObj["recommendations"]
@@ -93,18 +98,21 @@ scholar List design:
 
 
 @main.route('/', methods = ['GET'])
+@cross_origin()
 def index():
     resp = Response("Ok", status=200, mimetype='application/json')
     return resp
 
 
 @main.route('/test', methods = ['GET'])
+@cross_origin()
 def test_connection():
     resp = Response("EasyConnect server is up and working!", status=200, mimetype='application/json')
     return resp
 
 
 @main.route('/register', methods = ['POST'])
+@cross_origin()
 def register_user():
     data=request.get_json()
     email=data['email']
@@ -130,6 +138,7 @@ def register_user():
     return resp
 
 @main.route('/login', methods = ['GET','POST'])
+@cross_origin()
 def login_user():
     data=request.get_json()
     email=data['email']
@@ -151,6 +160,7 @@ def login_user():
     return resp
 
 @main.route('/recommendations', methods = ['GET'])
+@cross_origin()
 def get_recommendations():
     auth_header = request.headers.get('Authorization')
 
@@ -218,6 +228,7 @@ def update_recomendations(user, interests):
         Recommendations_collections.insert_one(new_recommendation)
 
 @main.route('/profile', methods = ['GET', 'PUT'])
+@cross_origin()
 def get_user_profile():
 
     if request.method == 'GET':
@@ -268,6 +279,7 @@ def get_user_profile():
 #     return resp
     
 @main.route('/message', methods = ['POST', 'GET'])
+@cross_origin()
 def message():
 
     ## send message
@@ -306,6 +318,7 @@ def message():
         return resp
         
 @main.route('/connect', methods = ['POST', 'GET'])
+@cross_origin()
 def connect_user():
     ##accept connection request
     if request.method == 'POST':
@@ -360,6 +373,7 @@ def connect_user():
         return resp
 
 @main.route('/requests', methods = ['GET', 'POST'])
+@cross_origin()
 def connection_requests():
     ## send request to connect to a user
     if request.method == 'POST':
@@ -399,6 +413,7 @@ def connection_requests():
     return resp
 
 @main.route('/upload', methods = ['POST'])
+@cross_origin()
 def upload_paper():
     if request.method == 'POST':
         f = request.files['the_file']

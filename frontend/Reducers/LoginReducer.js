@@ -1,6 +1,7 @@
 const initialState = {
   loginEmail: "",
   loginPassword: "",
+  jwtToken: "",
 };
 
 const loginReducer = (state = initialState, action) => {
@@ -16,6 +17,11 @@ const loginReducer = (state = initialState, action) => {
       return {
         ...state,
         loginPassword: action.data,
+      };
+    case "STORE_JWT":
+      return {
+        ...state,
+        jwtToken: action.data,
       };
 
     default:
