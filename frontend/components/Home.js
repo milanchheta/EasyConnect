@@ -41,9 +41,10 @@ export default function Home(props) {
   return (
     <View>
       <Text>
-        {recommendations[0].map((el, idx) => {
-          return recommendation({ el, idx });
-        })}
+        {recommendations &&
+          recommendations.map((el, idx) => {
+            return recommendation({ el, idx });
+          })}
         HI
       </Text>
       <TouchableOpacity onPress={() => logOut()}>

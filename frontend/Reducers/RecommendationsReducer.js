@@ -1,5 +1,5 @@
 const initialState = {
-  recommendations: [],
+  recommendations: null,
 };
 
 const RecommendationsReducer = (state = initialState, action) => {
@@ -8,7 +8,7 @@ const RecommendationsReducer = (state = initialState, action) => {
     case "UPDATE_RECOMMENDATIONS_HOME":
       return {
         ...state,
-        recommendations: [action.data],
+        recommendations: action.data,
       };
 
     default:
