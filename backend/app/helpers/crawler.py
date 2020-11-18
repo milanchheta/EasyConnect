@@ -19,12 +19,12 @@ def getAuthorInterests(author):
 def getPublicationList(author):
     return author.publications
 
-def getAllAbstract(pubList):
-    res={}
+def getAllAbstract(pubList,author):
+    res=[]
     for i in range(len(pubList)):
         try:
             pub = author.publications[i].fill().bib
-            res[pub["title"]]=pub["abstract"]
+            res.append(pub)
             if i==20:
                 break
         except:
@@ -33,6 +33,9 @@ def getAllAbstract(pubList):
     return res
 
 if __name__ == "__main__":
+    # author = getAurthorObj("Patrick")
+    # pub_list = getPublicationList(author)
+    # print(author.publications[0].fill().bib)
     dbObj = databaseSetup()
     collection=dbObj['ScholarList']
     # print(col.find_one({},{"Adeel Bhutta":1}))
@@ -52,19 +55,25 @@ if __name__ == "__main__":
             if author==None:
                 continue
             pub_list = getPublicationList(author)
-            abs_val = getAllAbstract(pub_list)
+            abs_val = getAllAbstract(pub_list,author)
             researcher = {}
             papers=[]
 
             researcher['researcher'] = entry["name"]
             researcher['scholars_link'] = "https://scholar.google.com/citations?user="+author.id
             researcher['iu_link'] = entry['url']
-            for key in abs_val:
+            researcher['id']=author.id
+            researcher['url_picture']=author.url_picture
+            researcher['email']=author.email
+            researcher['citedby']=author.citedby
+            researcher['affiliation']=author.affiliation
+            for el in abs_val:
                 j+=1
                 if j==3:
                     break
-                keywords = populate_keyword(abs_val[key])
-                papers.append({"title":key,"keywords":keywords})
+                keywords = populate_keyword(el["abstract"])
+                el['keywords']=keywords
+                papers.append(el)
             researcher['papers']=papers
             payload.append(researcher)
     with open('payload.txt', 'w+') as f:
