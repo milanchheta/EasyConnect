@@ -40,7 +40,7 @@ export default function Register(props) {
         email: email,
         password: password,
         scholars_link: scholar_link,
-        interests: interests.split(" "),
+        interests: interests.split(","),
       };
 
       console.log(payload);

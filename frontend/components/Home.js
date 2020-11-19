@@ -24,7 +24,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   title: {
-    fontSize: 25,
+    fontSize: 20,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: "#aaa",
   },
 });
 export default function Home(props) {
@@ -56,6 +60,7 @@ export default function Home(props) {
 
   const onProfileClick = (item) => {
     console.log("go to profile");
+    props.navigation.push("Profile", { item });
   };
 
   const logOut = () => {
@@ -66,6 +71,7 @@ export default function Home(props) {
   const Item = ({ item, onPress, style }) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
       <Text style={styles.title}>{item.researcher}</Text>
+      <Text style={styles.subtitle}>{item.affiliation}</Text>
     </TouchableOpacity>
   );
 
@@ -75,15 +81,22 @@ export default function Home(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>
-        <FlatList
-          data={recommendations}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.scholars_link}
-        />
-      </Text>
+      <FlatList
+        data={recommendations}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
       <TouchableOpacity onPress={() => logOut()}>
         <Text>Logout</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => props.navigation.push("Requests")}>
+        <Text>Requests</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => props.navigation.push("Messages")}>
+        <Text>Messages</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => props.navigation.push("UserProfile")}>
+        <Text>My profile</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
