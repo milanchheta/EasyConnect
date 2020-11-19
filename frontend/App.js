@@ -29,7 +29,7 @@ export default function App() {
             <Stack.Screen
               name="Login"
               component={Login}
-              options={{ headerLeft: null }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen
