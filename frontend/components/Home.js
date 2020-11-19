@@ -79,24 +79,12 @@ export default function Home(props) {
     return <Item item={item} onPress={() => onProfileClick(item)} />;
   };
 
-  const ItemSeparator = () => (
-    <View
-      style={{
-        height: 2,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        marginLeft: 10,
-        marginRight: 10,
-      }}
-    ></View>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={recommendations}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={ItemSeparator}
       />
       <TouchableOpacity onPress={() => logOut()}>
         <Text>Logout</Text>

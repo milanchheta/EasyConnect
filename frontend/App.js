@@ -10,6 +10,8 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
+import PaperList from "./components/PaperList";
+import PaperDetails from "./components/PaperDetails";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +33,8 @@ export default function App() {
               component={Home}
             />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="PaperList" component={PaperList} />
+            <Stack.Screen name="PaperDetails" component={PaperDetails} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>
