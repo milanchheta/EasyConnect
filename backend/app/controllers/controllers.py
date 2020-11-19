@@ -261,7 +261,9 @@ def get_user_profile():
 
             user_connection=Connected_users_collections.find_one({"id": curr_user['id']})
             if user_connection:
-                return Response("CONNECTED", status=200, mimetype='application/json')
+                for item in user_connection['connected_to']:
+                    if user['id']==item['id']:
+                        return Response("CONNECTED", status=200, mimetype='application/json')
             return Response(json.dumps(user), status=200, mimetype='application/json')
 
         else: 
@@ -311,6 +313,40 @@ def get_user_profile():
 #     resp = Response("isconnected endpoint", status=200, mimetype='application/json')
 #     return resp
     
+@main.route('/message_rooms', methods = ['GET'])
+@cross_origin()
+def message_rooms():
+    if request.method == "GET":
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
+        else:
+            auth_token = ''
+        if auth_token != '':
+            user = jwt.decode(auth_token, SECRET_KEY)["user"]
+        user_id=user['id']
+        res=[]
+
+        messages_1=list(User_messages_collections.find({"user_1": user_id},{"_id":False}))
+        for entry in messages_1:
+            print(entry)
+
+            user=Users_collections.find_one({"id": entry["user_2"]},{'_id': False})
+            if user:
+                res.append(user)
+
+        messages_2=list(User_messages_collections.find({"user_2": user_id},{"_id":False}))
+        for entry in messages_2:
+            print(entry)
+            user=Users_collections.find_one({"id": entry["user_1"]},{'_id': False})
+            if user:
+                res.append(user)
+
+        print(messages_1,messages_2)
+        resp = Response(json.dumps(res), status=200, mimetype='application/json')
+        return resp
+
+
 @main.route('/message', methods = ['POST', 'GET'])
 @cross_origin()
 def message():
@@ -331,8 +367,19 @@ def message():
     ## get message room id
     if request.method == "GET":
         args=request.args
-        user_id=args['user_id']
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
+        else:
+            auth_token = ''
+        if auth_token != '':
+            user = jwt.decode(auth_token, SECRET_KEY)["user"]
+        user_id=user['id']
+
         connection_id=args['connection_id']
+        if connection_id=="":
+            connection_data=Users_collections.find_one({"scholars_link":args["scholars_link"]},{"_id":False})
+            connection_id=connection_data['id']
         message_pair=User_messages_collections.find_one({"user_1": user_id,"user_2":connection_id })
         if not message_pair:
             message_pair=User_messages_collections.find_one({"user_2": user_id,"user_1":connection_id })
@@ -340,12 +387,12 @@ def message():
             message_room_id=str(uuid.uuid4())
             User_messages_collections.insert_one({"user_2": user_id,"user_1":connection_id, "message_room_id":message_room_id})
             User_messages_rooms_collections.insert_one({"message_room_id":message_room_id,"messages":[]})
-            resp = Response(json.dumps({"message_room_id":message_room_id,"messages":[]}), status=200, mimetype='application/json')
+            resp = Response(json.dumps({"message_room_id":message_room_id,"messages":[],"connection_id":connection_id}), status=200, mimetype='application/json')
 
         else:
             message_room_id=message_pair['message_room_id']
             message_pair=User_messages_rooms_collections.find_one({"message_room_id":message_room_id},{"_id":False})
-            print(message_pair)
+            message_pair["connection_id"]=connection_id
             resp=Response(json.dumps(message_pair), status=200, mimetype='application/json')
 
         return resp

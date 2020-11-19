@@ -88,8 +88,31 @@ export default function Profile(props) {
         console.log(err);
       });
   };
-  const sendMessage = () => {
-    console.log("message sent");
+  const sendMessage = (scholars_link) => {
+    axios
+      .get(
+        "http://127.0.0.1:5000/message?connection_id=" +
+          connectid +
+          "&scholars_link=" +
+          scholars_link,
+        {
+          headers: {
+            "content-type": "application/json",
+            Authorization: "Bearer " + jwtToken,
+          },
+        }
+      )
+      .then((response) => {
+        let message_room_id = response.data.message_room_id;
+        console.log(message_room_id);
+        props.navigation.navigate("MessageRoom", {
+          message_room_id: message_room_id,
+          connection_id: response.data.connection_id,
+        });
+      })
+      .catch((err) => {
+        console.log("Error fetching data");
+      });
   };
   let _goToURL = (url) => {
     Linking.canOpenURL(url).then((supported) => {
@@ -133,7 +156,7 @@ export default function Profile(props) {
         </TouchableOpacity>
       )}
       {messageButton && (
-        <TouchableOpacity onPress={() => sendMessage()}>
+        <TouchableOpacity onPress={() => sendMessage(item.scholars_link)}>
           <Text>Send Message</Text>
         </TouchableOpacity>
       )}
