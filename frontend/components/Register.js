@@ -46,7 +46,7 @@ export default function Register(props) {
       console.log(payload);
 
       axios
-        .post("http://localhost:5000/register", payload, {
+        .post("http://127.0.0.1:5000/register", payload, {
           headers: {
             "content-type": "application/json",
           },

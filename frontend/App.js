@@ -2,6 +2,7 @@ import "react-native-gesture-handler";
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Provider } from "react-redux";
 import { store, persistor } from "./store.js";
 import { PersistGate } from "redux-persist/integration/react";
@@ -11,6 +12,7 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 
 const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
 export default function App() {
   return (
