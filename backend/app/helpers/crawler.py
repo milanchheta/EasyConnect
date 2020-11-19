@@ -46,10 +46,6 @@ if __name__ == "__main__":
         i=0
         print('---------------{}--------------------'.format(department))
         for entry in data[department]:
-            i+=1
-            if i==3:
-                break
-            j=0
             print('---------------{}'.format(entry))
             author = getAurthorObj(entry["name"])
             if author==None:
@@ -58,23 +54,27 @@ if __name__ == "__main__":
             abs_val = getAllAbstract(pub_list,author)
             researcher = {}
             papers=[]
-
-            researcher['researcher'] = entry["name"]
-            researcher['scholars_link'] = "https://scholar.google.com/citations?user="+author.id
-            researcher['iu_link'] = entry['url']
-            researcher['id']=author.id
-            researcher['url_picture']=author.url_picture
-            researcher['email']=author.email
-            researcher['citedby']=author.citedby
-            researcher['affiliation']=author.affiliation
+            try: 
+                researcher['researcher'] = entry["name"]
+                researcher['scholars_link'] = "https://scholar.google.com/citations?user="+author.id
+                researcher['iu_link'] = entry['url']
+                researcher['id']=author.id
+                researcher['url_picture']=author.url_picture
+                researcher['email']=author.email
+                researcher['citedby']=author.citedby
+                researcher['affiliation']=author.affiliation
+            except: 
+                        continue
             for el in abs_val:
-                j+=1
-                if j==3:
-                    break
-                keywords = populate_keyword(el["abstract"])
-                el['keywords']=keywords
-                papers.append(el)
+                if "abstract" in el:
+                    try: 
+                        keywords = populate_keyword(el["abstract"])
+                    except: 
+                        continue
+                    el['keywords']=keywords
+                    papers.append(el)
             researcher['papers']=papers
+            collection.insert_one(researcher)
             payload.append(researcher)
     with open('payload.txt', 'w+') as f:
         f.write(str(payload))
