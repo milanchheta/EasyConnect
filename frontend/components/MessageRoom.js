@@ -32,9 +32,9 @@ const styles = StyleSheet.create({
 export default function MessageRoom(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
   const [chat_messages, setchat_messages] = useState([]);
-  let connection_id = props.route.params.connection_id;
+  let connection_id = props.route.params.connection_data.id;
   let message_room_id = props.route.params.message_room_id;
-
+  console.log(props);
   useEffect(() => {
     axios
       .get("http://127.0.0.1:5000/message?connection_id=" + connection_id, {

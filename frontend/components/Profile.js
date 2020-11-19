@@ -107,7 +107,7 @@ export default function Profile(props) {
         console.log(message_room_id);
         props.navigation.navigate("MessageRoom", {
           message_room_id: message_room_id,
-          connection_id: response.data.connection_id,
+          connection_data: response.data,
         });
       })
       .catch((err) => {
