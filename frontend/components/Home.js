@@ -60,7 +60,7 @@ export default function Home(props) {
 
   const onProfileClick = (item) => {
     console.log("go to profile");
-    props.navigation.push("Profile");
+    props.navigation.push("Profile", { item });
   };
 
   const logOut = () => {
