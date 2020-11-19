@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 const styles = StyleSheet.create({
   imageStyle: {
@@ -29,7 +31,66 @@ const styles = StyleSheet.create({
 });
 export default function Profile(props) {
   let item = props.route.params.item;
+  const [connectButton, setconnectButton] = useState(false);
+  const [connectid, setconnectid] = useState("");
+  const [messageButton, setmessageButton] = useState(false);
+  const [requested, setRequested] = useState(false);
+  const [received, setReceived] = useState(false);
 
+  const jwtToken = useSelector((state) => state.login.jwtToken);
+
+  useEffect(() => {
+    if ("scholars_link" in item) {
+      axios
+        .get(
+          "http://127.0.0.1:5000/profile?scholars_link=" +
+            item["scholars_link"],
+          {
+            headers: {
+              "content-type": "application/json",
+              Authorization: "Bearer " + jwtToken,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          if (response.data == "CONNECTED") {
+            setmessageButton(true);
+          } else if (response.data == "REQUESTED") {
+            setRequested(true);
+          } else if (response.data == "RECEIVED") {
+            setReceived(true);
+          } else {
+            setconnectButton(true);
+            setconnectid(response.data.id);
+          }
+        })
+        .catch((err) => {
+          console.log("Error fetching data");
+        });
+    } else {
+      props.navigation.push("Login");
+    }
+  }, []);
+
+  const request = () => {
+    let payload = { requesting_user_jwt: jwtToken, id: connectid };
+    axios
+      .post("http://127.0.0.1:5000/requests", payload, {
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const sendMessage = () => {
+    console.log("message sent");
+  };
   let _goToURL = (url) => {
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
@@ -66,6 +127,26 @@ export default function Profile(props) {
       >
         <Text>List of Papers</Text>
       </TouchableOpacity>
+      {connectButton && (
+        <TouchableOpacity onPress={() => request()}>
+          <Text>Connect</Text>
+        </TouchableOpacity>
+      )}
+      {messageButton && (
+        <TouchableOpacity onPress={() => sendMessage()}>
+          <Text>Send Message</Text>
+        </TouchableOpacity>
+      )}
+      {requested && (
+        <TouchableOpacity disabled={true}>
+          <Text>Connection request sent</Text>
+        </TouchableOpacity>
+      )}
+      {received && (
+        <TouchableOpacity disabled={true}>
+          <Text>Received connection request</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

@@ -12,6 +12,7 @@ import Home from "./components/Home";
 import Profile from "./components/Profile";
 import PaperList from "./components/PaperList";
 import PaperDetails from "./components/PaperDetails";
+import Requests from "./components/Requests";
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,7 @@ export default function App() {
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="PaperList" component={PaperList} />
             <Stack.Screen name="PaperDetails" component={PaperDetails} />
+            <Stack.Screen name="Requests" component={Requests} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

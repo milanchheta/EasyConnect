@@ -11,7 +11,7 @@ from flask_cors import CORS, cross_origin
 
 dbObj = databaseSetup()
 main = Blueprint('main', __name__)
-# cors = CORS(main)
+cors = CORS(main)
 # main.config['CORS_HEADERS'] = 'Content-Type'
 
 
@@ -196,15 +196,19 @@ def update_recomendations(user, interests):
     print(scholar_list)
     scholar_cosine_rel = []
     for scholar in scholar_list:
-        cosine_sum = 0
+        if scholar["scholars_link"]!=user["scholars_link"]:
+            cosine_sum = 0
+            scholar_interests=[]
+            if "interests" in scholar:
+                scholar_interests=scholar["interests"]
+            for paper in scholar["papers"]:
+                keywords=scholar_interests+paper["keywords"]
+                cosine_sum += compute_similarity(interests, keywords)
             
-        for paper in scholar["papers"]:
-            cosine_sum += compute_similarity(interests, paper["keywords"])
-        
-        scholar_cosine_rel.append((scholar, cosine_sum))
+            scholar_cosine_rel.append((scholar, cosine_sum))
 
     # Find the top 10 scholars with cosine sum and update the recommendation.
-    new_scholar = sorted(scholar_cosine_rel, key=lambda item: item[1])
+    new_scholar = sorted(scholar_cosine_rel, key=lambda item: item[1],reverse=True)
 
     # print(new_scholar[:10])
     resp = [item[0] for item in new_scholar[:10]]
@@ -232,7 +236,37 @@ def get_user_profile():
 
     if request.method == 'GET':
         args=request.args
-        resp = Response("profile endpoint", status=200, mimetype='application/json')
+        scholars_link=args['scholars_link']
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
+        else:
+            auth_token = ''
+        if auth_token != '':
+            curr_user = jwt.decode(auth_token, SECRET_KEY)["user"]
+     
+        user=Users_collections.find_one({"scholars_link":scholars_link},{"_id":False})
+
+        if user:
+            user_request=User_requests_collections.find_one({"user_id": user['id']})
+            if user_request:
+                for item in user_request['requests']:
+                    if curr_user['id']==item['id']:
+                        return Response("REQUESTED", status=200, mimetype='application/json')
+            user_request=User_requests_collections.find_one({"user_id": curr_user['id']})
+            if user_request:
+                for item in user_request['requests']:
+                    if user['id']==item['id']:
+                        return Response("RECEIVED", status=200, mimetype='application/json')
+
+            user_connection=Connected_users_collections.find_one({"id": curr_user['id']})
+            if user_connection:
+                return Response("CONNECTED", status=200, mimetype='application/json')
+            return Response(json.dumps(user), status=200, mimetype='application/json')
+
+        else: 
+            resp = Response("user does not exists", status=404, mimetype='application/json')
+
         return resp
 
     # Update user profile
@@ -324,7 +358,7 @@ def connect_user():
         data = request.get_json()
         user_1_data = data['accpeted_user']
         user_2_data=jwt.decode(data['jwt_token'], SECRET_KEY)["user"]
-
+        print(user_1_data)
         user_1_id=user_1_data["id"]
         user_2_id=user_2_data["id"]
         
@@ -390,7 +424,7 @@ def connection_requests():
             resp = Response("Request Sent Successfully", status=200, mimetype='application/json')
             return resp
         user['requests'].append(requesting_user_data)
-        User_requests_collections.update_one({"user_id": requested_to}, {"$set":{"requests":user['connected_to']}})
+        User_requests_collections.update_one({"user_id": requested_to}, {"$set":{"requests":user['requests']}})
         resp = Response("Request Sent Successfully", status=200, mimetype='application/json')
         return resp
 

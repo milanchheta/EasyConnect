@@ -89,6 +89,9 @@ export default function Home(props) {
       <TouchableOpacity onPress={() => logOut()}>
         <Text>Logout</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => props.navigation.push("Requests")}>
+        <Text>Requests</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
