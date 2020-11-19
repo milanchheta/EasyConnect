@@ -24,7 +24,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   title: {
-    fontSize: 25,
+    fontSize: 20,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: "#aaa",
   },
 });
 export default function Home(props) {
@@ -56,6 +60,7 @@ export default function Home(props) {
 
   const onProfileClick = (item) => {
     console.log("go to profile");
+    props.navigation.push("Profile");
   };
 
   const logOut = () => {
@@ -66,6 +71,7 @@ export default function Home(props) {
   const Item = ({ item, onPress, style }) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
       <Text style={styles.title}>{item.researcher}</Text>
+      <Text style={styles.subtitle}>{item.affiliation}</Text>
     </TouchableOpacity>
   );
 
@@ -73,15 +79,25 @@ export default function Home(props) {
     return <Item item={item} onPress={() => onProfileClick(item)} />;
   };
 
+  const ItemSeparator = () => (
+    <View
+      style={{
+        height: 2,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        marginLeft: 10,
+        marginRight: 10,
+      }}
+    ></View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text>
-        <FlatList
-          data={recommendations}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.scholars_link}
-        />
-      </Text>
+      <FlatList
+        data={recommendations}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={ItemSeparator}
+      />
       <TouchableOpacity onPress={() => logOut()}>
         <Text>Logout</Text>
       </TouchableOpacity>
