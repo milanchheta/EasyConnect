@@ -203,6 +203,8 @@ def update_recomendations(user, interests):
                 scholar_interests=scholar["interests"]
             for paper in scholar["papers"]:
                 keywords=scholar_interests+paper["keywords"]
+                interests = list(map(lambda x: x.lower(), interests))
+                keywords = list(map(lambda item: item.lower(), keywords))
                 cosine_sum += compute_similarity(interests, keywords)
             
             scholar_cosine_rel.append((scholar, cosine_sum))
