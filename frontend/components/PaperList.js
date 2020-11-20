@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   item: {
-    padding: 5,
+    padding: 20,
     flex: 1,
     flexDirection: "row",
   },
@@ -87,7 +87,7 @@ export default function PaperList(props) {
 
       <FlatList
         data={item.papers}
-        keyExtractor={(item) => item.title}
+        keyExtractor={(item) => item.eprint}
         ItemSeparatorComponent={renderSeparator}
         renderItem={renderItem}
       />
