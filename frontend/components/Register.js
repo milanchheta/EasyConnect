@@ -119,11 +119,7 @@ export default function Register(props) {
 
     let scholar_link_error = null;
     let scholar_linkArr = scholar_link.split("=");
-    console.log(
-      scholar_linkArr,
-      scholar_linkArr[0] !== "https://scholar.google.com/citations?user",
-      scholar_linkArr[1].length !== 12
-    );
+
     if (
       scholar_link.length != 0 &&
       (scholar_linkArr[0] !== "https://scholar.google.com/citations?user" ||

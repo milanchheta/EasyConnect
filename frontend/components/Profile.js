@@ -128,8 +128,10 @@ export default function Profile(props) {
     <View>
       <Image source={{ uri: item.url_picture }} style={styles.imageStyle} />
       <Text>{item.researcher}</Text>
-      <Text>Affiliation: </Text> <Text>{item.affiliation}</Text>
-      <Text>Email: </Text> <Text>{item.email}</Text>
+      <Text>Affiliation: </Text>
+      <Text>{item.affiliation}</Text>
+      <Text>Email: </Text>
+      <Text>{item.email}</Text>
       <Text>Cited By:</Text>
       <Text>{item.citedby}</Text>
       <Text>Indiana University URL: </Text>
