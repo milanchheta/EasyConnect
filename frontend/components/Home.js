@@ -17,14 +17,18 @@ import { logout } from "../Actions/LoginAction.js";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    paddingTop: 10,
     justifyContent: "center",
+    backgroundColor: "#F0FFF0",
+
     alignItems: "center",
   },
   item: {
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    padding: 5,
+    marginVertical: 5,
+    marginHorizontal: 5,
+    marginRight: 100,
+
     flex: 1,
     flexDirection: "row",
   },
@@ -40,7 +44,7 @@ const styles = StyleSheet.create({
     color: "#aaa",
   },
   imageStyle: {
-    width: 50,  
+    width: 50,
     height: 50,
     borderRadius: 50,
     marginRight: 5,
@@ -121,7 +125,7 @@ export default function Home(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Text style={styles.pageTitle}>Recommendations</Text> */}
+      <Text style={styles.pageTitle}>Recommendations</Text>
       <FlatList
         data={recommendations}
         renderItem={renderItem}

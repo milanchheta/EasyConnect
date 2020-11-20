@@ -4,6 +4,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Text,
+  ScrollView,
   FlatList,
   Image,
   TouchableOpacity,
@@ -16,17 +17,60 @@ const styles = StyleSheet.create({
   imageStyle: {
     width: 200,
     height: 200,
+    alignSelf: "center",
+    borderRadius: 100,
   },
   container: {
     flex: 1,
-  },
-  item: {
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    backgroundColor: "#F0FFF0",
   },
   title: {
+    fontSize: 30,
+    fontWeight: "700",
+    alignSelf: "center",
+    marginVertical: 10,
+    color: "#90EE90",
+  },
+  Heading: {
     fontSize: 20,
+    fontWeight: "700",
+    color: "#90EE90",
+  },
+  item: {
+    alignSelf: "center",
+    fontSize: 15,
+  },
+  innercontainer: {
+    flex: 1,
+    // backgroundColor: "#F0FFF0",
+    marginHorizontal: 20,
+  },
+  flexCol: {
+    flexDirection: "row",
+    marginTop: 10,
+  },
+
+  connectbuttonText: {
+    color: "white",
+    fontWeight: "700",
+    fontSize: 16,
+    alignSelf: "center",
+  },
+  connectbutton: {
+    alignSelf: "center",
+    padding: 10,
+    borderRadius: 20,
+    width: 200,
+    backgroundColor: "#90EE90",
+    marginVertical: 20,
+  },
+  urlButton: {
+    alignSelf: "center",
+    padding: 10,
+    borderRadius: 20,
+    width: 300,
+    backgroundColor: "#90EE90",
+    marginVertical: 10,
   },
 });
 export default function Profile(props) {
@@ -38,7 +82,7 @@ export default function Profile(props) {
   const [received, setReceived] = useState(false);
 
   const jwtToken = useSelector((state) => state.login.jwtToken);
-
+  console.log(item);
   useEffect(() => {
     if ("scholars_link" in item) {
       axios
@@ -52,7 +96,6 @@ export default function Profile(props) {
           }
         )
         .then((response) => {
-          console.log(response);
           if (response.data == "CONNECTED") {
             setmessageButton(true);
           } else if (response.data == "REQUESTED") {
@@ -124,53 +167,86 @@ export default function Profile(props) {
   };
 
   return (
-    <View>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>{item.researcher}</Text>
+
       <Image source={{ uri: item.url_picture }} style={styles.imageStyle} />
-      <Text>{item.researcher}</Text>
-      <Text>Affiliation: </Text>
-      <Text>{item.affiliation}</Text>
-      <Text>Email: </Text>
-      <Text>{item.email}</Text>
-      <Text>Cited By:</Text>
-      <Text>{item.citedby}</Text>
-      <Text>Indiana University URL: </Text>
-      <Text style={{ color: "blue" }} onPress={() => _goToURL(item.iu_link)}>
-        {item.iu_link}
-      </Text>
-      <Text>Google Scolars URL: </Text>
-      <Text
-        style={{ color: "blue" }}
-        onPress={() => _goToURL(item.scholars_link)}
-      >
-        {item.scholars_link}
-      </Text>
-      <TouchableOpacity
-        onPress={() => {
-          props.navigation.navigate("PaperList", { item });
-        }}
-      >
-        <Text>List of Papers</Text>
-      </TouchableOpacity>
-      {connectButton && (
-        <TouchableOpacity onPress={() => request()}>
-          <Text>Connect</Text>
+
+      {(requested || received || messageButton || connectButton) && (
+        <TouchableOpacity
+          style={styles.connectbutton}
+          onPress={
+            connectButton
+              ? () => request()
+              : messageButton
+              ? sendMessage(item.scholars_link)
+              : null
+          }
+          disabled={requested || received ? true : false}
+        >
+          <Text style={styles.connectbuttonText}>
+            {requested && `Connection request sent`}
+            {received && `Received connection request`}
+            {messageButton && `Send Message`}
+            {connectButton && `Connect`}
+          </Text>
         </TouchableOpacity>
       )}
-      {messageButton && (
-        <TouchableOpacity onPress={() => sendMessage(item.scholars_link)}>
-          <Text>Send Message</Text>
-        </TouchableOpacity>
-      )}
-      {requested && (
-        <TouchableOpacity disabled={true}>
-          <Text>Connection request sent</Text>
-        </TouchableOpacity>
-      )}
-      {received && (
+
+      {/* {received && (
         <TouchableOpacity disabled={true}>
           <Text>Received connection request</Text>
         </TouchableOpacity>
-      )}
-    </View>
+      )} */}
+
+      <ScrollView style={styles.innercontainer}>
+        <Text style={styles.Heading}>Affiliation: </Text>
+        <Text style={styles.item}>{item.affiliation}</Text>
+        <Text style={styles.Heading}>Interests: </Text>
+        <Text style={styles.item}>{item.interests.join(", ")}</Text>
+        <View style={styles.flexCol}>
+          <Text style={styles.Heading}>Email: </Text>
+          <Text style={styles.item}>{item.email}</Text>
+        </View>
+        <View style={styles.flexCol}>
+          <Text style={styles.Heading}>Cited By: </Text>
+          <Text style={styles.item}>{item.citedby}</Text>
+        </View>
+        {/* <View style={styles.urlCol}> */}
+        {/* <Text
+            style={{ color: "blue" }}
+            onPress={() => _goToURL(item.iu_link)}
+          >
+            {item.iu_link}
+          </Text>
+          <Text
+            style={{ color: "blue" }}
+            onPress={() => _goToURL(item.scholars_link)}
+          >
+            {item.scholars_link}
+          </Text> */}
+        <TouchableOpacity
+          style={styles.urlButton}
+          onPress={() => _goToURL(item.scholars_link)}
+        >
+          <Text style={styles.connectbuttonText}>Scholars Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.urlButton}
+          onPress={() => _goToURL(item.iu_link)}
+        >
+          <Text style={styles.connectbuttonText}>IU Profile</Text>
+        </TouchableOpacity>
+        {/* </View> */}
+        <TouchableOpacity
+          style={styles.urlButton}
+          onPress={() => {
+            props.navigation.navigate("PaperList", { item });
+          }}
+        >
+          <Text style={styles.connectbuttonText}>List of Papers</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </ScrollView>
   );
 }
