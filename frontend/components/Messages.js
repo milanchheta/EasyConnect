@@ -34,7 +34,7 @@ export default function Messages(props) {
   const [messages, setmessages] = useState([]);
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/message_rooms", {
+      .get("http://10.0.2.2:5000/message_rooms", {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,
@@ -51,7 +51,7 @@ export default function Messages(props) {
 
   const getConnectionList = () => {
     axios
-      .get("http://127.0.0.1:5000/connect", {
+      .get("http://10.0.2.2:5000/connect", {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,
@@ -68,7 +68,7 @@ export default function Messages(props) {
   const onMessageRoomClick = (item) => {
     console.log("go to messages");
     axios
-      .get("http://127.0.0.1:5000/message?connection_id=" + item.id, {
+      .get("http://10.0.2.2:5000/message?connection_id=" + item.id, {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,

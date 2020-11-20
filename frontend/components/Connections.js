@@ -36,7 +36,7 @@ export default function Connections(props) {
   const onMessageRoomClick = (item) => {
     console.log("go to messages");
     axios
-      .get("http://127.0.0.1:5000/message?connection_id=" + item.id, {
+      .get("http://10.0.2.2:5000/message?connection_id=" + item.id, {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,

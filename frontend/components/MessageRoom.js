@@ -37,7 +37,7 @@ export default function MessageRoom(props) {
   console.log(props);
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/message?connection_id=" + connection_id, {
+      .get("http://10.0.2.2:5000/message?connection_id=" + connection_id, {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,
