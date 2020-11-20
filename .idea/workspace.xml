@@ -3,7 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="48a6bc2b-5531-49cb-b51a-ab06def9d9da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/Connections.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Connections.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/MessageRoom.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/MessageRoom.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/Messages.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Messages.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Profile.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/components/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Register.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/Requests.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Requests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/debug.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,10 +47,11 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="268" y="152" width="1290" height="590" key="AVDManager" timestamp="1605760496332">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state x="214" y="122" width="1290" height="590" key="AVDManager" timestamp="1605845005555">
+      <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="214" y="121" width="1032" height="468" key="AVDManager/0.0.1536.834/1920.0.1080.1890@0.0.1536.834" timestamp="1605667645232" />
+    <state x="214" y="122" width="1290" height="590" key="AVDManager/0.0.1536.834@0.0.1536.834" timestamp="1605845005555" />
     <state x="268" y="152" width="1290" height="590" key="AVDManager/0.0.1920.1050@0.0.1920.1050" timestamp="1605760496332" />
   </component>
 </project>

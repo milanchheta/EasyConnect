@@ -274,8 +274,6 @@ def get_user_profile():
     # Update user profile
     if request.method == 'PUT':
         data = request.get_json()
-        email = data['email']
-        password = data['password'] 
         full_name = data['full_name']
         scholars_link = data['scholars_link']
         interests = data['interests']
@@ -294,8 +292,6 @@ def get_user_profile():
             #Update user collection
             user_update = user.copy()
             if len(interests) > 0: user_update["interests"] = interests
-            if email: user_update["email"] = email
-            if password: user_update["password"] = generate_password_hash(password)
             if full_name: user_update["full_name"] = full_name
             if scholars_link: user_update["scholars_link"] = scholars_link
 
@@ -304,7 +300,15 @@ def get_user_profile():
 
             update_recomendations(user, interests)
 
-        return Response("Update interests", status=200, mimetype='application/json')
+            token = jwt.encode({ 
+                'user':user_update
+            }, SECRET_KEY) 
+
+            resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 200)
+
+            return resp
+        else:
+            return Response("Failed Update", status=403, mimetype='application/json')
 
 
 # @main.route('/isconnected', methods = ['GET'])

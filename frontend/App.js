@@ -22,10 +22,10 @@ import Requests from "./components/Requests";
 import Messages from "./components/Messages";
 import Connections from "./components/Connections";
 import MessageRoom from "./components/MessageRoom";
-import UserProfile from "./components/UserProfile.js";
+import UserProfile from "./components/UserProfile";
+import EditProfile from "./components/EditProfile";
 import { Button } from "react-native";
 
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { logout } from "./Actions/LoginAction.js";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -239,6 +239,7 @@ export default function App() {
             <Stack.Screen name="PaperDetails" component={PaperDetails} />
             <Stack.Screen name="Connections" component={Connections} />
             <Stack.Screen name="MessageRoom" component={MessageRoom} />
+            <Stack.Screen name="EditProfile" component={EditProfile} />
             {/* <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="PaperList" component={PaperList} />
             <Stack.Screen name="PaperDetails" component={PaperDetails} />

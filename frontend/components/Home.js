@@ -15,42 +15,42 @@ import { updateRecommendations } from "../Actions/RecommendationsAction.js";
 import { logout } from "../Actions/LoginAction.js";
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   marginTop: StatusBar.currentHeight || 0,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  // },
-  // item: {
-  //   padding: 20,
-  //   marginVertical: 8,
-  //   marginHorizontal: 16,
-  //   flex: 1,
-  //   flexDirection: "row",
-  // },
-  // title: {
-  //   fontSize: 20,
-  // },
-  // pageTitle: {
-  //   fontSize: 30,
-  //   color: "#008000",
-  // },
-  // subtitle: {
-  //   fontSize: 15,
-  //   color: "#aaa",
-  // },
-  // imageStyle: {
-  //   width: 50,
-  //   height: 50,
-  //   borderRadius: 50,
-  //   marginRight: 5,
-  // },
-  // titleview: {
-  //   justifyContent: "center",
-  //   flexDirection: "column",
-  //   flexWrap: "wrap",
-  //   flex: 1,
-  // },
+  container: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  item: {
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    flex: 1,
+    flexDirection: "row",
+  },
+  title: {
+    fontSize: 20,
+  },
+  pageTitle: {
+    fontSize: 30,
+    color: "#008000",
+  },
+  subtitle: {
+    fontSize: 15,
+    color: "#aaa",
+  },
+  imageStyle: {
+    width: 50,  
+    height: 50,
+    borderRadius: 50,
+    marginRight: 5,
+  },
+  titleview: {
+    justifyContent: "center",
+    flexDirection: "column",
+    flexWrap: "wrap",
+    flex: 1,
+  },
 });
 export default function Home(props) {
   const dispatch = useDispatch();
@@ -128,18 +128,6 @@ export default function Home(props) {
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={renderSeparator}
       />
-      <TouchableOpacity onPress={() => logOut()}>
-        <Text>Logout</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => props.navigation.push("Requests")}>
-        <Text>Requests</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => props.navigation.push("Messages")}>
-        <Text>Messages</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => props.navigation.push("UserProfile")}>
-        <Text>My profile</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
