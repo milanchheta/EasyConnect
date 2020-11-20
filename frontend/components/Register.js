@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     color: "#008000",
     letterSpacing: 5,
+    marginTop: 20,
   },
   brand: {
     fontSize: 40,
@@ -65,6 +66,12 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     marginTop: 10,
     marginBottom: 20,
+  },
+  error: {
+    marginBottom: 10,
+    marginTop: 2,
+    color: "red",
+    fontSize: 13,
   },
 });
 
@@ -84,6 +91,7 @@ export default function Register(props) {
   const [confirmPasswordError, setconfirmPasswordError] = useState(false);
   const [fullnameError, setfullnameError] = useState(false);
   const [scholar_linkError, setscholar_linkError] = useState(false);
+  const [register_error, setregister_error] = useState(false);
 
   const validate = () => {
     var re = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/;
@@ -94,7 +102,7 @@ export default function Register(props) {
 
     re = /^([a-zA-Z0-9]{8,})$/;
     let passwordcheck = re.test(password);
-    let password_error = !emailcheck;
+    let password_error = !passwordcheck;
     setpasswordError(password_error);
 
     let confirmpassword_error = !(password == confirmPassword);
@@ -160,9 +168,15 @@ export default function Register(props) {
         })
         .then((response) => {
           console.log("Registered Succesfully.", response);
-          // props.navigation.push("Login");
+          if (response.status == 202) {
+            setregister_error(true);
+          } else {
+            setregister_error(false);
+            props.navigation.push("Login");
+          }
         })
         .catch((error) => {
+          setregister_error(true);
           console.log("Invalid Register Attempt ", error);
         });
     }
@@ -171,6 +185,9 @@ export default function Register(props) {
     <View style={styles.container}>
       <Text style={styles.greeting}>welcome to</Text>
       <Text style={styles.brand}>EasyConnect</Text>
+      <Text style={styles.error}>
+        {register_error && `User already exists. Please login`}
+      </Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => dispatch(registerName(text.trim()))}

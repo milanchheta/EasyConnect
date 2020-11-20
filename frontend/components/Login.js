@@ -99,6 +99,7 @@ export default function Login(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
   const [emailError, setemailError] = useState(false);
   const [passwordError, setpasswordError] = useState(false);
+  const [login_error, setlogin_error] = useState(false);
 
   useEffect(() => {
     if (jwtToken != "") {
@@ -136,10 +137,11 @@ export default function Login(props) {
         .then((response) => {
           let jwt_token = response["data"]["token"];
           dispatch(storeJwtToken(jwt_token));
+          setlogin_error(false);
           props.navigation.push("Home");
         })
         .catch((err) => {
-          console.log();
+          setlogin_error(true);
           console.log(err);
           console.log("Invalid Credentials");
         });
@@ -149,6 +151,7 @@ export default function Login(props) {
     <View style={styles.container}>
       <Text style={styles.greeting}>welcome to</Text>
       <Text style={styles.brand}>EasyConnect</Text>
+      <Text style={styles.error}>{login_error && `Invalid credentials`}</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => dispatch(updateLoginEmail(text.trim()))}
