@@ -52,6 +52,8 @@ const styles = StyleSheet.create({
   titleview: {
     justifyContent: "center",
     flexDirection: "column",
+    flexWrap: "wrap",
+    flex: 1,
   },
 });
 export default function Home(props) {

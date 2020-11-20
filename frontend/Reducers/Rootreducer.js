@@ -3,11 +3,13 @@ import { combineReducers } from "redux";
 import loginReducer from "./LoginReducer";
 import registerReducer from "./RegisterReducer";
 import RecommendationsReducer from "./RecommendationsReducer";
+import profileReducer from "./ProfileReducer";
 
 const appReducer = combineReducers({
   login: loginReducer,
   register: registerReducer,
   recommendations: RecommendationsReducer,
+  profile: profileReducer,
 });
 
 const rootReducer = (state, action) => {
