@@ -17,8 +17,10 @@ import { logout } from "../Actions/LoginAction.js";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 10,
+    paddingTop: 10,
     justifyContent: "center",
+    backgroundColor: "#F0FFF0",
+
     alignItems: "center",
   },
   item: {
