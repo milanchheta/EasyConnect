@@ -109,13 +109,16 @@ export default function Login(props) {
   const validate = () => {
     var re = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/;
     let emailcheck = re.test(loginEmail);
-    setemailError(!emailcheck);
+    let email_error = !emailcheck;
+
+    setemailError(email_error);
 
     re = /^([a-zA-Z0-9]{8,})$/;
     let passwordcheck = re.test(loginPassword);
-    setpasswordError(!passwordcheck);
-    console.log(passwordError);
-    if (emailError || passwordError) {
+    let password_error = !passwordcheck;
+
+    setpasswordError(password_error);
+    if (email_error || password_error) {
       return false;
     }
     return true;
@@ -148,7 +151,7 @@ export default function Login(props) {
       <Text style={styles.brand}>EasyConnect</Text>
       <TextInput
         style={styles.input}
-        onChangeText={(text) => dispatch(updateLoginEmail(text))}
+        onChangeText={(text) => dispatch(updateLoginEmail(text.trim()))}
         value={loginEmail}
         placeholder="Email"
       />
@@ -157,7 +160,7 @@ export default function Login(props) {
       </Text>
       <TextInput
         style={styles.input}
-        onChangeText={(text) => dispatch(updateLoginPassword(text))}
+        onChangeText={(text) => dispatch(updateLoginPassword(text.trim()))}
         value={loginPassword}
         secureTextEntry={true}
         placeholder="Password"
