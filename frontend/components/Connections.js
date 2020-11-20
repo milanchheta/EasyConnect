@@ -47,7 +47,7 @@ export default function Connections(props) {
         console.log(message_room_id);
         props.navigation.navigate("MessageRoom", {
           message_room_id: message_room_id,
-          connection_id: item.id,
+          connection_data: item,
         });
       })
       .catch((err) => {

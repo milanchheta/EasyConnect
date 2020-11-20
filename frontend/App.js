@@ -27,11 +27,22 @@ export default function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Login">
+          <Stack.Navigator
+            initialRouteName="Login"
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: "#3CB371",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+            }}
+          >
             <Stack.Screen
               name="Login"
               component={Login}
-              options={{ headerLeft: null }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen

@@ -107,7 +107,7 @@ export default function Profile(props) {
         console.log(message_room_id);
         props.navigation.navigate("MessageRoom", {
           message_room_id: message_room_id,
-          connection_id: response.data.connection_id,
+          connection_data: response.data,
         });
       })
       .catch((err) => {
@@ -128,8 +128,10 @@ export default function Profile(props) {
     <View>
       <Image source={{ uri: item.url_picture }} style={styles.imageStyle} />
       <Text>{item.researcher}</Text>
-      <Text>Affiliation: </Text> <Text>{item.affiliation}</Text>
-      <Text>Email: </Text> <Text>{item.email}</Text>
+      <Text>Affiliation: </Text>
+      <Text>{item.affiliation}</Text>
+      <Text>Email: </Text>
+      <Text>{item.email}</Text>
       <Text>Cited By:</Text>
       <Text>{item.citedby}</Text>
       <Text>Indiana University URL: </Text>

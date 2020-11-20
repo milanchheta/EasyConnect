@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,18 +18,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
   item: {
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    flex: 1,
+    flexDirection: "row",
   },
   title: {
     fontSize: 20,
   },
+  pageTitle: {
+    fontSize: 30,
+    color: "#008000",
+  },
   subtitle: {
     fontSize: 15,
     color: "#aaa",
+  },
+  imageStyle: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    marginRight: 5,
+  },
+  titleview: {
+    justifyContent: "center",
+    flexDirection: "column",
+    flexWrap: "wrap",
+    flex: 1,
   },
 });
 export default function Home(props) {
@@ -59,7 +80,6 @@ export default function Home(props) {
   }, []);
 
   const onProfileClick = (item) => {
-    console.log("go to profile");
     props.navigation.push("Profile", { item });
   };
 
@@ -69,22 +89,43 @@ export default function Home(props) {
   };
 
   const Item = ({ item, onPress, style }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-      <Text style={styles.title}>{item.researcher}</Text>
-      <Text style={styles.subtitle}>{item.affiliation}</Text>
+    <TouchableOpacity onPress={onPress} style={[style]}>
+      <View style={styles.item}>
+        <Image source={{ uri: item.url_picture }} style={styles.imageStyle} />
+        <View style={styles.titleview}>
+          <Text style={styles.title}>{item.researcher}</Text>
+          <Text style={styles.subtitle}>
+            {item["interests"].length != 0 &&
+              `Interests: ${item["interests"].join(", ")}`}
+          </Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 
   const renderItem = ({ item }) => {
     return <Item item={item} onPress={() => onProfileClick(item)} />;
   };
+  const renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 0.5,
+          width: "100%",
+          backgroundColor: "#C8C8C8",
+        }}
+      />
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* <Text style={styles.pageTitle}>Recommendations</Text> */}
       <FlatList
         data={recommendations}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={renderSeparator}
       />
       <TouchableOpacity onPress={() => logOut()}>
         <Text>Logout</Text>
