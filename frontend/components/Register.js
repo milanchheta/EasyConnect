@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     borderStartWidth: 2,
     borderEndWidth: 2,
     borderTopWidth: 2,
-    boderLeftWidth: 2,
+    borderLeftWidth: 2,
     borderRightWidth: 2,
     borderBottomWidth: 2,
     borderRadius: 20,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   signupbuttonText: {
     color: "white",
-    fontWeight: 700,
+    fontWeight: "700",
     fontSize: 16,
   },
   signupbutton: {
@@ -55,14 +55,14 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 25,
-    fontWeight: 600,
+    fontWeight: "600",
     color: "#008000",
     letterSpacing: 5,
     marginTop: 20,
   },
   brand: {
     fontSize: 40,
-    fontWeight: 700,
+    fontWeight: "700",
     color: "#3CB371",
     letterSpacing: 3,
     marginTop: 10,
@@ -158,7 +158,7 @@ export default function Register(props) {
       console.log(payload);
 
       axios
-        .post("http://localhost:5000/register", payload, {
+        .post("http://10.0.2.2:5000/register", payload, {
           headers: {
             "content-type": "application/json",
           },

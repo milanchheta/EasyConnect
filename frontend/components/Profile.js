@@ -43,8 +43,7 @@ export default function Profile(props) {
     if ("scholars_link" in item) {
       axios
         .get(
-          "http://127.0.0.1:5000/profile?scholars_link=" +
-            item["scholars_link"],
+          "http://10.0.2.2:5000/profile?scholars_link=" + item["scholars_link"],
           {
             headers: {
               "content-type": "application/json",
@@ -76,7 +75,7 @@ export default function Profile(props) {
   const request = () => {
     let payload = { requesting_user_jwt: jwtToken, id: connectid };
     axios
-      .post("http://127.0.0.1:5000/requests", payload, {
+      .post("http://10.0.2.2:5000/requests", payload, {
         headers: {
           "content-type": "application/json",
         },
@@ -91,7 +90,7 @@ export default function Profile(props) {
   const sendMessage = (scholars_link) => {
     axios
       .get(
-        "http://127.0.0.1:5000/message?connection_id=" +
+        "http://10.0.2.2:5000/message?connection_id=" +
           connectid +
           "&scholars_link=" +
           scholars_link,

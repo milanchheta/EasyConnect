@@ -40,23 +40,23 @@ const styles = StyleSheet.create({
 
   loginbuttonText: {
     color: "white",
-    fontWeight: 700,
+    fontWeight: "700",
     fontSize: 16,
   },
   signupbuttonText: {
     color: "white",
-    fontWeight: 700,
+    fontWeight: "700",
     fontSize: 12,
   },
   greeting: {
     fontSize: 25,
-    fontWeight: 600,
+    fontWeight: "600",
     color: "#008000",
     letterSpacing: 5,
   },
   brand: {
     fontSize: 40,
-    fontWeight: 700,
+    fontWeight: "700",
     color: "#3CB371",
     letterSpacing: 3,
     marginTop: 10,
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     borderStartWidth: 2,
     borderEndWidth: 2,
     borderTopWidth: 2,
-    boderLeftWidth: 2,
+    borderLeftWidth: 2,
     borderRightWidth: 2,
     borderBottomWidth: 2,
     borderRadius: 20,
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   signupText: {
     color: "#aaa",
     fontSize: 15,
-    fontWeight: 800,
+    fontWeight: "800",
     marginBottom: 5,
     marginTop: 10,
   },
@@ -130,7 +130,7 @@ export default function Login(props) {
     if (validate()) {
       let payload = { email: loginEmail, password: loginPassword };
       axios
-        .post("http://127.0.0.1:5000/login", payload, {
+        .post("http://10.0.2.2:5000/login", payload, {
           headers: {
             "content-type": "application/json",
           },

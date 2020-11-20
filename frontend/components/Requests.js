@@ -35,7 +35,7 @@ export default function Requests(props) {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/requests", {
+      .get("http://10.0.2.2:5000/requests", {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,
@@ -53,7 +53,7 @@ export default function Requests(props) {
   const acceptRequest = (item) => {
     let payload = { jwt_token: jwtToken, accpeted_user: item };
     axios
-      .post("http://127.0.0.1:5000/connect", payload, {
+      .post("http://10.0.2.2:5000/connect", payload, {
         headers: {
           "content-type": "application/json",
         },
@@ -73,7 +73,7 @@ export default function Requests(props) {
       <Text style={styles.title}>{item.full_name}</Text>
       <Text style={styles.subtitle}>{item.email}</Text>
       <TouchableOpacity onPress={() => acceptRequest(item)}>
-        Accept Request
+        <Text>Accept Request</Text>
       </TouchableOpacity>
     </View>
   );
