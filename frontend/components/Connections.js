@@ -10,14 +10,16 @@ import {
 } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { ScrollView } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    // marginTop: StatusBar.currentHeight || 0,
   },
   item: {
     padding: 20,
+    paddingLeft: 10,
     marginVertical: 8,
     marginHorizontal: 16,
   },
@@ -29,6 +31,7 @@ const styles = StyleSheet.create({
     color: "#aaa",
   },
 });
+
 export default function Connections(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
 
@@ -66,12 +69,25 @@ export default function Connections(props) {
     return <Item item={item} onPress={() => onMessageRoomClick(item)} />;
   };
 
+  const renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 0.5,
+          width: "100%",
+          backgroundColor: "#C8C8C8",
+        }}
+      />
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={connections}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={renderSeparator}
       />
     </SafeAreaView>
   );

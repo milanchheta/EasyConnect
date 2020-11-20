@@ -68,6 +68,18 @@ export default function Requests(props) {
       });
   };
 
+  const renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 0.5,
+          width: "100%",
+          backgroundColor: "#C8C8C8",
+        }}
+      />
+    );
+  };
+
   const Item = ({ item, style }) => (
     <View style={[styles.item, style]}>
       <Text style={styles.title}>{item.full_name}</Text>
@@ -88,6 +100,7 @@ export default function Requests(props) {
         data={requests}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={renderSeparator}
       />
     </SafeAreaView>
   );

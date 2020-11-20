@@ -360,14 +360,21 @@ def message():
     ## send message
     if request.method == 'POST':
         args=request.args
-        user_id=args['user_id']
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
+        else:
+            auth_token = ''
+        if auth_token != '':
+            user = jwt.decode(auth_token, SECRET_KEY)["user"]
+        user_id=user['id']
         data=request.get_json()
         message_room_id=data["message_room_id"]
         message=data["message"]
         message_pair=User_messages_rooms_collections.find_one({"message_room_id":message_room_id},{"_id":False})
-        message_pair["messages"].append({"sender_id":user_id,"message":message, "timestamp":datetime.now()})
+        message_pair["messages"].append({"sender_id":user_id,"message":message, "timestamp": datetime.now().strftime("%m/%d/%Y, %H:%M:%S")})
         User_messages_rooms_collections.update_one({"message_room_id":message_room_id},{"$set":{"messages":message_pair["messages"]}})
-        resp = Response("message endpoint", status=200, mimetype='application/json')
+        resp = Response(json.dumps({"sender_id":user_id,"message":message, "timestamp": datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}), status=200, mimetype='application/json')
         return resp
 
     ## get message room id
@@ -386,9 +393,9 @@ def message():
         if connection_id=="":
             connection_data=Users_collections.find_one({"scholars_link":args["scholars_link"]},{"_id":False})
             connection_id=connection_data['id']
-        message_pair=User_messages_collections.find_one({"user_1": user_id,"user_2":connection_id })
+        message_pair=User_messages_collections.find_one({"user_1": user_id,"user_2":connection_id },{"_id":False})
         if not message_pair:
-            message_pair=User_messages_collections.find_one({"user_2": user_id,"user_1":connection_id })
+            message_pair=User_messages_collections.find_one({"user_2": user_id,"user_1":connection_id },{"_id":False})
         if not message_pair:
             message_room_id=str(uuid.uuid4())
             User_messages_collections.insert_one({"user_2": user_id,"user_1":connection_id, "message_room_id":message_room_id})
@@ -399,6 +406,8 @@ def message():
             message_room_id=message_pair['message_room_id']
             message_pair=User_messages_rooms_collections.find_one({"message_room_id":message_room_id},{"_id":False})
             message_pair["connection_id"]=connection_id
+            print(message_pair)
+            print(json.dumps(message_pair))
             resp=Response(json.dumps(message_pair), status=200, mimetype='application/json')
 
         return resp

@@ -13,6 +13,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { updateRecommendations } from "../Actions/RecommendationsAction.js";
 import { logout } from "../Actions/LoginAction.js";
+import { Icon } from 'react-native-elements'
 
 const styles = StyleSheet.create({
   container: {

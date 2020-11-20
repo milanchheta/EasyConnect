@@ -29,11 +29,14 @@ import { Button } from "react-native";
 import { logout } from "./Actions/LoginAction.js";
 import { useDispatch, useSelector } from "react-redux";
 
+import { Icon } from "react-native-elements";
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export default function App() {
   // const dispatch = useDispatch();
+
   function homeStack() {
     return (
       <Stack.Navigator
@@ -52,12 +55,17 @@ export default function App() {
           component={Home}
           options={({ navigation }) => ({
             headerLeft: () => (
-              <Button
+              
+              <Icon
+                name="menu"
+                type="material"
+                size={40}
+                style={{marginLeft: 10}}
                 onPress={() =>
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
-                title="Menu"
               />
+              // <Menu />
             ),
           })}
         />
@@ -83,11 +91,14 @@ export default function App() {
           component={Requests}
           options={({ navigation }) => ({
             headerLeft: () => (
-              <Button
+              <Icon
+                name="menu"
+                type="material"
+                size={40}
+                style={{marginLeft: 10}}
                 onPress={() =>
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
-                title="Menu"
               />
             ),
           })}
@@ -114,11 +125,14 @@ export default function App() {
           component={UserProfile}
           options={({ navigation }) => ({
             headerLeft: () => (
-              <Button
+              <Icon
+                name="menu"
+                type="material"
+                size={40}
+                style={{marginLeft: 10}}
                 onPress={() =>
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
-                title="Menu"
               />
             ),
           })}
@@ -126,6 +140,23 @@ export default function App() {
       </Stack.Navigator>
     );
   }
+
+  const getConnectionList = () => {
+    axios
+      .get("http://10.0.2.2:5000/connect", {
+        headers: {
+          "content-type": "application/json",
+          Authorization: "Bearer " + jwtToken,
+        },
+      })
+      .then((response) => {
+        let data = response.data;
+        navigation.navigate("Connections", { data });
+      })
+      .catch((err) => {
+        console.log("Error fetching data");
+      });
+  };
 
   function messageStack() {
     return (
@@ -145,13 +176,19 @@ export default function App() {
           component={Messages}
           options={({ navigation }) => ({
             headerLeft: () => (
-              <Button
+              <Icon
+                name="menu"
+                type="material"
+                size={40}
+                style={{marginLeft: 10}}
                 onPress={() =>
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
-                title="Menu"
               />
             ),
+            headerRight: () => {
+              <Button onPress={() => getConnectionList()} title="+" />;
+            },
           })}
         />
       </Stack.Navigator>
@@ -222,16 +259,6 @@ export default function App() {
             <Stack.Screen
               name="Home"
               component={() => HomeDrawer(useDispatch())}
-              // options={({ navigation }) => ({
-              //   headerLeft: () => (
-              //     <Button
-              //       onPress={() =>
-              //         navigation.dispatch(DrawerActions.toggleDrawer())
-              //       }
-              //       title="Menu"
-              //     />
-              //   ),
-              // })}
               options={{ headerShown: false }}
             />
             <Stack.Screen name="Profile" component={Profile} />

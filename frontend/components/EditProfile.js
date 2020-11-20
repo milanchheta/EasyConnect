@@ -22,7 +22,46 @@ import { storeJwtToken } from "../Actions/LoginAction";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    // justifyContent: "center",
+    backgroundColor: "#F0FFF0",
+    alignItems: "center",
+    paddingTop: 40,
+  },
+  input: {
+    borderStartWidth: 2,
+    borderEndWidth: 2,
+    borderTopWidth: 2,
+    borderLeftWidth: 2,
+    borderRightWidth: 2,
+    borderBottomWidth: 2,
+    borderRadius: 20,
+    padding: 10,
+    fontSize: 20,
+    // textAlign: "center",
+    backgroundColor: "#fff",
+    borderColor: "#aaa",
+    width: 350,
+    marginTop: 5,
+  },
+  editbuttonText: {
+    color: "white",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  editbutton: {
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 20,
+    width: 150,
+    backgroundColor: "#00BFFF",
+    marginVertical: 20,
+  },
+  label: {
+    marginTop: 20,
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#90EE90",
+    alignItems: "flex-start"
   },
 });
 
@@ -107,19 +146,21 @@ export default function EditProfile(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Edit Profile</Text>
+      <Text style={styles.label}>Full Name: </Text>
       <TextInput
         style={styles.input}
         placeholder="Full Name"
         value={fullname}
         onChange={(text) => dispatch(profileName(text))}
       />
+      <Text style={styles.label}>Google Scholar Link: </Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => dispatch(profileScholarLink(text.trim()))}
         value={scholar_link}
         placeholder="Google Scholar link, if applicable"
       />
+      <Text style={styles.label}>Interests: </Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => dispatch(profileInterests(text))}
@@ -127,12 +168,12 @@ export default function EditProfile(props) {
         placeholder="Add your research interests"
       />
       <TouchableOpacity
-        style={styles.signupbutton}
+        style={styles.editbutton}
         onPress={() => {
           onSubmit();
         }}
       >
-        <Text style={styles.signupbuttonText}>Update Profile</Text>
+        <Text style={styles.editbuttonText}>Update Profile</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

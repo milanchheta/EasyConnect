@@ -10,14 +10,17 @@ import {
 } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { ScrollView } from "react-native-gesture-handler";
+import { Icon } from "react-native-elements";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    // marginTop: StatusBar.currentHeight || 0,
   },
   item: {
     padding: 20,
+    paddingLeft: 10,
     marginVertical: 8,
     marginHorizontal: 16,
   },
@@ -27,6 +30,18 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 15,
     color: "#aaa",
+  },
+  addMessage: {
+    margin: 15,
+    marginLeft: "auto",
+    justifyContent: "center",
+    alignItems: "center",
+    alignContent: "center",
+    width: 40,
+    height: 40,
+  },
+  add: {
+    fontSize: 25,
   },
 });
 export default function Messages(props) {
@@ -65,6 +80,7 @@ export default function Messages(props) {
         console.log("Error fetching data");
       });
   };
+
   const onMessageRoomClick = (item) => {
     console.log("go to messages");
     axios
@@ -98,16 +114,37 @@ export default function Messages(props) {
     return <Item item={item} onPress={() => onMessageRoomClick(item)} />;
   };
 
+  const renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 0.5,
+          width: "100%",
+          backgroundColor: "#C8C8C8",
+        }}
+      />
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={messages}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={renderSeparator}
       />
-      <TouchableOpacity onPress={() => getConnectionList()}>
-        <Text>Send Message to a connection</Text>
-      </TouchableOpacity>
+      {/* <TouchableOpacity style={styles.addMessage}>
+        <Text style={styles.add}>+</Text>
+      </TouchableOpacity> */}
+      <View style={styles.addMessage}>
+        <Icon
+          name="person-add"
+          type="material"
+          size={40}
+          onPress={() => getConnectionList()}
+        />
+      </View>
     </SafeAreaView>
   );
 }
