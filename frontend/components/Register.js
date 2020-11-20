@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     backgroundColor: "#fff",
     borderColor: "#aaa",
+    width: 300,
   },
   signupbuttonText: {
     color: "white",
