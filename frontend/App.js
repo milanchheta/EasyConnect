@@ -35,8 +35,6 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export default function App() {
-  // const dispatch = useDispatch();
-
   function homeStack() {
     return (
       <Stack.Navigator
@@ -64,7 +62,6 @@ export default function App() {
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
               />
-              // <Menu />
             ),
           })}
         />
@@ -199,19 +196,6 @@ export default function App() {
     navigation.push("Login");
   };
 
-  const LogoutDrawerContent = ({ props, dispatch }) => {
-    console.log(props);
-    return (
-      <DrawerContentScrollView {...props}>
-        <DrawerItemList {...props} />
-        <DrawerItem
-          label="Logout"
-          onPress={(props) => logOut(props.navigation, dispatch)}
-        />
-      </DrawerContentScrollView>
-    );
-  };
-
   function HomeDrawer(dispatch) {
     return (
       <Drawer.Navigator
@@ -266,14 +250,6 @@ export default function App() {
             <Stack.Screen name="Connections" component={Connections} />
             <Stack.Screen name="MessageRoom" component={MessageRoom} />
             <Stack.Screen name="EditProfile" component={EditProfile} />
-            {/* <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="PaperList" component={PaperList} />
-            <Stack.Screen name="PaperDetails" component={PaperDetails} />
-            <Stack.Screen name="Requests" component={Requests} />
-            <Stack.Screen name="Messages" component={Messages} />
-            <Stack.Screen name="Connections" component={Connections} />
-            <Stack.Screen name="MessageRoom" component={MessageRoom} />
-            <Stack.Screen name="UserProfile" component={UserProfile} /> */}
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

@@ -30,6 +30,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#aaa",
   },
+  nullMessage: {
+    flex: 1,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nullText: { fontSize: 25 },
 });
 
 export default function Connections(props) {
@@ -84,12 +91,18 @@ export default function Connections(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={connections}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={renderSeparator}
-      />
+      {connections.length > 0 ? (
+        <FlatList
+          data={connections}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={renderSeparator}
+        />
+      ) : (
+        <View style={[styles.nullMessage]}>
+          <Text style={styles.nullText}>No connections</Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

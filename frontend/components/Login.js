@@ -106,7 +106,7 @@ export default function Login(props) {
   const [login_error, setlogin_error] = useState(false);
 
   useEffect(() => {
-    if (jwtToken != "") {
+    if (jwtToken != undefined && jwtToken != "") {
       props.navigation.push("Home");
     }
   });

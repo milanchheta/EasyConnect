@@ -85,8 +85,8 @@ export default function UserProfile(props) {
       } else {
         setFile(res);
         if (File != null) {
-          console.log("File");
-          console.log(File);
+          // console.log("File");
+          // console.log(File);
           // console.log(File.uri, File.size);
 
           const payload = new FormData();
@@ -96,8 +96,8 @@ export default function UserProfile(props) {
             name: File.name,
             type: "application/pdf",
           });
-          console.log("Payload");
-          console.log(payload);
+          // console.log("Payload");
+          // console.log(payload);
           await axios
             .post("http://10.0.2.2:5000/upload", payload, {
               headers: {

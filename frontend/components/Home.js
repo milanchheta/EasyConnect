@@ -58,7 +58,7 @@ export default function Home(props) {
   );
 
   useEffect(() => {
-    if (jwtToken != "") {
+    if (jwtToken != undefined && jwtToken != "") {
       axios
         .get("http://10.0.2.2:5000/recommendations", {
           headers: {

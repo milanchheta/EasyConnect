@@ -80,10 +80,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   balloon: {
-    maxWidth: moderateScale(250, 2),
-    paddingHorizontal: moderateScale(7, 2),
-    paddingTop: moderateScale(2, 2),
-    paddingBottom: moderateScale(3, 2),
+    // maxWidth: moderateScale(250, 2),
+    // paddingHorizontal: moderateScale(7, 2),
+    // paddingTop: moderateScale(2, 2),
+    // paddingBottom: moderateScale(3, 2),
+    paddingHorizontal: 5,
+    paddingVertical: 3,
     borderRadius: 12,
   },
   message: {

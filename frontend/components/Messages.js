@@ -43,6 +43,13 @@ const styles = StyleSheet.create({
   add: {
     fontSize: 25,
   },
+  nullMessage: {
+    flex: 1,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nullText: { fontSize: 25 },
 });
 export default function Messages(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
@@ -126,15 +133,18 @@ export default function Messages(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={renderSeparator}
-      />
-      {/* <TouchableOpacity style={styles.addMessage}>
-        <Text style={styles.add}>+</Text>
-      </TouchableOpacity> */}
+      {messages.length > 0 ? (
+        <FlatList
+          data={messages}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={renderSeparator}
+        />
+      ) : (
+        <View style={[styles.nullMessage]}>
+          <Text style={styles.nullText}>No ongoing conversations</Text>
+        </View>
+      )}
       <View style={styles.addMessage}>
         <Icon
           name="person-add"

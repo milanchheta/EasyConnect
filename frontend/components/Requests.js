@@ -44,6 +44,13 @@ const styles = StyleSheet.create({
     width: 100,
     backgroundColor: "#90EE90",
   },
+  nullMessage: {
+    flex: 1,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nullText: { fontSize: 25 },
 });
 export default function Requests(props) {
   const [requests, setrequests] = useState([]);
@@ -117,12 +124,18 @@ export default function Requests(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={requests}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={renderSeparator}
-      />
+      {requests.length > 0 ? (
+        <FlatList
+          data={requests}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={renderSeparator}
+        />
+      ) : (
+        <View style={[styles.nullMessage]}>
+          <Text style={styles.nullText}>No new requests</Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
