@@ -211,9 +211,9 @@ export default function App() {
         )}
       >
         <Drawer.Screen name="Home" component={homeStack} />
-        <Drawer.Screen name="Requests" component={requestStack} />
-        <Drawer.Screen name="UserProfile" component={profileStack} />
-        <Drawer.Screen name="Messages" component={messageStack} />
+        <Drawer.Screen name="Connections Requests" component={requestStack} />
+        <Drawer.Screen name="My Profile" component={profileStack} />
+        <Drawer.Screen name="My Messages" component={messageStack} />
       </Drawer.Navigator>
     );
   }
