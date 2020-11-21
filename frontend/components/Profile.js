@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     height: 200,
     alignSelf: "center",
     borderRadius: 100,
+    marginTop: 15,
   },
   container: {
     flex: 1,
@@ -195,9 +196,8 @@ export default function Profile(props) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>{item.researcher}</Text>
-
       <Image source={{ uri: item.url_picture }} style={styles.imageStyle} />
+      <Text style={styles.title}>{item.researcher}</Text>
 
       {(requested || received || messageButton || connectButton) && (
         <TouchableOpacity
