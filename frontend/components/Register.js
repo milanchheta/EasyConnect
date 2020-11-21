@@ -22,9 +22,8 @@ import {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#F0FFF0",
-    alignItems: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
   },
   input: {
     borderStartWidth: 2,
@@ -52,7 +51,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: 150,
     backgroundColor: "#00BFFF",
-    marginVertical: 20,
+    marginTop: 10,
+    marginBottom: 10,
   },
   greeting: {
     fontSize: 25,
@@ -66,8 +66,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#3CB371",
     letterSpacing: 3,
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: 5,
+    // marginBottom: 5,
   },
   error: {
     marginBottom: 10,
@@ -149,7 +149,7 @@ export default function Register(props) {
 
     if (validate()) {
       let payload = {
-        full_name: fullname,
+        full_name: fullname.trim(),
         email: email,
         password: password,
         scholars_link: scholar_link,
@@ -180,73 +180,77 @@ export default function Register(props) {
     }
   };
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Text style={styles.greeting}>welcome to</Text>
-        <Text style={styles.brand}>EasyConnect</Text>
-        <Text style={styles.error}>
-          {register_error && `User already exists. Please login`}
-        </Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => dispatch(registerName(text.trim()))}
-          value={fullname}
-          placeholder="Full Name*"
-        />
-        <Text style={styles.error}>
-          {fullnameError && `Enter your full name here`}
-        </Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => dispatch(registerEmail(text.trim()))}
-          value={email}
-          placeholder="Email*"
-        />
-        <Text style={styles.error}>
-          {emailError && `Enter a valid email address`}
-        </Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => dispatch(registerPassword(text))}
-          value={password}
-          placeholder="Password*"
-        />
-        <Text style={styles.error}>
-          {passwordError && `Enter a password at least 8 characters long`}
-        </Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => dispatch(registerConfirmPassword(text))}
-          value={confirmPassword}
-          placeholder="Confirm Password*"
-        />
-        <Text style={styles.error}>
-          {confirmPasswordError && `Passwords do not match`}
-        </Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => dispatch(registerScholarLink(text.trim()))}
-          value={scholar_link}
-          placeholder="Google Scholar link, if applicable"
-        />
-        <Text style={styles.error}>
-          {scholar_linkError && `Enter a valid scholar's url`}
-        </Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => dispatch(registerInterests(text.trim()))}
-          value={interests}
-          placeholder="Add your research interests"
-        />
-        <TouchableOpacity
-          style={styles.signupbutton}
-          onPress={() => {
-            onSubmit();
-          }}
-        >
-          <Text style={styles.signupbuttonText}>Create Account</Text>
-        </TouchableOpacity>
-      </View>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Text style={styles.brand}>EasyConnect</Text>
+      <Text style={styles.error}>
+        {register_error && `User already exists. Please login`}
+      </Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={(text) => dispatch(registerName(text))}
+        value={fullname}
+        placeholder="Full Name*"
+      />
+      <Text style={styles.error}>
+        {fullnameError && `Enter your full name here`}
+      </Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={(text) => dispatch(registerEmail(text.trim()))}
+        value={email}
+        placeholder="Email*"
+      />
+      <Text style={styles.error}>
+        {emailError && `Enter a valid email address`}
+      </Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={(text) => dispatch(registerPassword(text))}
+        value={password}
+        placeholder="Password*"
+      />
+      <Text style={styles.error}>
+        {passwordError && `Enter a password at least 8 characters long`}
+      </Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={(text) => dispatch(registerConfirmPassword(text))}
+        value={confirmPassword}
+        placeholder="Confirm Password*"
+      />
+      <Text style={styles.error}>
+        {confirmPasswordError && `Passwords do not match`}
+      </Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={(text) => dispatch(registerScholarLink(text.trim()))}
+        value={scholar_link}
+        placeholder="Google Scholar link, if applicable"
+      />
+      <Text style={styles.error}>
+        {scholar_linkError && `Enter a valid scholar's url`}
+      </Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={(text) => dispatch(registerInterests(text))}
+        value={interests}
+        placeholder="Add your research interests"
+      />
+      <TouchableOpacity
+        style={styles.signupbutton}
+        onPress={() => {
+          onSubmit();
+        }}
+      >
+        <Text style={styles.signupbuttonText}>Create Account</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

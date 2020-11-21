@@ -13,20 +13,22 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 10,
     justifyContent: "center",
-    backgroundColor: "#F0FFF0",
+    // backgroundColor: "#F0FFF0",
     alignItems: "center",
   },
   item: {
-    padding: 20,
+    padding: 10,
     flex: 1,
     flexDirection: "row",
   },
+  listButton: { height: 70 },
   title: {
     fontSize: 20,
     fontWeight: "700",
   },
   titleText: {
     fontSize: 20,
+    alignSelf: "center",
   },
   pageTitle: {
     fontSize: 30,
@@ -56,9 +58,13 @@ export default function PaperList(props) {
   };
 
   const Item = ({ item, onPress, style }) => (
-    <TouchableOpacity onPress={onPress} style={style}>
+    <TouchableOpacity onPress={onPress} style={styles.listButton}>
       <View style={styles.item}>
-        <Text style={styles.titleText}>{item.title}</Text>
+        <Text style={styles.titleText}>
+          {item["title"].length > 80
+            ? item["title"].substring(0, 80 - 3) + "..."
+            : item["title"]}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -87,7 +93,7 @@ export default function PaperList(props) {
 
       <FlatList
         data={item.papers}
-        keyExtractor={(item) => item.eprint}
+        keyExtractor={(item) => item.title + item.year + item.cites}
         ItemSeparatorComponent={renderSeparator}
         renderItem={renderItem}
       />

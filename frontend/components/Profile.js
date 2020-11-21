@@ -6,6 +6,7 @@ import {
   Text,
   ScrollView,
   FlatList,
+  Modal,
   Image,
   TouchableOpacity,
   Linking,
@@ -19,10 +20,11 @@ const styles = StyleSheet.create({
     height: 200,
     alignSelf: "center",
     borderRadius: 100,
+    marginTop: 15,
   },
   container: {
     flex: 1,
-    backgroundColor: "#F0FFF0",
+    // backgroundColor: "#F0FFF0",
   },
   title: {
     fontSize: 30,
@@ -35,10 +37,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#90EE90",
+    marginTop: 10,
   },
   item: {
-    alignSelf: "center",
-    fontSize: 15,
+    fontSize: 18,
+    marginBottom: 5,
+    padding: 5,
   },
   innercontainer: {
     flex: 1,
@@ -46,8 +50,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   flexCol: {
-    flexDirection: "row",
-    marginTop: 10,
+    // flexDirection: "row",
+    // marginTop: 10,
   },
 
   connectbuttonText: {
@@ -72,6 +76,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#90EE90",
     marginVertical: 10,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
 });
 export default function Profile(props) {
   let item = props.route.params.item;
@@ -80,6 +105,7 @@ export default function Profile(props) {
   const [messageButton, setmessageButton] = useState(false);
   const [requested, setRequested] = useState(false);
   const [received, setReceived] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const jwtToken = useSelector((state) => state.login.jwtToken);
   console.log(item);
@@ -124,6 +150,8 @@ export default function Profile(props) {
         },
       })
       .then((response) => {
+        setRequested(true);
+        setconnectButton(false);
         console.log(response);
       })
       .catch((err) => {
@@ -168,13 +196,12 @@ export default function Profile(props) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>{item.researcher}</Text>
-
       <Image source={{ uri: item.url_picture }} style={styles.imageStyle} />
+      <Text style={styles.title}>{item.researcher}</Text>
 
       {(requested || received || messageButton || connectButton) && (
         <TouchableOpacity
-          style={styles.connectbutton}
+          style={styles.urlButton}
           onPress={
             connectButton
               ? () => request()
@@ -193,14 +220,51 @@ export default function Profile(props) {
         </TouchableOpacity>
       )}
 
-      {/* {received && (
-        <TouchableOpacity disabled={true}>
-          <Text>Received connection request</Text>
-        </TouchableOpacity>
-      )} */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.Heading}>Affiliation: </Text>
+            <Text style={styles.item}>{item.affiliation}</Text>
+            <Text style={styles.Heading}>Interests: </Text>
+            <Text style={styles.item}>{item.interests.join(", ")}</Text>
+            {/* <View style={styles.flexCol}> */}
+            <Text style={styles.Heading}>Email: </Text>
+            <Text style={styles.item}>{item.email}</Text>
+            {/* </View> */}
+            {/* <View style={styles.flexCol}> */}
+            <Text style={styles.Heading}>Cited By: </Text>
+            <Text style={styles.item}>{item.citedby}</Text>
+            {/* </View> */}
 
-      <ScrollView style={styles.innercontainer}>
-        <Text style={styles.Heading}>Affiliation: </Text>
+            <TouchableOpacity
+              style={styles.urlButton}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <Text style={styles.connectbuttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <View style={styles.innercontainer}>
+        <TouchableOpacity
+          style={styles.urlButton}
+          onPress={() => {
+            setModalVisible(true);
+          }}
+        >
+          <Text style={styles.connectbuttonText}>Information</Text>
+        </TouchableOpacity>
+        {/* <Text style={styles.Heading}>Affiliation: </Text>
         <Text style={styles.item}>{item.affiliation}</Text>
         <Text style={styles.Heading}>Interests: </Text>
         <Text style={styles.item}>{item.interests.join(", ")}</Text>
@@ -211,20 +275,8 @@ export default function Profile(props) {
         <View style={styles.flexCol}>
           <Text style={styles.Heading}>Cited By: </Text>
           <Text style={styles.item}>{item.citedby}</Text>
-        </View>
-        {/* <View style={styles.urlCol}> */}
-        {/* <Text
-            style={{ color: "blue" }}
-            onPress={() => _goToURL(item.iu_link)}
-          >
-            {item.iu_link}
-          </Text>
-          <Text
-            style={{ color: "blue" }}
-            onPress={() => _goToURL(item.scholars_link)}
-          >
-            {item.scholars_link}
-          </Text> */}
+        </View> */}
+
         <TouchableOpacity
           style={styles.urlButton}
           onPress={() => _goToURL(item.scholars_link)}
@@ -237,7 +289,7 @@ export default function Profile(props) {
         >
           <Text style={styles.connectbuttonText}>IU Profile</Text>
         </TouchableOpacity>
-        {/* </View> */}
+
         <TouchableOpacity
           style={styles.urlButton}
           onPress={() => {
@@ -246,7 +298,7 @@ export default function Profile(props) {
         >
           <Text style={styles.connectbuttonText}>List of Papers</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
     </ScrollView>
   );
 }
