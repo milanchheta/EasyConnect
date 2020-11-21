@@ -2,18 +2,22 @@ from flask import Blueprint,request,Response,jsonify
 from ..helpers.dbConfig import databaseSetup
 from ..helpers.tokenizor import compute_similarity
 import json
-from  werkzeug.security import generate_password_hash, check_password_hash 
+from  werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename 
 import jwt 
 from datetime import datetime, timedelta 
 from functools import wraps 
 import uuid
 from flask_cors import CORS, cross_origin
+import io
+import PyPDF2
+import os
+from ..helpers.tokenizor import populate_keyword
 
 dbObj = databaseSetup()
 main = Blueprint('main', __name__)
 cors = CORS(main)
 # main.config['CORS_HEADERS'] = 'Content-Type'
-
 
 Users_collections=dbObj["users"]
 Recommendations_collections=dbObj["recommendations"]
@@ -24,78 +28,6 @@ User_messages_rooms_collections=dbObj["user_message_room"]
 ScholarList_collections=dbObj["ScholarList"]
 
 SECRET_KEY="Authentication Secret Goes Here"
-
-# Register - Post
-# Login - Post
-# Home - GET
-# Upload - POST
-# USER Profile - GET, Researcher profile-GET
-# Profile - PUT
-# Logout - GET
-# ChatList - GET
-# Chat -server
-# Connection request and accept request
-
-# Collections:-
-
-# users->{
-        # id:
-#     full_name: string
-#     email: string
-#     password: string
-#     scholars_link: url if any(verify before saving)
-#     interests:[]
-# }
-
-# recommendations->{
-#     user_id: id
-#     keywords (based on interests or uploaded papers if any): []
-#     interests: []
-#     researchers:[] => Professor names list.
-#     papers:[]?????? Names of recommended papers => {Professor name, [title]}
-# }
-
-# scholars->{
-#     (Professor name):{title:[(Keywords)], interests:[], scholars_link:link }, id: uuid,...
-# }
-
-# TODO: add email or id to the scholar list.
-
-# connected_users->{
-#     user_id:id
-#     connected_to:[]
-# }
-
-# user_requests:{
-# user_id: id
-# requests:[{user_id:, user_name:},...]
-# }
-
-# message_pairs->{
-#     user_1:
-#     user_2:
-#     id:
-# }
-# message_room->{
-#     id:
-#     sender: id
-#     receiver: id
-#     timestamp:
-#     mesasge: string
-# }
-
-"""
-scholar List design:
-{
-    researcher: <name>,
-    scholars_link: <link>,
-    papers: [
-        title: <title>,
-        keywords: []
-    ]
-}
-"""
-
 
 @main.route('/', methods = ['GET'])
 @cross_origin()
@@ -127,9 +59,9 @@ def register_user():
     user_exists=Users_collections.find_one({"email": email})
 
     if not user_exists:  
-        user_data={"id":id,"email":email,"password":generate_password_hash(password) ,"full_name":full_name,"scholars_link":scholars_link,"interests":interests}
+        user_data={"id":id,"email":email,"password":generate_password_hash(password) ,"full_name":full_name,"scholars_link":scholars_link,"interests":interests, "keywords": []}
         print(user_data)
-        update_recomendations(user_data, interests)
+        update_recomendations(user_data)
         user_id=Users_collections.insert_one(user_data)
 
         resp = Response('User Registered Successfully', status=201, mimetype='application/json')
@@ -187,13 +119,17 @@ def get_recommendations():
 """
 Method to update the recommendations based on user interests.
 """
-def update_recomendations(user, interests):
+def update_recomendations(user):
 
     recommendation_col = Recommendations_collections.find_one({"user_id": user["id"]})
+    # interests = user["interests"]
+    user_keywords = user["keywords"] + user["interests"]
+
+    print(user_keywords)
 
     # Get the scholars list.
     scholar_list = ScholarList_collections.find({},{'_id': 0})
-    print(scholar_list)
+    # print(scholar_list)
     scholar_cosine_rel = []
     for scholar in scholar_list:
         if scholar["scholars_link"]!=user["scholars_link"]:
@@ -203,9 +139,9 @@ def update_recomendations(user, interests):
                 scholar_interests=scholar["interests"]
             for paper in scholar["papers"]:
                 keywords=scholar_interests+paper["keywords"]
-                interests = list(map(lambda x: x.lower(), interests))
+                user_keywords = list(map(lambda x: x.lower(), user_keywords))
                 keywords = list(map(lambda item: item.lower(), keywords))
-                cosine_sum += compute_similarity(interests, keywords)
+                cosine_sum += compute_similarity(user_keywords, keywords)
             
             scholar_cosine_rel.append((scholar, cosine_sum))
 
@@ -218,7 +154,7 @@ def update_recomendations(user, interests):
     # update Recommendations_collections
     if recommendation_col:
         new_recommendation = recommendation_col.copy()
-        new_recommendation["interests"] = interests
+        new_recommendation["keywords"] = user_keywords
         new_recommendation["researchers"] = resp
         payload = {"$set": new_recommendation}
         Recommendations_collections.update_one(recommendation_col, payload)
@@ -227,10 +163,11 @@ def update_recomendations(user, interests):
     else:
         new_recommendation = {}
         new_recommendation["user_id"] = user["id"]
-        new_recommendation["keywords"] = []
-        new_recommendation["interests"] = interests
+        new_recommendation["keywords"] = user_keywords
         new_recommendation["researchers"] = resp
         Recommendations_collections.insert_one(new_recommendation)
+    
+    return 'Done'
 
 @main.route('/profile', methods = ['GET', 'PUT'])
 @cross_origin()
@@ -300,7 +237,7 @@ def get_user_profile():
             req = {"$set": user_update}
             Users_collections.update(user, req)
 
-            update_recomendations(user, interests)
+            update_recomendations(user_update)
 
             token = jwt.encode({ 
                 'user':user_update
@@ -512,14 +449,61 @@ def connection_requests():
 def upload_paper():
     if request.method == 'POST':
         f = request.files['file']
-        data = request.get_json()
 
-        # print(data)
-        print(f)
-
-        if f != None:
-            return Response('received file', status=200, mimetype='application/json');
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
         else:
-            return Response('Error receiving file', status=404, mimetype='application/json');
+            auth_token = ''
+        if auth_token != '':
+            user = jwt.decode(auth_token, SECRET_KEY)["user"]
+        user_id=user['id']
+
+        user = Users_collections.find_one({"id": user_id})
+
+        if (f != None):
+            # print(data)
+            filename = f.filename
+            f.save(filename)
+
+            pdfFile = open(filename, 'rb')
+            pdfReader = PyPDF2.PdfFileReader(pdfFile)
+
+            pageNum = pdfReader.numPages
+            text = ''
+            for page in range(pageNum-1):
+                pageObj = pdfReader.getPage(page)
+                text += pageObj.extractText()
+
+            pdfText = text.split(' ')
+            # print(pdfText)
+            finalText = ' '.join(pdfText[1:])
+            # print(finalText)
+
+            keywords = populate_keyword(finalText)
+            print("paper keys",keywords)
+
+            if "keywords" in user:
+                # user["keywords"].append(keywords)
+                old_keywords = user["keywords"]
+                for keyword in keywords:
+                    if keyword not in old_keywords:
+                        user["keywords"].append(keyword)
+            else:
+                user["keywords"] = keywords
+            
+            print("user keys",user["keywords"])
+
+            Users_collections.update_one({"id": user_id}, {"$set": user})
+
+            res = update_recomendations(user)
+
+            # if res == 'Done': 
+            #     os.remove(filename)
+
+            return Response('received file', status=200, mimetype='application/json')
+
+        else:
+            return Response('Error receiving file', status=404, mimetype='application/json')
 
 

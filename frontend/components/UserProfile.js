@@ -88,10 +88,11 @@ export default function UserProfile(props) {
           });
           console.log("Payload");
           console.log(payload);
-          await axios
+          axios
             .post("http://10.0.2.2:5000/upload", payload, {
               headers: {
-                "Content-type": "multipart/form-data",
+                enctype: "multipart/form-data",
+                "Content-type": "mulitpart/form-data",
                 Authorization: "Bearer " + jwtToken,
               },
             })
@@ -101,6 +102,7 @@ export default function UserProfile(props) {
                 console.log("Error in data receieve");
               } else if (response.status == 200) {
                 console.log("success");
+                alert("Updated Recommendations based on Paper upload");
               }
             })
             .catch((err) => {
