@@ -43,6 +43,13 @@ const styles = StyleSheet.create({
   add: {
     fontSize: 25,
   },
+  nullMessage: {
+    flex: 1,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nullText: { fontSize: 25 },
 });
 export default function Messages(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
@@ -56,7 +63,6 @@ export default function Messages(props) {
         },
       })
       .then((response) => {
-        console.log(response);
         setmessages(response.data);
       })
       .catch((err) => {
@@ -82,7 +88,6 @@ export default function Messages(props) {
   };
 
   const onMessageRoomClick = (item) => {
-    console.log("go to messages");
     axios
       .get("http://10.0.2.2:5000/message?connection_id=" + item.id, {
         headers: {
@@ -92,10 +97,10 @@ export default function Messages(props) {
       })
       .then((response) => {
         let message_room_id = response.data.message_room_id;
-        console.log(message_room_id);
         props.navigation.navigate("MessageRoom", {
           message_room_id: message_room_id,
-          connection_data: item,
+          connection_id: response.data.connection_id,
+          full_name: item.full_name,
         });
       })
       .catch((err) => {
@@ -128,15 +133,18 @@ export default function Messages(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={renderSeparator}
-      />
-      {/* <TouchableOpacity style={styles.addMessage}>
-        <Text style={styles.add}>+</Text>
-      </TouchableOpacity> */}
+      {messages.length > 0 ? (
+        <FlatList
+          data={messages}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={renderSeparator}
+        />
+      ) : (
+        <View style={[styles.nullMessage]}>
+          <Text style={styles.nullText}>No ongoing conversations</Text>
+        </View>
+      )}
       <View style={styles.addMessage}>
         <Icon
           name="person-add"

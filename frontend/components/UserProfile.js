@@ -22,7 +22,7 @@ import * as DocumentPicker from "expo-document-picker";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0FFF0",
+    // backgroundColor: "#F0FFF0",
   },
   label: {
     fontSize: 20,
@@ -35,8 +35,18 @@ const styles = StyleSheet.create({
   },
   flexCol: {
     flexDirection: "row",
-    marginTop: 10,
+    // marginTop: 10,
     padding: 10,
+  },
+  flexrow: {
+    // marginTop: 10,
+    // padding: 10,
+    marginHorizontal: 10,
+  },
+  urlText: {
+    color: "blue",
+    alignSelf: "center",
+    fontSize: 15,
   },
   connectbuttonText: {
     color: "white",
@@ -75,8 +85,8 @@ export default function UserProfile(props) {
       } else {
         setFile(res);
         if (File != null) {
-          console.log("File");
-          console.log(File);
+          // console.log("File");
+          // console.log(File);
           // console.log(File.uri, File.size);
 
           const payload = new FormData();
@@ -86,9 +96,9 @@ export default function UserProfile(props) {
             name: File.name,
             type: "application/pdf",
           });
-          console.log("Payload");
-          console.log(payload);
-          axios
+          // console.log("Payload");
+          // console.log(payload);
+          await axios
             .post("http://10.0.2.2:5000/upload", payload, {
               headers: {
                 enctype: "multipart/form-data",
@@ -137,9 +147,9 @@ export default function UserProfile(props) {
           </View>
         )}
       {user["scholars_link"] != "" && (
-        <View style={styles.flexCol}>
+        <View style={styles.flexrow}>
           <Text style={styles.label}>Google Scholar Link: </Text>
-          <Text style={styles.value}>{user["scholars_link"]}</Text>
+          <Text style={styles.urlText}>{user["scholars_link"]}</Text>
         </View>
       )}
       <TouchableOpacity
