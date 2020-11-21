@@ -55,12 +55,11 @@ export default function App() {
           component={Home}
           options={({ navigation }) => ({
             headerLeft: () => (
-              
               <Icon
                 name="menu"
                 type="material"
                 size={40}
-                style={{marginLeft: 10}}
+                style={{ marginLeft: 10 }}
                 onPress={() =>
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
@@ -95,7 +94,7 @@ export default function App() {
                 name="menu"
                 type="material"
                 size={40}
-                style={{marginLeft: 10}}
+                style={{ marginLeft: 10 }}
                 onPress={() =>
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
@@ -129,7 +128,7 @@ export default function App() {
                 name="menu"
                 type="material"
                 size={40}
-                style={{marginLeft: 10}}
+                style={{ marginLeft: 10 }}
                 onPress={() =>
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
@@ -180,7 +179,7 @@ export default function App() {
                 name="menu"
                 type="material"
                 size={40}
-                style={{marginLeft: 10}}
+                style={{ marginLeft: 10 }}
                 onPress={() =>
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
