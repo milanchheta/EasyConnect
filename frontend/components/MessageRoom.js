@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "column",
-    
+
     overflow: "scroll",
   },
   item: {
@@ -100,23 +100,24 @@ export default function MessageRoom(props) {
   };
   const sendMessage = () => {
     console.log(message);
-    axios
-      .post("http://10.0.2.2:5000/message", payload, {
-        headers: {
-          "content-type": "application/json",
-          Authorization: "Bearer " + jwtToken,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        setchat_messages([...chat_messages, response.data]);
-        setMessage("");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (message.trim() != "") {
+      axios
+        .post("http://10.0.2.2:5000/message", payload, {
+          headers: {
+            "content-type": "application/json",
+            Authorization: "Bearer " + jwtToken,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          setchat_messages([...chat_messages, response.data]);
+          setMessage("");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
-
   useEffect(() => {
     axios
       .get("http://10.0.2.2:5000/message?connection_id=" + connection_id, {
