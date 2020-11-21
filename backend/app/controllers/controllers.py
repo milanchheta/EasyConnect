@@ -511,7 +511,14 @@ def connection_requests():
 @cross_origin()
 def upload_paper():
     if request.method == 'POST':
-        f = request.files['the_file']
+        f = request.files['file']
         data = request.get_json()
+
+        print(data)
+
+        if f != None:
+            return Response('received file', status=200, mimetype='application/json');
+        else:
+            return Response('Error receiving file', status=404, mimetype='application/json');
 
 

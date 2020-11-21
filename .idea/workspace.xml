@@ -3,6 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="48a6bc2b-5531-49cb-b51a-ab06def9d9da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/controllers/controllers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/controllers/controllers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/run.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/UserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/UserProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/debug.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,11 +44,11 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="214" y="122" width="1290" height="590" key="AVDManager" timestamp="1605870595713">
+    <state x="214" y="122" width="1290" height="590" key="AVDManager" timestamp="1605925061176">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="214" y="121" width="1032" height="468" key="AVDManager/0.0.1536.834/1920.0.1080.1890@0.0.1536.834" timestamp="1605667645232" />
-    <state x="214" y="122" width="1290" height="590" key="AVDManager/0.0.1536.834@0.0.1536.834" timestamp="1605870595713" />
+    <state x="214" y="122" width="1290" height="590" key="AVDManager/0.0.1536.834@0.0.1536.834" timestamp="1605925061176" />
     <state x="268" y="152" width="1290" height="590" key="AVDManager/0.0.1920.1050@0.0.1920.1050" timestamp="1605760496332" />
   </component>
 </project>

@@ -16,6 +16,8 @@ import {
   profileName,
   profileScholarLink,
 } from "../Actions/ProfileAction";
+// import DocumentPicker from "react-native-document-picker";
+import * as DocumentPicker from "expo-document-picker";
 
 const styles = StyleSheet.create({
   container: {
@@ -55,6 +57,7 @@ const styles = StyleSheet.create({
 export default function UserProfile(props) {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state) => state.login.jwtToken);
+  const [File, setFile] = useState(null);
 
   const user = jwt_decode(jwtToken)["user"];
 
@@ -62,8 +65,47 @@ export default function UserProfile(props) {
   dispatch(profileInterests(user["interests"].join(",")));
   dispatch(profileScholarLink(user["scholars_link"]));
 
-  const uploadPaper = () => {
+  const uploadPaper = async () => {
     console.log("Upload paper");
+    try {
+      const res = await DocumentPicker.getDocumentAsync();
+      console.log(res);
+      if (res.type == "cancel") {
+        alert("User Cancelled");
+      } else {
+        setFile(res);
+        if (file != null) {
+          console.log(file.name);
+          console.log(file.uri, file.size);
+
+          const payload = new FormData();
+          payload.append("name", file.name);
+          payload.append("file", file);
+
+          await axios
+            .post("http://10.0.2.2/upload", payload, {
+              headers: {
+                "content-type": "multipart/form-data",
+                Authorization: "Bearer " + jwtToken,
+              },
+            })
+            .then((response) => {
+              console.log(response);
+              if (response.status == 404) {
+                console.log("Error in data receieve");
+              } else if (response.status == 200) {
+                console.log("success");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }
+    } catch (err) {
+      console.log("Error", JSON.stringify(err));
+      throw err;
+    }
   };
 
   // console.log();
