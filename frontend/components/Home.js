@@ -93,9 +93,6 @@ export default function Home(props) {
         <View style={styles.titleview}>
           <Text style={styles.title}>{item.researcher}</Text>
           <Text style={styles.subtitle}>
-            {/* {item["interests"] &&
-              item["interests"].length != 0 &&
-              `${item["interests"].join(", ")}`} */}
             {item["interests"] &&
               item["interests"].length != 0 &&
               (item["interests"].join(", ").length > 50

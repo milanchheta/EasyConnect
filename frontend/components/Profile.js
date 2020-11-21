@@ -149,6 +149,8 @@ export default function Profile(props) {
         },
       })
       .then((response) => {
+        setRequested(true);
+        setconnectButton(false);
         console.log(response);
       })
       .catch((err) => {
@@ -199,7 +201,7 @@ export default function Profile(props) {
 
       {(requested || received || messageButton || connectButton) && (
         <TouchableOpacity
-          style={styles.connectbutton}
+          style={styles.urlButton}
           onPress={
             connectButton
               ? () => request()
