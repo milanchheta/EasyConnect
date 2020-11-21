@@ -78,7 +78,11 @@ export default function EditProfile(props) {
   const [fullnameError, setfullnameError] = useState(false);
   const [scholar_linkError, setscholar_linkError] = useState(false);
   const [register_error, setregister_error] = useState(false);
-
+  useEffect(() => {
+    if (!jwtToken && jwtToken === undefined && jwtToken === "") {
+      props.navigation.push("Login");
+    }
+  });
   const validate = () => {
     let fullname_error = null;
     if (fullname == "") {

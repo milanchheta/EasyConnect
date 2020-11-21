@@ -129,19 +129,23 @@ export default function MessageRoom(props) {
     }
   };
   useEffect(() => {
-    axios
-      .get("http://10.0.2.2:5000/message?connection_id=" + connection_id, {
-        headers: {
-          "content-type": "application/json",
-          Authorization: "Bearer " + jwtToken,
-        },
-      })
-      .then((response) => {
-        setchat_messages(response.data.messages);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (jwtToken && jwtToken != undefined && jwtToken != "") {
+      axios
+        .get("http://10.0.2.2:5000/message?connection_id=" + connection_id, {
+          headers: {
+            "content-type": "application/json",
+            Authorization: "Bearer " + jwtToken,
+          },
+        })
+        .then((response) => {
+          setchat_messages(response.data.messages);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      props.navigation.push("Login");
+    }
   }, []);
 
   return (

@@ -41,7 +41,11 @@ const styles = StyleSheet.create({
 
 export default function Connections(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
-
+  useEffect(() => {
+    if (!jwtToken && jwtToken === undefined && jwtToken === "") {
+      props.navigation.push("Login");
+    }
+  });
   let connections = props.route.params.data;
   const onMessageRoomClick = (item) => {
     console.log("go to messages");

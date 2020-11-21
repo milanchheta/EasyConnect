@@ -109,32 +109,35 @@ export default function Profile(props) {
 
   const jwtToken = useSelector((state) => state.login.jwtToken);
   useEffect(() => {
-    if ("scholars_link" in item) {
-      axios
-        .get(
-          "http://10.0.2.2:5000/profile?scholars_link=" + item["scholars_link"],
-          {
-            headers: {
-              "content-type": "application/json",
-              Authorization: "Bearer " + jwtToken,
-            },
-          }
-        )
-        .then((response) => {
-          if (response.data == "CONNECTED") {
-            setmessageButton(true);
-          } else if (response.data == "REQUESTED") {
-            setRequested(true);
-          } else if (response.data == "RECEIVED") {
-            setReceived(true);
-          } else {
-            setconnectButton(true);
-            setconnectid(response.data.id);
-          }
-        })
-        .catch((err) => {
-          console.log("Error fetching data");
-        });
+    if (jwtToken && jwtToken != undefined && jwtToken != "") {
+      if ("scholars_link" in item) {
+        axios
+          .get(
+            "http://10.0.2.2:5000/profile?scholars_link=" +
+              item["scholars_link"],
+            {
+              headers: {
+                "content-type": "application/json",
+                Authorization: "Bearer " + jwtToken,
+              },
+            }
+          )
+          .then((response) => {
+            if (response.data == "CONNECTED") {
+              setmessageButton(true);
+            } else if (response.data == "REQUESTED") {
+              setRequested(true);
+            } else if (response.data == "RECEIVED") {
+              setReceived(true);
+            } else {
+              setconnectButton(true);
+              setconnectid(response.data.id);
+            }
+          })
+          .catch((err) => {
+            console.log("Error fetching data");
+          });
+      }
     } else {
       props.navigation.push("Login");
     }
