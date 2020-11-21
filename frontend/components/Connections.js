@@ -60,7 +60,7 @@ export default function Connections(props) {
       .then((response) => {
         let message_room_id = response.data.message_room_id;
         console.log(message_room_id);
-        props.navigation.navigate("MessageRoom", {
+        props.navigation.navigate("Message Room", {
           message_room_id: message_room_id,
           connection_id: response.data.connection_id,
           full_name: item.full_name,
