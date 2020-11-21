@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   item: {
     paddingVertical: 10,
     paddingHorizontal: 5,
-    height: 80,
+    height: 70,
     flexDirection: "row",
   },
   title: {
