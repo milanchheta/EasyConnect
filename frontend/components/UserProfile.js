@@ -168,32 +168,42 @@ export default function UserProfile(props) {
     <SafeAreaView style={styles.container}>
       {jwtToken != undefined && jwtToken != "" && jwtToken && (
         <>
+          <Image
+            style={styles.imageStyle}
+            source={{
+              uri:
+                "https://nwsid.net/wp-content/uploads/2015/05/dummy-profile-pic.png",
+            }}
+          />
           <View style={styles.flexCol}>
-            <Text style={styles.label}>Full Name: </Text>
-            <Text style={styles.value}>{user["full_name"]}</Text>
+            {/* <Text style={styles.label}>Full Name: </Text> */}
+            <Text style={styles.title}>{user["full_name"]}</Text>
           </View>
           <View style={styles.flexCol}>
-            <Text style={styles.label}>Email: </Text>
-            <Text style={styles.value}>{user["email"]}</Text>
+            {/* <Text style={styles.label}>Email: </Text> */}
+            <Text style={styles.subTitle}>{user["email"]}</Text>
           </View>
-
-          {user["interests"] &&
-            user["interests"].length > 0 &&
-            user["interests"][0] != "" && (
-              <View style={styles.flexCol}>
-                <Text style={styles.label}>Interests: </Text>
-                <Text style={styles.value}>{user["interests"].join(", ")}</Text>
+          <View style={styles.userInfo}>
+            {user["interests"] &&
+              user["interests"].length > 0 &&
+              user["interests"][0] != "" && (
+                <View style={styles.flexCol}>
+                  <Text style={styles.label}>Interests: </Text>
+                  <Text style={styles.value}>
+                    {user["interests"].join(", ")}
+                  </Text>
+                </View>
+              )}
+            {user["scholars_link"] != "" && (
+              <View style={styles.flexrow}>
+                <Text style={styles.label}>Google Scholar Link: </Text>
+                <Text style={styles.urlText}>{user["scholars_link"]}</Text>
               </View>
             )}
-          {user["scholars_link"] != "" && (
-            <View style={styles.flexrow}>
-              <Text style={styles.label}>Google Scholar Link: </Text>
-              <Text style={styles.urlText}>{user["scholars_link"]}</Text>
-            </View>
-          )}
+          </View>
           <TouchableOpacity
             onPress={() => {
-              props.navigation.navigate("EditProfile");
+              props.navigation.navigate("Edit Profile");
             }}
             style={styles.connectbutton}
           >

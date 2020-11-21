@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   },
   signupbutton: {
     alignItems: "center",
-    padding: 8,
+    padding: 10,
     borderRadius: 20,
     width: 150,
     backgroundColor: "#4A3C31",

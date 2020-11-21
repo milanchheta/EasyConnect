@@ -222,7 +222,6 @@ export default function App() {
             fontWeight: "bold",
           },
         }}
-        drawerType={dimensions.width >= 768 ? "permanent" : "front"}
         drawerContent={(props) => (
           <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
