@@ -108,7 +108,6 @@ export default function Profile(props) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const jwtToken = useSelector((state) => state.login.jwtToken);
-  console.log(item);
   useEffect(() => {
     if ("scholars_link" in item) {
       axios
@@ -152,7 +151,6 @@ export default function Profile(props) {
       .then((response) => {
         setRequested(true);
         setconnectButton(false);
-        console.log(response);
       })
       .catch((err) => {
         console.log(err);
@@ -174,10 +172,11 @@ export default function Profile(props) {
       )
       .then((response) => {
         let message_room_id = response.data.message_room_id;
-        console.log(message_room_id);
+        console.log("id here", item.researcher);
         props.navigation.navigate("MessageRoom", {
           message_room_id: message_room_id,
-          connection_data: response.data,
+          connection_id: response.data.connection_id,
+          full_name: item.researcher,
         });
       })
       .catch((err) => {
@@ -202,13 +201,13 @@ export default function Profile(props) {
       {(requested || received || messageButton || connectButton) && (
         <TouchableOpacity
           style={styles.urlButton}
-          onPress={
+          onPress={() => {
             connectButton
-              ? () => request()
+              ? request()
               : messageButton
               ? sendMessage(item.scholars_link)
-              : null
-          }
+              : null;
+          }}
           disabled={requested || received ? true : false}
         >
           <Text style={styles.connectbuttonText}>
@@ -264,18 +263,6 @@ export default function Profile(props) {
         >
           <Text style={styles.connectbuttonText}>Information</Text>
         </TouchableOpacity>
-        {/* <Text style={styles.Heading}>Affiliation: </Text>
-        <Text style={styles.item}>{item.affiliation}</Text>
-        <Text style={styles.Heading}>Interests: </Text>
-        <Text style={styles.item}>{item.interests.join(", ")}</Text>
-        <View style={styles.flexCol}>
-          <Text style={styles.Heading}>Email: </Text>
-          <Text style={styles.item}>{item.email}</Text>
-        </View>
-        <View style={styles.flexCol}>
-          <Text style={styles.Heading}>Cited By: </Text>
-          <Text style={styles.item}>{item.citedby}</Text>
-        </View> */}
 
         <TouchableOpacity
           style={styles.urlButton}

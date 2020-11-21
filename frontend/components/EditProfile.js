@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: "center",
-    backgroundColor: "#F0FFF0",
+    // backgroundColor: "#F0FFF0",
     alignItems: "center",
     paddingTop: 40,
   },
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#90EE90",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
 });
 

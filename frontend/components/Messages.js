@@ -56,7 +56,6 @@ export default function Messages(props) {
         },
       })
       .then((response) => {
-        console.log(response);
         setmessages(response.data);
       })
       .catch((err) => {
@@ -82,7 +81,6 @@ export default function Messages(props) {
   };
 
   const onMessageRoomClick = (item) => {
-    console.log("go to messages");
     axios
       .get("http://10.0.2.2:5000/message?connection_id=" + item.id, {
         headers: {
@@ -92,10 +90,10 @@ export default function Messages(props) {
       })
       .then((response) => {
         let message_room_id = response.data.message_room_id;
-        console.log(message_room_id);
         props.navigation.navigate("MessageRoom", {
           message_room_id: message_room_id,
-          connection_data: item,
+          connection_id: response.data.connection_id,
+          full_name: item.full_name,
         });
       })
       .catch((err) => {

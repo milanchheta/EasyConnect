@@ -11,6 +11,8 @@ import {
   Button,
   TextInput,
 } from "react-native";
+import { Icon } from "react-native-elements";
+
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
@@ -18,9 +20,7 @@ import jwt_decode from "jwt-decode";
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flexDirection: "column",
-
+    flex: 1,
     overflow: "scroll",
   },
   item: {
@@ -28,34 +28,45 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
   },
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   title: {
-    fontSize: 30,
-    justifyContent: "space-around",
+    fontSize: 20,
     marginLeft: "auto",
     marginRight: "auto",
-    fontWeight: "800",
-    padding: 20,
+    fontWeight: "700",
+    padding: 5,
+    borderBottomColor: "#aaa",
+    borderBottomWidth: 2,
+    width: "100%",
+    color: "#fff",
   },
   subtitle: {
     fontSize: 15,
     color: "#aaa",
   },
+  titlecontainer: {
+    backgroundColor: "#3CB371",
+  },
   input: {
+    flex: 1,
     borderStartWidth: 2,
     borderEndWidth: 2,
     borderTopWidth: 2,
     borderLeftWidth: 2,
     borderRightWidth: 2,
     borderBottomWidth: 2,
-    padding: 10,
-    fontSize: 20,
+    padding: 5,
+    margin: 5,
+    fontSize: 15,
     textAlign: "center",
     backgroundColor: "#fff",
     borderColor: "#aaa",
+    borderRadius: 10,
   },
-  button: {
-    height: 50,
-  },
+
   leftUser: {
     alignItems: "flex-start",
     margin: 10,
@@ -70,18 +81,17 @@ const styles = StyleSheet.create({
   },
   balloon: {
     maxWidth: moderateScale(250, 2),
-    paddingHorizontal: moderateScale(10, 2),
-    paddingTop: moderateScale(5, 2),
-    paddingBottom: moderateScale(7, 2),
-    borderRadius: 20,
+    paddingHorizontal: moderateScale(7, 2),
+    paddingTop: moderateScale(2, 2),
+    paddingBottom: moderateScale(3, 2),
+    borderRadius: 12,
   },
   message: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "900",
   },
   timestamp: {
     fontSize: 12,
-    color: "#ddd",
   },
 });
 export default function MessageRoom(props) {
@@ -91,15 +101,14 @@ export default function MessageRoom(props) {
 
   const [message, setMessage] = useState("");
   const [chat_messages, setchat_messages] = useState([]);
-  let connection_id = props.route.params.connection_data.id;
-  let message_room_id = props.route.params.message_room_id;
-  // console.log(props);
+  const connection_id = props.route.params.connection_id;
+  const message_room_id = props.route.params.message_room_id;
+  const full_name = props.route.params.full_name;
   let payload = {
     message: message,
     message_room_id: message_room_id,
   };
   const sendMessage = () => {
-    console.log(message);
     if (message.trim() != "") {
       axios
         .post("http://10.0.2.2:5000/message", payload, {
@@ -109,7 +118,6 @@ export default function MessageRoom(props) {
           },
         })
         .then((response) => {
-          console.log(response);
           setchat_messages([...chat_messages, response.data]);
           setMessage("");
         })
@@ -127,7 +135,6 @@ export default function MessageRoom(props) {
         },
       })
       .then((response) => {
-        console.log(response.data.messages);
         setchat_messages(response.data.messages);
       })
       .catch((err) => {
@@ -137,14 +144,15 @@ export default function MessageRoom(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>
-        {props.route.params.connection_data.full_name}
-      </Text>
+      <View style={styles.titlecontainer}>
+        <Text style={styles.title}>{full_name}</Text>
+      </View>
       <ScrollView
         ref={scrollRef}
         onContentSizeChange={() => {
           scrollRef.current.scrollToEnd({ animated: true });
         }}
+        contentContainerStyle={{}}
       >
         {chat_messages.map((item, key) => {
           return (
@@ -161,31 +169,56 @@ export default function MessageRoom(props) {
                   style={[
                     styles.balloon,
                     userId !== item["sender_id"]
-                      ? { backgroundColor: "#aaa" }
-                      : { backgroundColor: "#1084ff" },
+                      ? { backgroundColor: "#ccc" }
+                      : { backgroundColor: "#3393FF" },
                   ]}
                 >
                   {/* <Text>{item["sender_id"]}</Text> */}
-                  <Text style={styles.message}>{item["message"]}</Text>
-                  <Text style={styles.timestamp}>{item["timestamp"]}</Text>
+                  <Text
+                    style={[
+                      styles.balloon,
+                      userId !== item["sender_id"]
+                        ? { color: "black" }
+                        : { color: "#fff" },
+                      styles.message,
+                    ]}
+                  >
+                    {item["message"]}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.balloon,
+                      userId !== item["sender_id"]
+                        ? { color: "#000000" }
+                        : { color: "#ddd" },
+                      styles.timestamp,
+                    ]}
+                  >
+                    {item["timestamp"]}
+                  </Text>
                 </View>
               </View>
             </View>
           );
         })}
       </ScrollView>
-      <TextInput
-        style={styles.input}
-        multiline={true}
-        value={message}
-        onChangeText={(text) => setMessage(text)}
-        placeholder="Enter messge"
-      />
-      <Button
-        style={styles.button}
-        onPress={() => sendMessage()}
-        title="Send"
-      ></Button>
+      <View style={styles.footer}>
+        <TextInput
+          style={styles.input}
+          multiline={true}
+          value={message}
+          onChangeText={(text) => setMessage(text)}
+          placeholder="Enter messge"
+        />
+        <Icon
+          iconStyle={{ color: "#3393FF" }}
+          name="send"
+          type="material"
+          size={40}
+          onPress={() => sendMessage()}
+        />
+        {/* <Button onPress={() => sendMessage()} title="Send"></Button> */}
+      </View>
     </SafeAreaView>
   );
 }
