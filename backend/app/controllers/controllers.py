@@ -514,7 +514,8 @@ def upload_paper():
         f = request.files['file']
         data = request.get_json()
 
-        print(data)
+        # print(data)
+        print(f)
 
         if f != None:
             return Response('received file', status=200, mimetype='application/json');

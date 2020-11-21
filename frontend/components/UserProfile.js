@@ -69,23 +69,29 @@ export default function UserProfile(props) {
     console.log("Upload paper");
     try {
       const res = await DocumentPicker.getDocumentAsync();
-      console.log(res);
+      // console.log(res);
       if (res.type == "cancel") {
         alert("User Cancelled");
       } else {
         setFile(res);
-        if (file != null) {
-          console.log(file.name);
-          console.log(file.uri, file.size);
+        if (File != null) {
+          console.log("File");
+          console.log(File);
+          // console.log(File.uri, File.size);
 
           const payload = new FormData();
-          payload.append("name", file.name);
-          payload.append("file", file);
-
+          payload.append("name", File.name);
+          payload.append("file", {
+            uri: File.uri,
+            name: File.name,
+            type: "application/pdf",
+          });
+          console.log("Payload");
+          console.log(payload);
           await axios
-            .post("http://10.0.2.2/upload", payload, {
+            .post("http://10.0.2.2:5000/upload", payload, {
               headers: {
-                "content-type": "multipart/form-data",
+                "Content-type": "multipart/form-data",
                 Authorization: "Bearer " + jwtToken,
               },
             })
