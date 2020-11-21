@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   Linking,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 const styles = StyleSheet.create({
   Heading: {
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
 
 export default function PaperDetails(props) {
   let paper = props.route.params.paper;
+  const jwtToken = useSelector((state) => state.login.jwtToken);
 
   let _goToURL = (url) => {
     Linking.canOpenURL(url).then((supported) => {
@@ -67,6 +69,11 @@ export default function PaperDetails(props) {
       }
     });
   };
+  useEffect(() => {
+    if (!jwtToken && jwtToken === undefined && jwtToken === "") {
+      props.navigation.push("Login");
+    }
+  });
   console.log(props);
   return (
     <ScrollView style={styles.container}>

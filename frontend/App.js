@@ -38,7 +38,6 @@ import EditProfile from "./components/EditProfile";
 import { Button } from "react-native";
 
 import { logout } from "./Actions/LoginAction.js";
-import { useDispatch, useSelector } from "react-redux";
 
 import { Icon } from "react-native-elements";
 
@@ -204,13 +203,12 @@ export default function App() {
     );
   }
 
-  const logOut = (navigation, dispatch) => {
-    dispatch(logout());
+  const logOut = (navigation) => {
+    store.dispatch(logout());
     navigation.push("Login");
   };
 
-  function HomeDrawer(dispatch) {
-    const dimensions = useWindowDimensions();
+  function HomeDrawer() {
     return (
       <Drawer.Navigator
         initialRouteName="Home"
@@ -230,13 +228,13 @@ export default function App() {
             <DrawerItemList {...props} />
             <DrawerItem
               label="Logout"
-              onPress={() => logOut(props.navigation, dispatch)}
+              onPress={() => logOut(props.navigation)}
             />
           </DrawerContentScrollView>
         )}
       >
         <Drawer.Screen name="Home" component={homeStack} />
-        <Drawer.Screen name="Connections Requests" component={requestStack} />
+        <Drawer.Screen name="Connection Requests" component={requestStack} />
         <Drawer.Screen name="My Profile" component={profileStack} />
         <Drawer.Screen name="My Messages" component={messageStack} />
       </Drawer.Navigator>
@@ -266,7 +264,7 @@ export default function App() {
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen
               name="Home"
-              component={() => HomeDrawer(useDispatch())}
+              component={HomeDrawer}
               options={{ headerShown: false }}
             />
             <Stack.Screen name="Profile" component={Profile} />

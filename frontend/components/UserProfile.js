@@ -95,13 +95,13 @@ export default function UserProfile(props) {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state) => state.login.jwtToken);
   const [File, setFile] = useState(null);
-
-  const user = jwt_decode(jwtToken)["user"];
-
-  dispatch(profileName(user["full_name"]));
-  dispatch(profileInterests(user["interests"].join(",")));
-  dispatch(profileScholarLink(user["scholars_link"]));
-
+  var user = {};
+  if (jwtToken != undefined && jwtToken != "" && jwtToken) {
+    user = jwt_decode(jwtToken)["user"];
+    dispatch(profileName(user["full_name"]));
+    dispatch(profileInterests(user["interests"].join(",")));
+    dispatch(profileScholarLink(user["scholars_link"]));
+  }
   const uploadPaper = async () => {
     console.log("Upload paper");
     try {
@@ -166,53 +166,49 @@ export default function UserProfile(props) {
   // console.log();
   return (
     <SafeAreaView style={styles.container}>
-      <Image
-        style={styles.imageStyle}
-        source={{
-          uri:
-            "https://nwsid.net/wp-content/uploads/2015/05/dummy-profile-pic.png",
-        }}
-      />
-      <View style={styles.flexCol}>
-        {/* <Text style={styles.label}>Full Name: </Text> */}
-        <Text style={styles.title}>{user["full_name"]}</Text>
-      </View>
-      <View style={styles.flexCol}>
-        {/* <Text style={styles.label}>Email: </Text> */}
-        <Text style={styles.subTitle}>{user["email"]}</Text>
-      </View>
-      <View style={styles.userInfo}>
-        {user["interests"] &&
-          user["interests"].length > 0 &&
-          user["interests"][0] != "" && (
-            <View style={styles.flexCol}>
-              <Text style={styles.label}>Interests: </Text>
-              <Text style={styles.value}>{user["interests"].join(", ")}</Text>
+      {jwtToken != undefined && jwtToken != "" && jwtToken && (
+        <>
+          <View style={styles.flexCol}>
+            <Text style={styles.label}>Full Name: </Text>
+            <Text style={styles.value}>{user["full_name"]}</Text>
+          </View>
+          <View style={styles.flexCol}>
+            <Text style={styles.label}>Email: </Text>
+            <Text style={styles.value}>{user["email"]}</Text>
+          </View>
+
+          {user["interests"] &&
+            user["interests"].length > 0 &&
+            user["interests"][0] != "" && (
+              <View style={styles.flexCol}>
+                <Text style={styles.label}>Interests: </Text>
+                <Text style={styles.value}>{user["interests"].join(", ")}</Text>
+              </View>
+            )}
+          {user["scholars_link"] != "" && (
+            <View style={styles.flexrow}>
+              <Text style={styles.label}>Google Scholar Link: </Text>
+              <Text style={styles.urlText}>{user["scholars_link"]}</Text>
             </View>
           )}
-        {user["scholars_link"] != "" && (
-          <View style={styles.flexrow}>
-            <Text style={styles.label}>Google Scholar Link: </Text>
-            <Text style={styles.urlText}>{user["scholars_link"]}</Text>
-          </View>
-        )}
-      </View>
-      <TouchableOpacity
-        onPress={() => {
-          props.navigation.navigate("Edit Profile");
-        }}
-        style={styles.connectbutton}
-      >
-        <Text style={styles.connectbuttonText}>Edit Profile</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          uploadPaper();
-        }}
-        style={styles.connectbutton}
-      >
-        <Text style={styles.connectbuttonText}>Upload Paper</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.navigate("EditProfile");
+            }}
+            style={styles.connectbutton}
+          >
+            <Text style={styles.connectbuttonText}>Edit Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              uploadPaper();
+            }}
+            style={styles.connectbutton}
+          >
+            <Text style={styles.connectbuttonText}>Upload Paper</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </SafeAreaView>
   );
 }

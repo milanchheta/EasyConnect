@@ -56,19 +56,23 @@ export default function Messages(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
   const [messages, setmessages] = useState([]);
   useEffect(() => {
-    axios
-      .get("http://10.0.2.2:5000/message_rooms", {
-        headers: {
-          "content-type": "application/json",
-          Authorization: "Bearer " + jwtToken,
-        },
-      })
-      .then((response) => {
-        setmessages(response.data);
-      })
-      .catch((err) => {
-        console.log("Error fetching data");
-      });
+    if (jwtToken && jwtToken != undefined && jwtToken != "") {
+      axios
+        .get("http://10.0.2.2:5000/message_rooms", {
+          headers: {
+            "content-type": "application/json",
+            Authorization: "Bearer " + jwtToken,
+          },
+        })
+        .then((response) => {
+          setmessages(response.data);
+        })
+        .catch((err) => {
+          console.log("Error fetching data");
+        });
+    } else {
+      props.navigation.push("Login");
+    }
   }, []);
 
   const getConnectionList = () => {

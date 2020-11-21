@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 const styles = StyleSheet.create({
   container: {
@@ -52,6 +53,7 @@ const styles = StyleSheet.create({
 
 export default function PaperList(props) {
   let paper = props.route.params.item;
+  const jwtToken = useSelector((state) => state.login.jwtToken);
 
   const onPaperClick = (paper) => {
     props.navigation.navigate("Paper Details", { paper });
@@ -68,7 +70,11 @@ export default function PaperList(props) {
       </View>
     </TouchableOpacity>
   );
-
+  useEffect(() => {
+    if (!jwtToken && jwtToken === undefined && jwtToken === "") {
+      props.navigation.push("Login");
+    }
+  });
   const renderItem = ({ item }) => {
     {
       console.log(item);

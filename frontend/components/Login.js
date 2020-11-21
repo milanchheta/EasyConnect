@@ -147,7 +147,6 @@ export default function Login(props) {
         .catch((err) => {
           setlogin_error(true);
           console.log(err);
-          console.log("Invalid Credentials");
         });
     }
   };
