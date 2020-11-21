@@ -26,10 +26,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    color: "#7A1705",
   },
   subtitle: {
     fontSize: 15,
-    color: "#aaa",
+    color: "#4A3C31",
   },
   addMessage: {
     margin: 15,
@@ -97,7 +98,7 @@ export default function Messages(props) {
       })
       .then((response) => {
         let message_room_id = response.data.message_room_id;
-        props.navigation.navigate("MessageRoom", {
+        props.navigation.navigate("Message Room", {
           message_room_id: message_room_id,
           connection_id: response.data.connection_id,
           full_name: item.full_name,

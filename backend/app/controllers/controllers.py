@@ -123,7 +123,10 @@ def update_recomendations(user):
 
     recommendation_col = Recommendations_collections.find_one({"user_id": user["id"]})
     # interests = user["interests"]
-    user_keywords = user["keywords"] + user["interests"]
+    if user["keywords"]:
+        user_keywords = user["keywords"] + user["interests"]
+    else:
+        user_keywords = user["interests"]
 
     print(user_keywords)
 

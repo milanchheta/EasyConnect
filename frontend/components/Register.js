@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // justifyContent: "center",
     // alignItems: "center",
+    backgroundColor: "#fff",
   },
   input: {
     borderStartWidth: 2,
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     backgroundColor: "#fff",
     borderColor: "#aaa",
-    width: 300,
+    width: 350,
   },
   signupbuttonText: {
     color: "white",
@@ -49,22 +50,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderRadius: 20,
-    width: 150,
-    backgroundColor: "#00BFFF",
-    marginTop: 10,
+    width: 200,
+    backgroundColor: "#900",
+    marginTop: 50,
     marginBottom: 10,
   },
   greeting: {
     fontSize: 25,
     fontWeight: "600",
-    color: "#008000",
+    color: "#fff",
     letterSpacing: 5,
     marginTop: 20,
   },
   brand: {
     fontSize: 40,
-    fontWeight: "700",
-    color: "#3CB371",
+    fontWeight: "bold",
+    color: "#7A1705",
     letterSpacing: 3,
     marginTop: 5,
     // marginBottom: 5,
@@ -241,7 +242,7 @@ export default function Register(props) {
         style={styles.input}
         onChangeText={(text) => dispatch(registerInterests(text))}
         value={interests}
-        placeholder="Add your research interests"
+        placeholder="Research interest(comma seperated)"
       />
       <TouchableOpacity
         style={styles.signupbutton}

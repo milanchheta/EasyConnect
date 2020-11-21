@@ -23,9 +23,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: "center",
-    // backgroundColor: "#F0FFF0",
+    backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 40,
+    paddingTop: 90,
+    // marginTop: 50,
   },
   input: {
     borderStartWidth: 2,
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderRadius: 20,
     padding: 10,
-    fontSize: 20,
+    fontSize: 18,
     // textAlign: "center",
     backgroundColor: "#fff",
     borderColor: "#aaa",
@@ -49,19 +50,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   editbutton: {
+    marginTop: 100,
     alignItems: "center",
     padding: 10,
     borderRadius: 20,
-    width: 150,
-    backgroundColor: "#00BFFF",
+    width: 300,
+    backgroundColor: "#4A3C31",
     marginVertical: 20,
   },
   label: {
     marginTop: 20,
     fontSize: 20,
     fontWeight: "700",
-    color: "#90EE90",
-    alignItems: "flex-start",
+    color: "#900",
+    alignSelf: "flex-start",
+    marginLeft: 30,
+    marginBottom: 5,
   },
 });
 
@@ -134,7 +138,7 @@ export default function EditProfile(props) {
             let jwt_token = response["data"]["token"];
             setregister_error(false);
             dispatch(storeJwtToken(jwt_token));
-            props.navigation.navigate("UserProfile");
+            props.navigation.navigate("My Profile");
           }
         })
         .catch((error) => {

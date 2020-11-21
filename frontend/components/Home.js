@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: 30,
-    color: "#008000",
+    color: "#7A1705",
   },
   subtitle: {
     fontSize: 15,

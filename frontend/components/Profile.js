@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    marginTop: 30,
     // backgroundColor: "#F0FFF0",
   },
   title: {
@@ -31,12 +32,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     alignSelf: "center",
     marginVertical: 10,
-    color: "#90EE90",
+    color: "#7A1705",
   },
   Heading: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#90EE90",
+    color: "#900",
     marginTop: 10,
   },
   item: {
@@ -48,6 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: "#F0FFF0",
     marginHorizontal: 20,
+    marginTop: 60,
   },
   flexCol: {
     // flexDirection: "row",
@@ -64,8 +66,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     padding: 10,
     borderRadius: 20,
-    width: 200,
-    backgroundColor: "#90EE90",
+    width: 250,
+    backgroundColor: "#4A3C31",
     marginVertical: 20,
   },
   urlButton: {
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20,
     width: 300,
-    backgroundColor: "#90EE90",
+    backgroundColor: "#900",
     marginVertical: 10,
   },
   centeredView: {
@@ -173,7 +175,7 @@ export default function Profile(props) {
       .then((response) => {
         let message_room_id = response.data.message_room_id;
         console.log("id here", item.researcher);
-        props.navigation.navigate("MessageRoom", {
+        props.navigation.navigate("Message Room", {
           message_room_id: message_room_id,
           connection_id: response.data.connection_id,
           full_name: item.researcher,
@@ -200,7 +202,7 @@ export default function Profile(props) {
 
       {(requested || received || messageButton || connectButton) && (
         <TouchableOpacity
-          style={styles.urlButton}
+          style={styles.connectbutton}
           onPress={() => {
             connectButton
               ? request()
@@ -261,14 +263,14 @@ export default function Profile(props) {
             setModalVisible(true);
           }}
         >
-          <Text style={styles.connectbuttonText}>Information</Text>
+          <Text style={styles.connectbuttonText}>Basic Information</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.urlButton}
           onPress={() => _goToURL(item.scholars_link)}
         >
-          <Text style={styles.connectbuttonText}>Scholars Profile</Text>
+          <Text style={styles.connectbuttonText}>Google Scholar Profile</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.urlButton}
@@ -280,7 +282,7 @@ export default function Profile(props) {
         <TouchableOpacity
           style={styles.urlButton}
           onPress={() => {
-            props.navigation.navigate("PaperList", { item });
+            props.navigation.navigate("Paper List", { item });
           }}
         >
           <Text style={styles.connectbuttonText}>List of Papers</Text>

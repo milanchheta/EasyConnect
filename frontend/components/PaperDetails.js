@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   Heading: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#90EE90",
+    color: "#7A1705",
   },
   titleHead: {
     fontSize: 25,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20,
     width: 300,
-    backgroundColor: "#90EE90",
+    backgroundColor: "#900",
     marginVertical: 10,
   },
 });

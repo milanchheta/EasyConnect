@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: 30,
-    color: "#008000",
+    color: "#7A1705",
   },
   subtitle: {
     fontSize: 15,
@@ -54,7 +54,7 @@ export default function PaperList(props) {
   let paper = props.route.params.item;
 
   const onPaperClick = (paper) => {
-    props.navigation.navigate("PaperDetails", { paper });
+    props.navigation.navigate("Paper Details", { paper });
   };
 
   const Item = ({ item, onPress, style }) => (

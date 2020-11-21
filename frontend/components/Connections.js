@@ -25,10 +25,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    color: "#7A1705",
   },
   subtitle: {
     fontSize: 15,
-    color: "#aaa",
+    color: "#4A3C31",
   },
   nullMessage: {
     flex: 1,

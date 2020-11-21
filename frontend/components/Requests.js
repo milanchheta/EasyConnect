@@ -25,10 +25,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    color: "#7A1705",
   },
   subtitle: {
     fontSize: 15,
-    color: "#aaa",
+    color: "#4A3C31",
   },
   connectbuttonText: {
     color: "white",
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 20,
     width: 100,
-    backgroundColor: "#90EE90",
+    backgroundColor: "#900",
   },
   nullMessage: {
     flex: 1,
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  nullText: { fontSize: 25 },
+  nullText: { fontSize: 25, color: "#4A3C31" },
 });
 export default function Requests(props) {
   const [requests, setrequests] = useState([]);

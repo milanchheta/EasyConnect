@@ -41,14 +41,16 @@ const styles = StyleSheet.create({
     borderBottomColor: "#aaa",
     borderBottomWidth: 2,
     width: "100%",
-    color: "#fff",
+    color: "#900",
+    paddingLeft: 20,
   },
   subtitle: {
     fontSize: 15,
     color: "#aaa",
   },
   titlecontainer: {
-    backgroundColor: "#3CB371",
+    backgroundColor: "#fff",
+    // paddingLeft: 10,
   },
   input: {
     flex: 1,
@@ -172,7 +174,7 @@ export default function MessageRoom(props) {
                     styles.balloon,
                     userId !== item["sender_id"]
                       ? { backgroundColor: "#ccc" }
-                      : { backgroundColor: "#3393FF" },
+                      : { backgroundColor: "#900" },
                   ]}
                 >
                   {/* <Text>{item["sender_id"]}</Text> */}

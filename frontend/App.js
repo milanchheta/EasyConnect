@@ -6,8 +6,19 @@ import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItem,
+  DrawerView,
   DrawerItemList,
 } from "@react-navigation/drawer";
+import {
+  FlatList,
+  SafeAreaView,
+  StatusBar,
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { Provider } from "react-redux";
 import { store, persistor } from "./store.js";
 import { PersistGate } from "redux-persist/integration/react";
@@ -31,6 +42,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Icon } from "react-native-elements";
 
+import { useWindowDimensions } from "react-native";
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -40,7 +53,7 @@ export default function App() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#3CB371",
+            backgroundColor: "#7A1705",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -74,7 +87,7 @@ export default function App() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#3CB371",
+            backgroundColor: "#7A1705",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -108,7 +121,7 @@ export default function App() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#3CB371",
+            backgroundColor: "#7A1705",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -159,7 +172,7 @@ export default function App() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#3CB371",
+            backgroundColor: "#7A1705",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -197,9 +210,21 @@ export default function App() {
   };
 
   function HomeDrawer(dispatch) {
+    const dimensions = useWindowDimensions();
     return (
       <Drawer.Navigator
         initialRouteName="Home"
+        screenOptions={{
+          // drawerLabel: {
+          //   color: "#7A1705",
+          // },
+          // headerShown: true,
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+        drawerType={dimensions.width >= 768 ? "permanent" : "front"}
         drawerContent={(props) => (
           <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
@@ -225,7 +250,7 @@ export default function App() {
             initialRouteName="Login"
             screenOptions={{
               headerStyle: {
-                backgroundColor: "#3CB371",
+                backgroundColor: "#7A1705",
               },
               headerTintColor: "#fff",
               headerTitleStyle: {
@@ -245,11 +270,11 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="PaperList" component={PaperList} />
-            <Stack.Screen name="PaperDetails" component={PaperDetails} />
+            <Stack.Screen name="Paper List" component={PaperList} />
+            <Stack.Screen name="Paper Details" component={PaperDetails} />
             <Stack.Screen name="Connections" component={Connections} />
-            <Stack.Screen name="MessageRoom" component={MessageRoom} />
-            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="Message Room" component={MessageRoom} />
+            <Stack.Screen name="Edit Profile" component={EditProfile} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>
