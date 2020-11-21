@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Text,
+  SafeAreaView,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,21 +15,22 @@ import {
   storeJwtToken,
 } from "../Actions/LoginAction";
 import axios from "axios";
+import { ScrollView } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#F0FFF0",
-    alignItems: "center",
+    // justifyContent: "center",
+    // backgroundColor: "#F0FFF0",
+    // alignItems: "center",
   },
   loginbutton: {
     alignItems: "center",
-    padding: 10,
+    padding: 12,
     borderRadius: 20,
-    width: 150,
+    width: 300,
     backgroundColor: "#90EE90",
-    marginVertical: 20,
+    marginBottom: 15,
   },
   signupbutton: {
     alignItems: "center",
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     color: "#3CB371",
     letterSpacing: 3,
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 15,
   },
 
   input: {
@@ -150,8 +152,15 @@ export default function Login(props) {
     }
   };
   return (
-    <View style={styles.container}>
-      <Text style={styles.greeting}>welcome to</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* <Text style={styles.greeting}>welcome to</Text> */}
       <Text style={styles.brand}>EasyConnect</Text>
       <Text style={styles.error}>{login_error && `Invalid credentials`}</Text>
       <TextInput
@@ -191,6 +200,6 @@ export default function Login(props) {
       >
         <Text style={styles.signupbuttonText}>Sign Up Here</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }

@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Text,
+  ScrollView,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -21,9 +22,8 @@ import {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#F0FFF0",
-    alignItems: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
   },
   input: {
     borderStartWidth: 2,
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     color: "#3CB371",
     letterSpacing: 3,
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 15,
   },
   error: {
     marginBottom: 10,
@@ -179,8 +179,15 @@ export default function Register(props) {
     }
   };
   return (
-    <View style={styles.container}>
-      <Text style={styles.greeting}>welcome to</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* <Text style={styles.greeting}>welcome to</Text> */}
       <Text style={styles.brand}>EasyConnect</Text>
       <Text style={styles.error}>
         {register_error && `User already exists. Please login`}
@@ -244,6 +251,6 @@ export default function Register(props) {
       >
         <Text style={styles.signupbuttonText}>Create Account</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }

@@ -20,6 +20,8 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    flex: 1,
+    flexDirection: "row",
   },
   title: {
     fontSize: 20,
@@ -27,6 +29,20 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 15,
     color: "#aaa",
+  },
+  connectbuttonText: {
+    color: "white",
+    fontWeight: "700",
+    fontSize: 16,
+    alignSelf: "center",
+  },
+  connectbutton: {
+    alignSelf: "center",
+    marginLeft: "auto",
+    padding: 5,
+    borderRadius: 20,
+    width: 100,
+    backgroundColor: "#90EE90",
   },
 });
 export default function Requests(props) {
@@ -82,10 +98,15 @@ export default function Requests(props) {
 
   const Item = ({ item, style }) => (
     <View style={[styles.item, style]}>
-      <Text style={styles.title}>{item.full_name}</Text>
-      <Text style={styles.subtitle}>{item.email}</Text>
-      <TouchableOpacity onPress={() => acceptRequest(item)}>
-        <Text>Accept Request</Text>
+      <View>
+        <Text style={styles.title}>{item.full_name}</Text>
+        <Text style={styles.subtitle}>{item.email}</Text>
+      </View>
+      <TouchableOpacity
+        style={styles.connectbutton}
+        onPress={() => acceptRequest(item)}
+      >
+        <Text style={styles.connectbuttonText}>Accept</Text>
       </TouchableOpacity>
     </View>
   );
