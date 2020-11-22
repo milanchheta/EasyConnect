@@ -226,6 +226,7 @@ export default function Register(props) {
         style={styles.input}
         onChangeText={(text) => dispatch(registerPassword(text))}
         value={password}
+        secureTextEntry={true}
         placeholder="Password*"
       />
       <Text style={styles.error}>
@@ -235,6 +236,7 @@ export default function Register(props) {
         style={styles.input}
         onChangeText={(text) => dispatch(registerConfirmPassword(text))}
         value={confirmPassword}
+        secureTextEntry={true}
         placeholder="Confirm Password*"
       />
       <Text style={styles.error}>
