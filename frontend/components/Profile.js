@@ -256,8 +256,12 @@ export default function Profile(props) {
           <View style={styles.modalView}>
             <Text style={styles.Heading}>Affiliation: </Text>
             <Text style={styles.item}>{item.affiliation}</Text>
-            <Text style={styles.Heading}>Interests: </Text>
-            <Text style={styles.item}>{item.interests.join(", ")}</Text>
+            {item.interests && (
+              <>
+                <Text style={styles.Heading}>Interests: </Text>
+                <Text style={styles.item}>{item.interests.join(", ")}</Text>
+              </>
+            )}
             <Text style={styles.Heading}>Email: </Text>
             <Text style={styles.item}>{item.email}</Text>
             <Text style={styles.Heading}>Cited By: </Text>
