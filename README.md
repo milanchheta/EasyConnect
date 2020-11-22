@@ -48,7 +48,7 @@
 
 Follow the below steps:
 
-- Install the provided apk file `/easyconnect.apk` in an android phone.
+- Install the provided apk file from `apk/` folder in an android phone.
 - Good to go. Now you can start using the application.
 
 ### Testing application on local environment:
