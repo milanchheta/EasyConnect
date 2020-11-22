@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +31,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 50,
+    // marginTop: 50,
+    padding: 25,
     alignItems: "center",
   },
   label: {
@@ -181,7 +183,7 @@ export default function UserProfile(props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {jwtToken != undefined && jwtToken != "" && jwtToken && (
         <>
           <TouchableOpacity onPress={() => imageUpload()}>
@@ -235,6 +237,6 @@ export default function UserProfile(props) {
           </TouchableOpacity>
         </>
       )}
-    </SafeAreaView>
+    </ScrollView>
   );
 }
