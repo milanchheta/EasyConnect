@@ -9,6 +9,11 @@ const initialState = {
   interests: "",
 };
 
+/**
+ * Reducer to handle the actions dispatched during new user registration for the application.
+ * @param {state} state present state of the redux store. If not present, falls back to the initial state.
+ * @param {action} action action dispatched by the react component.
+ */
 const registerReducer = (state = initialState, action) => {
   switch (action.type) {
     case "ONCHANGE_EMAIL_REGISTER":

@@ -6,6 +6,11 @@ const initialState = {
   interests: "",
 };
 
+/**
+ * Reducer to handle the actions dispatched during profile edit.
+ * @param {state} state present state of the redux store. If not present, falls back to the initial state.
+ * @param {action} action action dispatched by the react component.
+ */
 const profileReducer = (state = initialState, action) => {
   switch (action.type) {
     case "ONCHANGE_NAME_PROFILE":

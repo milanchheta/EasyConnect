@@ -6,6 +6,11 @@ const initialState = {
   jwtToken: "",
 };
 
+/**
+ * Reducer to handle the actions dispatched during login.
+ * @param {state} state present state of the redux store. If not present, falls back to the initial state.
+ * @param {action} action action dispatched by the react component.
+ */
 const loginReducer = (state = initialState, action) => {
   switch (action.type) {
     case "ON_CHANGE_LOGIN_EMAIL":

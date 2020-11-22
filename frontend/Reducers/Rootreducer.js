@@ -5,6 +5,9 @@ import registerReducer from "./RegisterReducer";
 import RecommendationsReducer from "./RecommendationsReducer";
 import profileReducer from "./ProfileReducer";
 
+/**
+ * Combine all reducers under one roof, app reducer.
+ */
 const appReducer = combineReducers({
   login: loginReducer,
   register: registerReducer,
