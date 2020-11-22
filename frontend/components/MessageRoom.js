@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { SafeAreaView, View, StyleSheet, Text, TextInput } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  Keyboard,
+} from "react-native";
 
 import { Icon } from "react-native-elements";
 import axios from "axios";
@@ -157,7 +164,12 @@ export default function MessageRoom(props) {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={styles.container}
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
       <View style={styles.titlecontainer}>
         <Text style={styles.title}>{full_name}</Text>
       </View>
@@ -167,6 +179,9 @@ export default function MessageRoom(props) {
           scrollRef.current.scrollToEnd({ animated: true });
         }}
         contentContainerStyle={{}}
+        onScroll={() => {
+          Keyboard.dismiss();
+        }}
       >
         {chat_messages.map((item, key) => {
           return (

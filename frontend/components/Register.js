@@ -6,6 +6,7 @@ import {
   Text,
   View,
   ActivityIndicator,
+  Keyboard,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -215,6 +216,12 @@ export default function Register(props) {
         flexGrow: 1,
         alignItems: "center",
         justifyContent: "center",
+      }}
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+      onScroll={() => {
+        Keyboard.dismiss();
       }}
     >
       {activity ? (

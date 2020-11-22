@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  Keyboard,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateLoginEmail,
@@ -167,6 +173,12 @@ export default function Login(props) {
         flexGrow: 1,
         alignItems: "center",
         justifyContent: "center",
+      }}
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+      onScroll={() => {
+        Keyboard.dismiss();
       }}
     >
       <Text style={styles.brand}>EasyConnect</Text>

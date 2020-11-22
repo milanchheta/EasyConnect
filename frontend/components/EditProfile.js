@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  Keyboard,
 } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -185,6 +186,12 @@ export default function EditProfile(props) {
         backgroundColor: "#fff",
       }}
       // style={styles.container}
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+      onScroll={() => {
+        Keyboard.dismiss();
+      }}
     >
       {activity ? (
         <View style={[styles.container, styles.horizontal]}>
