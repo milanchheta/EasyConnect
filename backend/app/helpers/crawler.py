@@ -1,3 +1,10 @@
+ '''
+This file was used to fetch data from google scholarly, generate 
+keywords and tos tore data in mongodb database
+'''
+'''
+Import statements
+'''
 from scholarly import scholarly
 import requests
 from flask import Response
@@ -5,6 +12,9 @@ from tokenizor import populate_keyword
 import json
 from dbConfig import databaseSetup
 
+'''
+Get author's details from scholarly api provided a name
+'''
 def getAurthorObj(name):
     try:
         search_query = scholarly.search_author(name)
@@ -13,12 +23,21 @@ def getAurthorObj(name):
     except:
         return None
 
+'''
+Get author's interests from scholarly api 
+'''
 def getAuthorInterests(author):
     return author.interests
     
+'''
+Get a author's list of publications from scholarly api 
+'''
 def getPublicationList(author):
     return author.publications
 
+'''
+Get abstract of a publication from scholarly api
+'''
 def getAllAbstract(pubList,author):
     res=[]
     for i in range(len(pubList)):
@@ -32,49 +51,54 @@ def getAllAbstract(pubList,author):
             pass
     return res
 
+'''
+Process to fecth details from scholarly and store in database 
+'''
 if __name__ == "__main__":
-    # author = getAurthorObj("Patrick")
-    # pub_list = getPublicationList(author)
-    # print(author.interests)
-
     dbObj = databaseSetup()
     collection=dbObj['ScholarList']
-    # # print(col.find_one({},{"Adeel Bhutta":1}))
+    '''
+    Get data stored in json file for researchers
+    '''
     with open('researchersList.json', 'r') as f:
         data=json.load(f)
+
     for department in data:
-    #     i=0
-        print('---------------{}--------------------'.format(department))
         for entry in data[department]:
-            print('---------------{}'.format(entry))
             author = getAurthorObj(entry["name"])
             if author==None:
                 continue
-    #         pub_list = getPublicationList(author)
-    #         abs_val = getAllAbstract(pub_list,author)
-    #         researcher = {}
-    #         papers=[]
             try: 
-                collection.update_one({"id":author.id},{"$set":{"interests":author.interests}})
-    #             researcher['researcher'] = entry["name"]
-    #             researcher['scholars_link'] = "https://scholar.google.com/citations?user="+author.id
-    #             researcher['iu_link'] = entry['url']
-    #             researcher['id']=author.id
-    #             researcher['url_picture']=author.url_picture
-    #             researcher['email']=author.email
-    #             researcher['citedby']=author.citedby
-    #             researcher['affiliation']=author.affiliation
+                '''
+                Fetch required data from scholarly returned object
+                '''
+                researcher['researcher'] = entry["name"]
+                researcher['scholars_link'] = "https://scholar.google.com/citations?user="+author.id
+                researcher['iu_link'] = entry['url']
+                researcher['id']=author.id
+                researcher['url_picture']=author.url_picture
+                researcher['email']=author.email
+                researcher['citedby']=author.citedby
+                researcher['affiliation']=author.affiliation
+                researcher['interests']=author.interests
             except: 
                 continue
-    #         for el in abs_val:
-    #             if "abstract" in el:
-    #                 try: 
-    #                     keywords = populate_keyword(el["abstract"])
-    #                 except: 
-    #                     continue
-    #                 el['keywords']=keywords
-    #                 papers.append(el)
-    #         researcher['papers']=papers
-    #         collection.insert_one(researcher)
+            '''
+            Generate keywords for a publications abstract
+            ''' 
+            for el in abs_val:
+                if "abstract" in el:
+                    try:
+                        keywords = populate_keyword(el["abstract"])
+                    except: 
+                        continue
+                    el['keywords']=keywords
+                    papers.append(el)
+            researcher['papers']=papers
+
+            '''
+            Store data in databse
+            ''' 
+            collection.insert_one(researcher)
 
  

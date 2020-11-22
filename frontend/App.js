@@ -10,7 +10,6 @@ import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItem,
-  DrawerView,
   DrawerItemList,
 } from "@react-navigation/drawer";
 
@@ -170,7 +169,7 @@ export default function App() {
    */
   const getConnectionList = () => {
     axios
-      .get("http://10.0.2.2:5000/connect", {
+      .get(BASE_URL + "/connect", {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,

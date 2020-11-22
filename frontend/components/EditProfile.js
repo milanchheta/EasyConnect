@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  FlatList,
   SafeAreaView,
-  StatusBar,
-  View,
   StyleSheet,
   Text,
   TextInput,
@@ -11,13 +8,13 @@ import {
 } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import jwt_decode from "jwt-decode";
 import {
   profileName,
   profileScholarLink,
   profileInterests,
 } from "../Actions/ProfileAction";
 import { storeJwtToken } from "../Actions/LoginAction";
+import BASE_URL from "./BASE_URL";
 
 /**
  * Stylesheet for the Edit profile component.
@@ -139,7 +136,7 @@ export default function EditProfile(props) {
        * Http request to update the profile based on new details.
        */
       axios
-        .put("http://10.0.2.2:5000/profile", payload, {
+        .put(BASE_URL + "/profile", payload, {
           headers: {
             "content-type": "application/json",
             Authorization: "Bearer " + jwtToken,

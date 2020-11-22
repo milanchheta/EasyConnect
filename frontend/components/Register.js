@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
@@ -18,6 +12,7 @@ import {
   registerScholarLink,
   registerInterests,
 } from "../Actions/RegisterAction";
+import BASE_URL from "./BASE_URL";
 
 /**
  * Stylesheet for the register component.
@@ -162,7 +157,7 @@ export default function Register(props) {
     if (validate()) {
       let payload = {
         full_name: fullname.trim(),
-        email: email,
+        email: email.toLowerCase(),
         password: password,
         scholars_link: scholar_link,
         interests: interests.split(","),
@@ -174,7 +169,7 @@ export default function Register(props) {
        * Http request for registering a new user in the system.
        */
       axios
-        .post("http://10.0.2.2:5000/register", payload, {
+        .post(BASE_URL + "/register", payload, {
           headers: {
             "content-type": "application/json",
           },
@@ -230,6 +225,7 @@ export default function Register(props) {
         style={styles.input}
         onChangeText={(text) => dispatch(registerPassword(text))}
         value={password}
+        secureTextEntry={true}
         placeholder="Password*"
       />
       <Text style={styles.error}>
@@ -239,6 +235,7 @@ export default function Register(props) {
         style={styles.input}
         onChangeText={(text) => dispatch(registerConfirmPassword(text))}
         value={confirmPassword}
+        secureTextEntry={true}
         placeholder="Confirm Password*"
       />
       <Text style={styles.error}>

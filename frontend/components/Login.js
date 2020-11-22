@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  SafeAreaView,
-} from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateLoginEmail,
@@ -16,6 +9,7 @@ import {
 } from "../Actions/LoginAction";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
+import BASE_URL from "./BASE_URL";
 
 /**
  * Stylesheet for the login page.
@@ -140,12 +134,15 @@ export default function Login(props) {
    */
   const onSubmit = () => {
     if (validate()) {
-      let payload = { email: loginEmail, password: loginPassword };
+      let payload = {
+        email: loginEmail.toLowerCase(),
+        password: loginPassword,
+      };
       /**
        * Http request to validate user login in the system and store the jwt token in app storage.
        */
       axios
-        .post("http://10.0.2.2:5000/login", payload, {
+        .post(BASE_URL + "/login", payload, {
           headers: {
             "content-type": "application/json",
           },
@@ -162,7 +159,7 @@ export default function Login(props) {
         });
     }
   };
-  
+
   return (
     <ScrollView
       style={styles.container}

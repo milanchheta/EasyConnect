@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   Text,
   ScrollView,
-  FlatList,
   Modal,
   Image,
   TouchableOpacity,
   Linking,
 } from "react-native";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import BASE_URL from "./BASE_URL";
 
 const styles = StyleSheet.create({
   imageStyle: {
@@ -24,7 +23,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 30,
+    padding: 15,
   },
   title: {
     fontSize: 30,
@@ -47,7 +46,7 @@ const styles = StyleSheet.create({
   innercontainer: {
     flex: 1,
     marginHorizontal: 20,
-    marginTop: 60,
+    padding: 30,
   },
 
   connectbuttonText: {
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: 250,
     backgroundColor: "#4A3C31",
-    marginVertical: 20,
+    marginVertical: 10,
   },
   urlButton: {
     alignSelf: "center",
@@ -119,16 +118,12 @@ export default function Profile(props) {
          * Http request to fetch the profile of each reseracher based on google scholar data.
          */
         axios
-          .get(
-            "http://10.0.2.2:5000/profile?scholars_link=" +
-              item["scholars_link"],
-            {
-              headers: {
-                "content-type": "application/json",
-                Authorization: "Bearer " + jwtToken,
-              },
-            }
-          )
+          .get(BASE_URL + "/profile?scholars_link=" + item["scholars_link"], {
+            headers: {
+              "content-type": "application/json",
+              Authorization: "Bearer " + jwtToken,
+            },
+          })
           .then((response) => {
             if (response.data == "CONNECTED") {
               setmessageButton(true);
@@ -159,7 +154,7 @@ export default function Profile(props) {
      * Http request to send the request to a connect to a researcher.
      */
     axios
-      .post("http://10.0.2.2:5000/requests", payload, {
+      .post(BASE_URL + "/requests", payload, {
         headers: {
           "content-type": "application/json",
         },
@@ -183,7 +178,8 @@ export default function Profile(props) {
      */
     axios
       .get(
-        "http://10.0.2.2:5000/message?connection_id=" +
+        BASE_URL +
+          "/message?connection_id=" +
           connectid +
           "&scholars_link=" +
           scholars_link,
