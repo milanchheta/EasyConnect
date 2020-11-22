@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   innercontainer: {
     flex: 1,
     marginHorizontal: 20,
-    marginTop: 60,
+    padding: 30,
   },
 
   connectbuttonText: {
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: 250,
     backgroundColor: "#4A3C31",
-    marginVertical: 20,
+    marginVertical: 10,
   },
   urlButton: {
     alignSelf: "center",

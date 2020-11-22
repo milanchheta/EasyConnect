@@ -3,7 +3,6 @@ import { StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
-import BASE_URL from "./BASE_URL";
 
 import {
   registerEmail,
