@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -62,12 +63,15 @@ export default function Home(props) {
   const recommendations = useSelector(
     (state) => state.recommendations.recommendations
   );
+  const [activity, setactivity] = useState(false);
 
   useEffect(() => {
     if (jwtToken && jwtToken != undefined && jwtToken != "") {
       /**
        * Http request to fetch the recommendations for the user profile.
        */
+      setactivity(true);
+
       axios
         .get(BASE_URL + "/recommendations", {
           headers: {
@@ -76,9 +80,13 @@ export default function Home(props) {
           },
         })
         .then((response) => {
+          setactivity(false);
+
           dispatch(updateRecommendations(response["data"]["researchers"]));
         })
         .catch((err) => {
+          setactivity(false);
+
           console.log("Error fetching data");
         });
     } else {
@@ -143,13 +151,21 @@ export default function Home(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.pageTitle}>Recommendations</Text>
-      <FlatList
-        data={recommendations}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={renderSeparator}
-      />
+      {activity ? (
+        <View style={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size="large" color="#900" />
+        </View>
+      ) : (
+        <>
+          <Text style={styles.pageTitle}>Recommendations</Text>
+          <FlatList
+            data={recommendations}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            ItemSeparatorComponent={renderSeparator}
+          />
+        </>
+      )}
     </SafeAreaView>
   );
 }
