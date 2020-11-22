@@ -1,3 +1,11 @@
+'''
+This file consists all the endpoints 
+that services the frontend requests
+'''
+
+'''
+Import statements
+'''
 from flask import Blueprint,request,Response,jsonify
 from ..helpers.dbConfig import databaseSetup
 from ..helpers.tokenizor import compute_similarity
@@ -14,11 +22,16 @@ import PyPDF2
 import os
 from ..helpers.tokenizor import populate_keyword
 
+'''
+App and database configuration
+'''
 dbObj = databaseSetup()
 main = Blueprint('main', __name__)
 cors = CORS(main)
-# main.config['CORS_HEADERS'] = 'Content-Type'
 
+'''
+MongoDB collections configurtions
+'''
 Users_collections=dbObj["users"]
 Recommendations_collections=dbObj["recommendations"]
 Connected_users_collections=dbObj["connected_users"]
@@ -27,8 +40,15 @@ User_messages_collections=dbObj["user_message_pair"]
 User_messages_rooms_collections=dbObj["user_message_room"]
 ScholarList_collections=dbObj["ScholarList"]
 
+'''
+Secret for jwt encoding
+'''
 SECRET_KEY="Authentication Secret Goes Here"
 
+
+'''
+Test endpoint
+'''
 @main.route('/', methods = ['GET'])
 @cross_origin()
 def index():
@@ -36,13 +56,9 @@ def index():
     return resp
 
 
-@main.route('/test', methods = ['GET'])
-@cross_origin()
-def test_connection():
-    resp = Response("EasyConnect server is up and working!", status=200, mimetype='application/json')
-    return resp
-
-
+'''
+Endpoint for user registeration
+'''
 @main.route('/register', methods = ['POST'])
 @cross_origin()
 def register_user():
@@ -52,10 +68,8 @@ def register_user():
     full_name=data['full_name']
     scholars_link=data['scholars_link']
     interests=data['interests']
+
     id = str(uuid.uuid4())
-
-    # TODO: verify scholar link.
-
     user_exists=Users_collections.find_one({"email": email})
 
     if not user_exists:  
@@ -69,6 +83,10 @@ def register_user():
         resp = Response('User already exists. Please Log in.', status=202, mimetype='application/json')
     return resp
 
+
+'''
+Endpoint for user login
+'''
 @main.route('/login', methods = ['GET','POST'])
 @cross_origin()
 def login_user():
@@ -91,6 +109,10 @@ def login_user():
     resp=('Wrong Password', 403, {'WWW-Authenticate' : 'Basic realm ="Wrong Password !!"'}) 
     return resp
 
+
+'''
+Endpoint for fetching user recommendations
+'''
 @main.route('/recommendations', methods = ['GET'])
 @cross_origin()
 def get_recommendations():
@@ -113,16 +135,13 @@ def get_recommendations():
     
         return resp
 
-# Header format:
-# Authorization: Bearer <jwt_token>
-# @main.route('/update_interests', methods = ['POST'])
+
 """
-Method to update the recommendations based on user interests.
+Function to update the recommendations based
 """
 def update_recomendations(user):
 
     recommendation_col = Recommendations_collections.find_one({"user_id": user["id"]})
-    # interests = user["interests"]
     if user["keywords"]:
         user_keywords = user["keywords"] + user["interests"]
     else:
@@ -130,9 +149,7 @@ def update_recomendations(user):
 
     print(user_keywords)
 
-    # Get the scholars list.
     scholar_list = ScholarList_collections.find({},{'_id': 0})
-    # print(scholar_list)
     scholar_cosine_rel = []
     for scholar in scholar_list:
         if scholar["scholars_link"]!=user["scholars_link"]:
@@ -151,10 +168,8 @@ def update_recomendations(user):
     # Find the top 10 scholars with cosine sum and update the recommendation.
     new_scholar = sorted(scholar_cosine_rel, key=lambda item: item[1],reverse=True)
 
-    # print(new_scholar[:10])
     resp = [item[0] for item in new_scholar[:10]]
-    # print(res)
-    # update Recommendations_collections
+
     if recommendation_col:
         new_recommendation = recommendation_col.copy()
         new_recommendation["keywords"] = user_keywords
@@ -172,6 +187,10 @@ def update_recomendations(user):
     
     return 'Done'
 
+
+'''
+Endpoint to get or update user's profile details
+'''
 @main.route('/profile', methods = ['GET', 'PUT'])
 @cross_origin()
 def get_user_profile():
@@ -253,12 +272,10 @@ def get_user_profile():
             return Response("Failed Update", status=403, mimetype='application/json')
 
 
-# @main.route('/isconnected', methods = ['GET'])
-# def get_connected_status():
-#     args=request.args
-#     resp = Response("isconnected endpoint", status=200, mimetype='application/json')
-#     return resp
-    
+
+'''
+Endpoint to get ongoing message rooms and conversations
+'''
 @main.route('/message_rooms', methods = ['GET'])
 @cross_origin()
 def message_rooms():
@@ -293,6 +310,9 @@ def message_rooms():
         return resp
 
 
+'''
+Endpoint to get messages with a user and post messages
+'''
 @main.route('/message', methods = ['POST', 'GET'])
 @cross_origin()
 def message():
@@ -352,6 +372,9 @@ def message():
 
         return resp
         
+'''
+Endpoint to to accept connections and get conenctions
+'''
 @main.route('/connect', methods = ['POST', 'GET'])
 @cross_origin()
 def connect_user():
@@ -407,6 +430,10 @@ def connect_user():
             resp = Response(json.dumps([]), status=200, mimetype='application/json')
         return resp
 
+
+'''
+Endpoint to post and get connection requests
+'''
 @main.route('/requests', methods = ['GET', 'POST'])
 @cross_origin()
 def connection_requests():
@@ -447,6 +474,10 @@ def connection_requests():
             resp = Response(json.dumps([]), status=200, mimetype='application/json')
     return resp
 
+
+'''
+Endpoint to to upload a new paper and generate keywirds for the same
+'''
 @main.route('/upload', methods = ['POST'])
 @cross_origin()
 def upload_paper():
