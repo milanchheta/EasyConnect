@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  FlatList,
+  SafeAreaView,
+  StatusBar,
   View,
   StyleSheet,
   Text,
@@ -29,9 +32,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // marginTop: 50,
     padding: 25,
-    alignItems: "center",
+    // alignItems: "center",
   },
   label: {
     fontSize: 20,
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   flexCol: {
-    flexDirection: "row",
+    // flexDirection: "row",
     padding: 10,
   },
   flexrow: {
@@ -115,56 +117,39 @@ export default function UserProfile(props) {
         alert("User Cancelled");
       } else {
         setFile(res);
-        if (File != null) {
-          const payload = new FormData();
-          payload.append("name", File.name);
-          payload.append("file", {
-            uri: File.uri,
-            name: File.name,
-            type: "application/pdf",
-          });
-
+        const payload = new FormData();
+        payload.append("name", res.name);
+        payload.append("file", {
+          uri: res.uri,
+          name: res.name,
+          type: "application/pdf",
+        });
+        console.log("User uplaoded");
+        /**
+         * Http request to upload the paper into the system for recommendation calculation.
+         */
+        let res1 = await axios.post(BASE_URL + "/upload", payload, {
+          headers: {
+            enctype: "multipart/form-data",
+            "Content-type": "mulitpart/form-data",
+            Authorization: "Bearer " + jwtToken,
+          },
+        });
+        if (res1.status == 404) {
+          console.log("Error in data receieve");
+        } else if (res1.status == 200) {
+          console.log("success");
           /**
-           * Http request to upload the paper into the system for recommendation calculation.
+           * Http request to fetch the update recommendations for the user profile.
            */
-          await axios
-            .post(BASE_URL + "/upload", payload, {
-              headers: {
-                enctype: "multipart/form-data",
-                "Content-type": "mulitpart/form-data",
-                Authorization: "Bearer " + jwtToken,
-              },
-            })
-            .then((response) => {
-              console.log(response);
-              if (response.status == 404) {
-                console.log("Error in data receieve");
-              } else if (response.status == 200) {
-                console.log("success");
-                /**
-                 * Http request to fetch the update recommendations for the user profile.
-                 */
-                axios
-                  .get(BASE_URL + "/recommendations", {
-                    headers: {
-                      "content-type": "application/json",
-                      Authorization: "Bearer " + jwtToken,
-                    },
-                  })
-                  .then((response) => {
-                    dispatch(
-                      updateRecommendations(response["data"]["researchers"])
-                    );
-                  })
-                  .catch((err) => {
-                    console.log("Error fetching data");
-                  });
-                alert("Updated Recommendations based on Paper upload");
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+          let res2 = await axios.get(BASE_URL + "/recommendations", {
+            headers: {
+              "content-type": "application/json",
+              Authorization: "Bearer " + jwtToken,
+            },
+          });
+          dispatch(updateRecommendations(res2["data"]["researchers"]));
+          alert("Updated Recommendations based on Paper upload");
         }
       }
     } catch (err) {
@@ -216,23 +201,23 @@ export default function UserProfile(props) {
                 <Text style={styles.urlText}>{user["scholars_link"]}</Text>
               </View>
             )}
+            <TouchableOpacity
+              onPress={() => {
+                props.navigation.navigate("Edit Profile");
+              }}
+              style={styles.connectbutton}
+            >
+              <Text style={styles.connectbuttonText}>Edit Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                uploadPaper();
+              }}
+              style={styles.connectbutton}
+            >
+              <Text style={styles.connectbuttonText}>Upload Paper</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              props.navigation.navigate("Edit Profile");
-            }}
-            style={styles.connectbutton}
-          >
-            <Text style={styles.connectbuttonText}>Edit Profile</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              uploadPaper();
-            }}
-            style={styles.connectbutton}
-          >
-            <Text style={styles.connectbuttonText}>Upload Paper</Text>
-          </TouchableOpacity>
         </>
       )}
     </ScrollView>
