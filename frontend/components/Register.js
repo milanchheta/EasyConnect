@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
@@ -41,6 +48,11 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "700",
     fontSize: 16,
+  },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
   },
   signupbutton: {
     alignItems: "center",
@@ -97,6 +109,7 @@ export default function Register(props) {
   const [fullnameError, setfullnameError] = useState(false);
   const [scholar_linkError, setscholar_linkError] = useState(false);
   const [register_error, setregister_error] = useState(false);
+  const [activity, setactivity] = useState(false);
 
   /**
    * Function to validate the date entered by the user during registration.
@@ -164,6 +177,7 @@ export default function Register(props) {
       };
 
       console.log(payload);
+      setactivity(true);
 
       /**
        * Http request for registering a new user in the system.
@@ -175,6 +189,8 @@ export default function Register(props) {
           },
         })
         .then((response) => {
+          setactivity(false);
+
           console.log("Registered Succesfully.", response);
           if (response.status == 202) {
             setregister_error(true);
@@ -184,6 +200,8 @@ export default function Register(props) {
           }
         })
         .catch((error) => {
+          setactivity(false);
+
           setregister_error(true);
           console.log("Invalid Register Attempt ", error);
         });
@@ -199,71 +217,79 @@ export default function Register(props) {
         justifyContent: "center",
       }}
     >
-      <Text style={styles.brand}>EasyConnect</Text>
-      <Text style={styles.error}>
-        {register_error && `User already exists. Please login`}
-      </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => dispatch(registerName(text))}
-        value={fullname}
-        placeholder="Full Name*"
-      />
-      <Text style={styles.error}>
-        {fullnameError && `Enter your full name here`}
-      </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => dispatch(registerEmail(text.trim()))}
-        value={email}
-        placeholder="Email*"
-      />
-      <Text style={styles.error}>
-        {emailError && `Enter a valid email address`}
-      </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => dispatch(registerPassword(text))}
-        value={password}
-        secureTextEntry={true}
-        placeholder="Password*"
-      />
-      <Text style={styles.error}>
-        {passwordError && `Enter a password at least 8 characters long`}
-      </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => dispatch(registerConfirmPassword(text))}
-        value={confirmPassword}
-        secureTextEntry={true}
-        placeholder="Confirm Password*"
-      />
-      <Text style={styles.error}>
-        {confirmPasswordError && `Passwords do not match`}
-      </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => dispatch(registerScholarLink(text.trim()))}
-        value={scholar_link}
-        placeholder="Google Scholar link, if applicable"
-      />
-      <Text style={styles.error}>
-        {scholar_linkError && `Enter a valid scholar's url`}
-      </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => dispatch(registerInterests(text))}
-        value={interests}
-        placeholder="Research interest(comma seperated)"
-      />
-      <TouchableOpacity
-        style={styles.signupbutton}
-        onPress={() => {
-          onSubmit();
-        }}
-      >
-        <Text style={styles.signupbuttonText}>Create Account</Text>
-      </TouchableOpacity>
+      {activity ? (
+        <View style={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size="large" color="#900" />
+        </View>
+      ) : (
+        <>
+          <Text style={styles.brand}>EasyConnect</Text>
+          <Text style={styles.error}>
+            {register_error && `User already exists. Please login`}
+          </Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => dispatch(registerName(text))}
+            value={fullname}
+            placeholder="Full Name*"
+          />
+          <Text style={styles.error}>
+            {fullnameError && `Enter your full name here`}
+          </Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => dispatch(registerEmail(text.trim()))}
+            value={email}
+            placeholder="Email*"
+          />
+          <Text style={styles.error}>
+            {emailError && `Enter a valid email address`}
+          </Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => dispatch(registerPassword(text))}
+            value={password}
+            secureTextEntry={true}
+            placeholder="Password*"
+          />
+          <Text style={styles.error}>
+            {passwordError && `Enter a password at least 8 characters long`}
+          </Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => dispatch(registerConfirmPassword(text))}
+            value={confirmPassword}
+            secureTextEntry={true}
+            placeholder="Confirm Password*"
+          />
+          <Text style={styles.error}>
+            {confirmPasswordError && `Passwords do not match`}
+          </Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => dispatch(registerScholarLink(text.trim()))}
+            value={scholar_link}
+            placeholder="Google Scholar link, if applicable"
+          />
+          <Text style={styles.error}>
+            {scholar_linkError && `Enter a valid scholar's url`}
+          </Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => dispatch(registerInterests(text))}
+            value={interests}
+            placeholder="Research interest(comma seperated)"
+          />
+          <TouchableOpacity
+            style={styles.signupbutton}
+            onPress={() => {
+              onSubmit();
+            }}
+          >
+            <Text style={styles.signupbuttonText}>Create Account</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </ScrollView>
   );
 }
