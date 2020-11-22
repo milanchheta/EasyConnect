@@ -11,13 +11,17 @@ import {
   Button,
   TextInput,
 } from "react-native";
-import { Icon } from "react-native-elements";
 
+import { Icon } from "react-native-elements";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { ScrollView } from "react-native-gesture-handler";
 import jwt_decode from "jwt-decode";
 
+import { useDispatch, useSelector } from "react-redux";
+import { ScrollView } from "react-native-gesture-handler";
+
+/**
+ * Stylesheet for message room component.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -50,7 +54,6 @@ const styles = StyleSheet.create({
   },
   titlecontainer: {
     backgroundColor: "#fff",
-    // paddingLeft: 10,
   },
   input: {
     flex: 1,
@@ -82,10 +85,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   balloon: {
-    // maxWidth: moderateScale(250, 2),
-    // paddingHorizontal: moderateScale(7, 2),
-    // paddingTop: moderateScale(2, 2),
-    // paddingBottom: moderateScale(3, 2),
     paddingHorizontal: 5,
     paddingVertical: 3,
     borderRadius: 12,
@@ -98,6 +97,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
+
+/**
+ * Message Room component to render a single message window for two participants.
+ * @param {props} props Props passed on from the parent component.
+ */
 export default function MessageRoom(props) {
   const scrollRef = useRef();
   const jwtToken = useSelector((state) => state.login.jwtToken);
@@ -108,12 +112,20 @@ export default function MessageRoom(props) {
   const connection_id = props.route.params.connection_id;
   const message_room_id = props.route.params.message_room_id;
   const full_name = props.route.params.full_name;
+
   let payload = {
     message: message,
     message_room_id: message_room_id,
   };
+
+  /**
+   * Function invoked to send a message in the message room.
+   */
   const sendMessage = () => {
     if (message.trim() != "") {
+      /**
+       * Http request to update the system with the message sent.
+       */
       axios
         .post("http://10.0.2.2:5000/message", payload, {
           headers: {
@@ -130,8 +142,12 @@ export default function MessageRoom(props) {
         });
     }
   };
+
   useEffect(() => {
     if (jwtToken && jwtToken != undefined && jwtToken != "") {
+      /**
+       * Http request to fetch the connection details of the profiles for the message room.
+       */
       axios
         .get("http://10.0.2.2:5000/message?connection_id=" + connection_id, {
           headers: {
@@ -181,7 +197,6 @@ export default function MessageRoom(props) {
                       : { backgroundColor: "#900" },
                   ]}
                 >
-                  {/* <Text>{item["sender_id"]}</Text> */}
                   <Text
                     style={[
                       styles.balloon,
@@ -216,7 +231,7 @@ export default function MessageRoom(props) {
           multiline={true}
           value={message}
           onChangeText={(text) => setMessage(text)}
-          placeholder="Enter messge"
+          placeholder="Enter message"
         />
         <Icon
           iconStyle={{ color: "#3393FF" }}
@@ -225,7 +240,6 @@ export default function MessageRoom(props) {
           size={40}
           onPress={() => sendMessage()}
         />
-        {/* <Button onPress={() => sendMessage()} title="Send"></Button> */}
       </View>
     </SafeAreaView>
   );

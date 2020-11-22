@@ -19,11 +19,12 @@ import {
   registerInterests,
 } from "../Actions/RegisterAction";
 
+/**
+ * Stylesheet for the register component.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
-    // alignItems: "center",
     backgroundColor: "#fff",
   },
   input: {
@@ -68,7 +69,6 @@ const styles = StyleSheet.create({
     color: "#7A1705",
     letterSpacing: 3,
     marginTop: 5,
-    // marginBottom: 5,
   },
   error: {
     marginBottom: 10,
@@ -78,6 +78,10 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * Register component to handle new user registration for the application.
+ * @param {props} props Props passed from the App component.
+ */
 export default function Register(props) {
   const dispatch = useDispatch();
   const email = useSelector((state) => state.register.email);
@@ -89,6 +93,9 @@ export default function Register(props) {
   const scholar_link = useSelector((state) => state.register.scholars_link);
   const interests = useSelector((state) => state.register.interests);
 
+  /**
+   * Error hooks for each registration field.
+   */
   const [emailError, setemailError] = useState(false);
   const [passwordError, setpasswordError] = useState(false);
   const [confirmPasswordError, setconfirmPasswordError] = useState(false);
@@ -96,6 +103,9 @@ export default function Register(props) {
   const [scholar_linkError, setscholar_linkError] = useState(false);
   const [register_error, setregister_error] = useState(false);
 
+  /**
+   * Function to validate the date entered by the user during registration.
+   */
   const validate = () => {
     var re = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/;
     let emailcheck = re.test(email);
@@ -145,9 +155,10 @@ export default function Register(props) {
     return true;
   };
 
+  /**
+   * Function invoked during user submit for registration.
+   */
   const onSubmit = () => {
-    // TODO: Add validations.
-
     if (validate()) {
       let payload = {
         full_name: fullname.trim(),
@@ -159,6 +170,9 @@ export default function Register(props) {
 
       console.log(payload);
 
+      /**
+       * Http request for registering a new user in the system.
+       */
       axios
         .post("http://10.0.2.2:5000/register", payload, {
           headers: {
@@ -180,6 +194,7 @@ export default function Register(props) {
         });
     }
   };
+
   return (
     <ScrollView
       style={styles.container}

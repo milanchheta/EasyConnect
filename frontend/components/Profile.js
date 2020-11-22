@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 30,
-    // backgroundColor: "#F0FFF0",
   },
   title: {
     fontSize: 30,
@@ -47,13 +46,8 @@ const styles = StyleSheet.create({
   },
   innercontainer: {
     flex: 1,
-    // backgroundColor: "#F0FFF0",
     marginHorizontal: 20,
     marginTop: 60,
-  },
-  flexCol: {
-    // flexDirection: "row",
-    // marginTop: 10,
   },
 
   connectbuttonText: {
@@ -89,7 +83,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    // alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -100,6 +93,11 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
+
+/**
+ * Component to render the Profile of each researcher based on recommendations.
+ * @param {props} props Props passed from the parent component.
+ */
 export default function Profile(props) {
   let item = props.route.params.item;
   const [connectButton, setconnectButton] = useState(false);
@@ -110,9 +108,16 @@ export default function Profile(props) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const jwtToken = useSelector((state) => state.login.jwtToken);
+
+  /**
+   * Function invoked before the component is mounted.
+   */
   useEffect(() => {
     if (jwtToken && jwtToken != undefined && jwtToken != "") {
       if ("scholars_link" in item) {
+        /**
+         * Http request to fetch the profile of each reseracher based on google scholar data.
+         */
         axios
           .get(
             "http://10.0.2.2:5000/profile?scholars_link=" +
@@ -145,8 +150,14 @@ export default function Profile(props) {
     }
   }, []);
 
+  /**
+   * Function to handle the sending of request to the researcher profile.
+   */
   const request = () => {
     let payload = { requesting_user_jwt: jwtToken, id: connectid };
+    /**
+     * Http request to send the request to a connect to a researcher.
+     */
     axios
       .post("http://10.0.2.2:5000/requests", payload, {
         headers: {
@@ -161,7 +172,15 @@ export default function Profile(props) {
         console.log(err);
       });
   };
+
+  /**
+   * Function to start a message thread with the reseacher.
+   * @param {scholar_link} scholars_link Google scholar link of the profile to send a message.
+   */
   const sendMessage = (scholars_link) => {
+    /**
+     * Http request to start a message room between the user and researcher.
+     */
     axios
       .get(
         "http://10.0.2.2:5000/message?connection_id=" +
@@ -188,6 +207,11 @@ export default function Profile(props) {
         console.log("Error fetching data");
       });
   };
+
+  /**
+   * Function to navigate to the research paper url specified in Google scholar.
+   * @param {url} url url for the research papaer
+   */
   let _goToURL = (url) => {
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
@@ -238,14 +262,10 @@ export default function Profile(props) {
             <Text style={styles.item}>{item.affiliation}</Text>
             <Text style={styles.Heading}>Interests: </Text>
             <Text style={styles.item}>{item.interests.join(", ")}</Text>
-            {/* <View style={styles.flexCol}> */}
             <Text style={styles.Heading}>Email: </Text>
             <Text style={styles.item}>{item.email}</Text>
-            {/* </View> */}
-            {/* <View style={styles.flexCol}> */}
             <Text style={styles.Heading}>Cited By: </Text>
             <Text style={styles.item}>{item.citedby}</Text>
-            {/* </View> */}
 
             <TouchableOpacity
               style={styles.urlButton}

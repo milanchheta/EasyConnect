@@ -15,6 +15,9 @@ import { updateRecommendations } from "../Actions/RecommendationsAction.js";
 import { logout } from "../Actions/LoginAction.js";
 import { Icon } from "react-native-elements";
 
+/**
+ * Stylesheet for the Home component.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -50,6 +53,11 @@ const styles = StyleSheet.create({
     marginRight: 60,
   },
 });
+
+/**
+ * Home component which houses the recommendations for each user profile.
+ * @param {props} props
+ */
 export default function Home(props) {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state) => state.login.jwtToken);
@@ -59,6 +67,9 @@ export default function Home(props) {
 
   useEffect(() => {
     if (jwtToken && jwtToken != undefined && jwtToken != "") {
+      /**
+       * Http request to fetch the recommendations for the user profile.
+       */
       axios
         .get("http://10.0.2.2:5000/recommendations", {
           headers: {
@@ -77,15 +88,20 @@ export default function Home(props) {
     }
   }, []);
 
+  /**
+   * Function to navigate to the researcher profile on selection.
+   * @param {item} item User object for profile reference.
+   */
   const onProfileClick = (item) => {
     props.navigation.push("Profile", { item });
   };
 
-  const logOut = () => {
-    dispatch(logout());
-    props.navigation.push("Login");
-  };
-
+  /**
+   * Function to render each single list item.
+   * @param {item} item User object that is used for rendering data.
+   * @param {style} style Style object to match the user data.
+   * @param {onPress} onPress Event handler when a button is pressed.
+   */
   const Item = ({ item, onPress, style }) => (
     <TouchableOpacity onPress={onPress} style={[style]}>
       <View style={styles.item}>
@@ -104,9 +120,17 @@ export default function Home(props) {
     </TouchableOpacity>
   );
 
+  /**
+   * Function to render a single item in the list.
+   * @param {item} item User object with single user data.
+   */
   const renderItem = ({ item }) => {
     return <Item item={item} onPress={() => onProfileClick(item)} />;
   };
+
+  /**
+   * Function to render a seperator between list items.
+   */
   const renderSeparator = () => {
     return (
       <View

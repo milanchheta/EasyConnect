@@ -17,12 +17,13 @@ import {
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 
+/**
+ * Stylesheet for the login page.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
     backgroundColor: "#fff",
-    // alignItems: "center",
   },
   loginbutton: {
     alignItems: "center",
@@ -62,10 +63,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#7A1705",
     letterSpacing: 3,
-    // marginTop: 10,
     marginBottom: 50,
   },
-
   input: {
     borderStartWidth: 2,
     borderEndWidth: 2,
@@ -96,6 +95,10 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * Login component to assist user login to the system.
+ * @param {props} props Props passed from the App component.
+ */
 export default function Login(props) {
   const dispatch = useDispatch();
   const loginEmail = useSelector((state) => state.login.loginEmail);
@@ -111,6 +114,9 @@ export default function Login(props) {
     }
   });
 
+  /**
+   * Function to validate the user input during login.
+   */
   const validate = () => {
     var re = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/;
     let emailcheck = re.test(loginEmail);
@@ -129,9 +135,15 @@ export default function Login(props) {
     return true;
   };
 
+  /**
+   * Function invoked during user login attempt.
+   */
   const onSubmit = () => {
     if (validate()) {
       let payload = { email: loginEmail, password: loginPassword };
+      /**
+       * Http request to validate user login in the system and store the jwt token in app storage.
+       */
       axios
         .post("http://10.0.2.2:5000/login", payload, {
           headers: {
@@ -150,6 +162,7 @@ export default function Login(props) {
         });
     }
   };
+  
   return (
     <ScrollView
       style={styles.container}
@@ -159,7 +172,6 @@ export default function Login(props) {
         justifyContent: "center",
       }}
     >
-      {/* <Text style={styles.greeting}>welcome to</Text> */}
       <Text style={styles.brand}>EasyConnect</Text>
       <Text style={styles.error}>{login_error && `Invalid credentials`}</Text>
       <TextInput
@@ -189,7 +201,7 @@ export default function Login(props) {
       >
         <Text style={styles.loginbuttonText}>Login</Text>
       </TouchableOpacity>
-      <Text style={styles.signupText}>Don't have an account?</Text>
+      <Text style={styles.signupText}>Don't have an account yet?</Text>
 
       <TouchableOpacity
         style={styles.signupbutton}
@@ -197,7 +209,7 @@ export default function Login(props) {
           props.navigation.push("Register");
         }}
       >
-        <Text style={styles.signupbuttonText}>Sign Up Here</Text>
+        <Text style={styles.signupbuttonText}>Register</Text>
       </TouchableOpacity>
     </ScrollView>
   );

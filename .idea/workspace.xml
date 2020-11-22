@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48a6bc2b-5531-49cb-b51a-ab06def9d9da" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/backend/app/controllers/controllers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/controllers/controllers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/Connections.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Connections.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/PaperDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/PaperDetails.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/PaperList.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/PaperList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Profile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Register.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/Requests.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Requests.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/UserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/UserProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

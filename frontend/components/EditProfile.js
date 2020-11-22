@@ -19,14 +19,15 @@ import {
 } from "../Actions/ProfileAction";
 import { storeJwtToken } from "../Actions/LoginAction";
 
+/**
+ * Stylesheet for the Edit profile component.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
     backgroundColor: "#fff",
     alignItems: "center",
     paddingTop: 90,
-    // marginTop: 50,
   },
   input: {
     borderStartWidth: 2,
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     fontSize: 18,
-    // textAlign: "center",
     backgroundColor: "#fff",
     borderColor: "#aaa",
     width: 350,
@@ -69,11 +69,14 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * Edit profile component to perform personal profile edit for the user.
+ * @param {props} props
+ */
 export default function EditProfile(props) {
   const dispatch = useDispatch();
 
   const jwtToken = useSelector((state) => state.login.jwtToken);
-  //   const user = jwt_decode(jwtToken)["user"];
 
   const fullname = useSelector((state) => state.profile.fullname);
   const scholar_link = useSelector((state) => state.profile.scholars_link);
@@ -82,11 +85,16 @@ export default function EditProfile(props) {
   const [fullnameError, setfullnameError] = useState(false);
   const [scholar_linkError, setscholar_linkError] = useState(false);
   const [register_error, setregister_error] = useState(false);
+
   useEffect(() => {
     if (!jwtToken && jwtToken === undefined && jwtToken === "") {
       props.navigation.push("Login");
     }
   });
+
+  /**
+   * Function to validate the edited fields by the user.
+   */
   const validate = () => {
     let fullname_error = null;
     if (fullname == "") {
@@ -116,6 +124,9 @@ export default function EditProfile(props) {
     return true;
   };
 
+  /**
+   * Function to submit the updated user details to the system.
+   */
   const onSubmit = () => {
     if (validate) {
       let payload = {
@@ -124,8 +135,9 @@ export default function EditProfile(props) {
         interests: interests.split(","),
       };
 
-      console.log(payload);
-
+      /**
+       * Http request to update the profile based on new details.
+       */
       axios
         .put("http://10.0.2.2:5000/profile", payload, {
           headers: {

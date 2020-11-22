@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // backgroundColor: "#F0FFF0",
     marginTop: 50,
     alignItems: "center",
   },
@@ -59,12 +58,9 @@ const styles = StyleSheet.create({
   },
   flexCol: {
     flexDirection: "row",
-    // marginTop: 10,
     padding: 10,
   },
   flexrow: {
-    // marginTop: 10,
-    // padding: 10,
     marginHorizontal: 10,
   },
   urlText: {
@@ -91,22 +87,30 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * User Profile component to render the personal details of the registered user.
+ * @param {props} props Props passed from the parent component.
+ */
 export default function UserProfile(props) {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state) => state.login.jwtToken);
   const [File, setFile] = useState(null);
   var user = {};
+
   if (jwtToken != undefined && jwtToken != "" && jwtToken) {
     user = jwt_decode(jwtToken)["user"];
     dispatch(profileName(user["full_name"]));
     dispatch(profileInterests(user["interests"].join(",")));
     dispatch(profileScholarLink(user["scholars_link"]));
   }
+
+  /**
+   * Function to assist the uploading of research paper into user profile.
+   */
   const uploadPaper = async () => {
     console.log("Upload paper");
     try {
       const res = await DocumentPicker.getDocumentAsync();
-      // console.log(res);
       if (res.type == "cancel") {
         alert("User Cancelled");
       } else {
@@ -120,6 +124,9 @@ export default function UserProfile(props) {
             type: "application/pdf",
           });
 
+          /**
+           * Http request to upload the paper into the system for recommendation calculation.
+           */
           await axios
             .post("http://10.0.2.2:5000/upload", payload, {
               headers: {
@@ -134,6 +141,9 @@ export default function UserProfile(props) {
                 console.log("Error in data receieve");
               } else if (response.status == 200) {
                 console.log("success");
+                /**
+                 * Http request to fetch the update recommendations for the user profile.
+                 */
                 axios
                   .get("http://10.0.2.2:5000/recommendations", {
                     headers: {
@@ -163,24 +173,30 @@ export default function UserProfile(props) {
     }
   };
 
-  // console.log();
+  /**
+   * Function to handle the user profile image upload.
+   */
+  const imageUpload = () => {
+    alert("Upcoming functionality to upload profile image.");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {jwtToken != undefined && jwtToken != "" && jwtToken && (
         <>
-          <Image
-            style={styles.imageStyle}
-            source={{
-              uri:
-                "https://nwsid.net/wp-content/uploads/2015/05/dummy-profile-pic.png",
-            }}
-          />
+          <TouchableOpacity onPress={() => imageUpload()}>
+            <Image
+              style={styles.imageStyle}
+              source={{
+                uri:
+                  "https://nwsid.net/wp-content/uploads/2015/05/dummy-profile-pic.png",
+              }}
+            />
+          </TouchableOpacity>
           <View style={styles.flexCol}>
-            {/* <Text style={styles.label}>Full Name: </Text> */}
             <Text style={styles.title}>{user["full_name"]}</Text>
           </View>
           <View style={styles.flexCol}>
-            {/* <Text style={styles.label}>Email: </Text> */}
             <Text style={styles.subTitle}>{user["email"]}</Text>
           </View>
           <View style={styles.userInfo}>

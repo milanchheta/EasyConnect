@@ -11,6 +11,9 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
+/**
+ * Stylesheet for the paper details component.
+ */
 const styles = StyleSheet.create({
   Heading: {
     fontSize: 20,
@@ -56,10 +59,18 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * Paper Details component to render the details of the a single research paper.
+ * @param {props} props Props passed from the parent component.
+ */
 export default function PaperDetails(props) {
   let paper = props.route.params.paper;
   const jwtToken = useSelector((state) => state.login.jwtToken);
 
+  /**
+   * Function to navigate to the research paper url specified in Google scholar.
+   * @param {url} url url for the research papaer
+   */
   let _goToURL = (url) => {
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
@@ -69,12 +80,15 @@ export default function PaperDetails(props) {
       }
     });
   };
+
   useEffect(() => {
     if (!jwtToken && jwtToken === undefined && jwtToken === "") {
       props.navigation.push("Login");
     }
   });
-  console.log(props);
+
+  // console.log(props);
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.titleHead}>{paper.title}</Text>

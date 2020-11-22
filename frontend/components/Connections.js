@@ -8,14 +8,18 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+
 import axios from "axios";
+
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
 
+/**
+ * Stylesheet for the connection component.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginTop: StatusBar.currentHeight || 0,
   },
   item: {
     padding: 20,
@@ -40,16 +44,30 @@ const styles = StyleSheet.create({
   nullText: { fontSize: 25 },
 });
 
+/**
+ * Component to render the connections oof each user.
+ * @param {props} props Props passed on from the parent component
+ */
 export default function Connections(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
+
   useEffect(() => {
     if (!jwtToken && jwtToken === undefined && jwtToken === "") {
       props.navigation.push("Login");
     }
   });
+
   let connections = props.route.params.data;
+
+  /**
+   * Function to render a new message room with a connected user.
+   * @param {item} item user object to start a new conversation.
+   */
   const onMessageRoomClick = (item) => {
     console.log("go to messages");
+    /**
+     * Http request to fetch a new message room id for each connected user.
+     */
     axios
       .get("http://10.0.2.2:5000/message?connection_id=" + item.id, {
         headers: {
@@ -70,7 +88,15 @@ export default function Connections(props) {
         console.log("Error fetching data");
       });
   };
+
   console.log(connections);
+
+  /**
+   * Function to render each single list item.
+   * @param {item} item User object that is used for rendering data.
+   * @param {style} style Style object to match the user data.
+   * @param {onPress} onPress Event handler when a button is pressed.
+   */
   const Item = ({ item, onPress, style }) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
       <Text style={styles.title}>{item.full_name}</Text>
@@ -78,10 +104,17 @@ export default function Connections(props) {
     </TouchableOpacity>
   );
 
+  /**
+   * Function to render a single item in the list.
+   * @param {item} item User object with single user data.
+   */
   const renderItem = ({ item }) => {
     return <Item item={item} onPress={() => onMessageRoomClick(item)} />;
   };
 
+  /**
+   * Function to render a seperator between list items.
+   */
   const renderSeparator = () => {
     return (
       <View
@@ -105,7 +138,7 @@ export default function Connections(props) {
         />
       ) : (
         <View style={[styles.nullMessage]}>
-          <Text style={styles.nullText}>No connections</Text>
+          <Text style={styles.nullText}>No active connections!</Text>
         </View>
       )}
     </SafeAreaView>

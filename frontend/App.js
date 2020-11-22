@@ -1,5 +1,9 @@
-import "react-native-gesture-handler";
 import * as React from "react";
+import "react-native-gesture-handler";
+
+/**
+ * Import statements for react navigation.
+ */
 import { DrawerActions, NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
@@ -9,20 +13,17 @@ import {
   DrawerView,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import {
-  FlatList,
-  SafeAreaView,
-  StatusBar,
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import { Provider } from "react-redux";
-import { store, persistor } from "./store.js";
-import { PersistGate } from "redux-persist/integration/react";
 
+/**
+ * Import statements for supporting react elements.
+ */
+import { PersistGate } from "redux-persist/integration/react";
+import { Icon } from "react-native-elements";
+import { Button } from "react-native";
+
+/**
+ * Import statements for secondary components.
+ */
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
@@ -35,18 +36,27 @@ import Connections from "./components/Connections";
 import MessageRoom from "./components/MessageRoom";
 import UserProfile from "./components/UserProfile";
 import EditProfile from "./components/EditProfile";
-import { Button } from "react-native";
 
+/**
+ * Import statements for redux store, provider.
+ */
+import { Provider } from "react-redux";
+import { store, persistor } from "./store.js";
 import { logout } from "./Actions/LoginAction.js";
 
-import { Icon } from "react-native-elements";
-
-import { useWindowDimensions } from "react-native";
-
+/**
+ * Navigation objects for both stack and drawer navigation.
+ */
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+/**
+ * App starting point. All navigation routes are defined in this component.
+ */
 export default function App() {
+  /**
+   * Function to return the stack header for the home page.
+   */
   function homeStack() {
     return (
       <Stack.Navigator
@@ -81,6 +91,9 @@ export default function App() {
     );
   }
 
+  /**
+   * Function to return the stack header for the requests page.
+   */
   function requestStack() {
     return (
       <Stack.Navigator
@@ -115,6 +128,9 @@ export default function App() {
     );
   }
 
+  /**
+   * Function to return the stack header component for the profile page.
+   */
   function profileStack() {
     return (
       <Stack.Navigator
@@ -149,6 +165,9 @@ export default function App() {
     );
   }
 
+  /**
+   * Http get request to get the connections for the user.
+   */
   const getConnectionList = () => {
     axios
       .get("http://10.0.2.2:5000/connect", {
@@ -166,6 +185,9 @@ export default function App() {
       });
   };
 
+  /**
+   * Function to return the stack header for the message screen.
+   */
   function messageStack() {
     return (
       <Stack.Navigator
@@ -203,20 +225,23 @@ export default function App() {
     );
   }
 
+  /**
+   * Function to log out the user from the application. Takes the navigation object of react native as parameter.
+   * @param {navigation} navigation navigation object of the react navigation library.
+   */
   const logOut = (navigation) => {
     store.dispatch(logout());
     navigation.push("Login");
   };
 
+  /**
+   * Function to return the side drawer component for the Home screen.
+   */
   function HomeDrawer() {
     return (
       <Drawer.Navigator
         initialRouteName="Home"
         screenOptions={{
-          // drawerLabel: {
-          //   color: "#7A1705",
-          // },
-          // headerShown: true,
           headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
@@ -239,6 +264,7 @@ export default function App() {
       </Drawer.Navigator>
     );
   }
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

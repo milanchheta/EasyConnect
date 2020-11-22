@@ -13,10 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
 import { Icon } from "react-native-elements";
 
+/**
+ * Stylesheet for the messages component.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginTop: StatusBar.currentHeight || 0,
   },
   item: {
     padding: 20,
@@ -52,11 +54,23 @@ const styles = StyleSheet.create({
   },
   nullText: { fontSize: 25 },
 });
+
+/**
+ * Messages component, to render ongoing conversations.
+ * @param {*} props props passed from the parent component.
+ */
 export default function Messages(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
   const [messages, setmessages] = useState([]);
+
+  /**
+   * Function invoked before the component is mounted.
+   */
   useEffect(() => {
     if (jwtToken && jwtToken != undefined && jwtToken != "") {
+      /**
+       * Http request to fetch the active conversations of each user.
+       */
       axios
         .get("http://10.0.2.2:5000/message_rooms", {
           headers: {
@@ -75,7 +89,13 @@ export default function Messages(props) {
     }
   }, []);
 
+  /**
+   * Function to get all the connections of the user.
+   */
   const getConnectionList = () => {
+    /**
+     * Http request to fetch all connections of the user.
+     */
     axios
       .get("http://10.0.2.2:5000/connect", {
         headers: {
@@ -92,7 +112,14 @@ export default function Messages(props) {
       });
   };
 
+  /**
+   * Function to navigate to the message room of each connected user.
+   * @param {item} item User object for each message room.
+   */
   const onMessageRoomClick = (item) => {
+    /**
+     * Http request to fetch the connection for each message room.
+     */
     axios
       .get("http://10.0.2.2:5000/message?connection_id=" + item.id, {
         headers: {
@@ -113,6 +140,12 @@ export default function Messages(props) {
       });
   };
 
+  /**
+   * Function to render each single list item.
+   * @param {item} item User object that is used for rendering data.
+   * @param {style} style Style object to match the user data.
+   * @param {onPress} onPress Event handler when a button is pressed.
+   */
   const Item = ({ item, onPress, style }) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
       <Text style={styles.title}>{item.full_name}</Text>
@@ -120,10 +153,17 @@ export default function Messages(props) {
     </TouchableOpacity>
   );
 
+  /**
+   * Function to render a single item in the list.
+   * @param {item} item User object with single user data.
+   */
   const renderItem = ({ item }) => {
     return <Item item={item} onPress={() => onMessageRoomClick(item)} />;
   };
 
+  /**
+   * Function to render a seperator between list items.
+   */
   const renderSeparator = () => {
     return (
       <View

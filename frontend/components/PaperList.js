@@ -9,12 +9,14 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
+/**
+ * Stylesheet for the paper list component.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
     justifyContent: "center",
-    // backgroundColor: "#F0FFF0",
     alignItems: "center",
   },
   item: {
@@ -51,14 +53,28 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * Paper List component to render the list of all research papers of a particular user.
+ * @param {props} props Props passed from parent component.
+ */
 export default function PaperList(props) {
   let paper = props.route.params.item;
   const jwtToken = useSelector((state) => state.login.jwtToken);
 
+  /**
+   * Function to navigate the user to the paper details page for each research paper.
+   * @param {paper} paper Research paper object for each user selected paper.
+   */
   const onPaperClick = (paper) => {
     props.navigation.navigate("Paper Details", { paper });
   };
 
+  /**
+   * Function to render each single list item.
+   * @param {item} item User object that is used for rendering data.
+   * @param {style} style Style object to match the user data.
+   * @param {onPress} onPress Event handler when a button is pressed.
+   */
   const Item = ({ item, onPress, style }) => (
     <TouchableOpacity onPress={onPress} style={styles.listButton}>
       <View style={styles.item}>
@@ -70,17 +86,30 @@ export default function PaperList(props) {
       </View>
     </TouchableOpacity>
   );
+
+  /**
+   * Function invoked before the component is mounted.
+   */
   useEffect(() => {
     if (!jwtToken && jwtToken === undefined && jwtToken === "") {
       props.navigation.push("Login");
     }
   });
+
+  /**
+   * Function to render a single item in the list.
+   * @param {item} item User object with single user data.
+   */
   const renderItem = ({ item }) => {
     {
       console.log(item);
     }
     return <Item item={item} onPress={() => onPaperClick(item)} />;
   };
+
+  /**
+   * Function to render a seperator between list items.
+   */
   const renderSeparator = () => {
     return (
       <View
@@ -92,7 +121,9 @@ export default function PaperList(props) {
       />
     );
   };
+
   const item = props.route.params.item;
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.pageTitle}>List of Papers</Text>
