@@ -6,6 +6,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  View,
+  ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -47,6 +49,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16,
   },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+  },
   editbutton: {
     marginTop: 100,
     alignItems: "center",
@@ -79,6 +86,7 @@ export default function EditProfile(props) {
   const fullname = useSelector((state) => state.profile.fullname);
   const scholar_link = useSelector((state) => state.profile.scholars_link);
   const interests = useSelector((state) => state.profile.interests);
+  const [activity, setactivity] = useState(false);
 
   const [fullnameError, setfullnameError] = useState(false);
   const [scholar_linkError, setscholar_linkError] = useState(false);
@@ -136,6 +144,7 @@ export default function EditProfile(props) {
       /**
        * Http request to update the profile based on new details.
        */
+      setactivity(true);
       axios
         .put(BASE_URL + "/profile", payload, {
           headers: {
@@ -144,6 +153,8 @@ export default function EditProfile(props) {
           },
         })
         .then((response) => {
+          setactivity(false);
+
           if (response.status == 403) {
             console.log("Error from backend", reponse);
             setregister_error(true);
@@ -156,6 +167,8 @@ export default function EditProfile(props) {
           }
         })
         .catch((error) => {
+          setactivity(false);
+
           setregister_error(true);
           console.log("Invalid Register Attempt ", error);
         });
@@ -169,38 +182,47 @@ export default function EditProfile(props) {
         alignItems: "center",
         justifyContent: "center",
         padding: 25,
+        backgroundColor: "#fff",
       }}
       // style={styles.container}
     >
-      <Text style={styles.label}>Full Name: </Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Full Name"
-        value={fullname}
-        onChange={(text) => dispatch(profileName(text))}
-      />
-      <Text style={styles.label}>Google Scholar Link: </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => dispatch(profileScholarLink(text.trim()))}
-        value={scholar_link}
-        placeholder="Google Scholar link, if applicable"
-      />
-      <Text style={styles.label}>Interests: </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => dispatch(profileInterests(text))}
-        value={interests}
-        placeholder="Add your research interests"
-      />
-      <TouchableOpacity
-        style={styles.editbutton}
-        onPress={() => {
-          onSubmit();
-        }}
-      >
-        <Text style={styles.editbuttonText}>Update Profile</Text>
-      </TouchableOpacity>
+      {activity ? (
+        <View style={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size="large" color="#900" />
+        </View>
+      ) : (
+        <>
+          <Text style={styles.label}>Full Name: </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name"
+            value={fullname}
+            onChange={(text) => dispatch(profileName(text))}
+          />
+          <Text style={styles.label}>Google Scholar Link: </Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => dispatch(profileScholarLink(text.trim()))}
+            value={scholar_link}
+            placeholder="Google Scholar link, if applicable"
+          />
+          <Text style={styles.label}>Interests: </Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => dispatch(profileInterests(text))}
+            value={interests}
+            placeholder="Add your research interests"
+          />
+          <TouchableOpacity
+            style={styles.editbutton}
+            onPress={() => {
+              onSubmit();
+            }}
+          >
+            <Text style={styles.editbuttonText}>Update Profile</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </ScrollView>
   );
 }
