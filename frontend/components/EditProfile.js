@@ -115,9 +115,8 @@ export default function EditProfile(props) {
     let scholar_linkArr = scholar_link.split("=");
 
     if (
-      scholar_link.length != 0 &&
-      (scholar_linkArr[0] !== "https://scholar.google.com/citations?user" ||
-        scholar_linkArr[1].length !== 12)
+      scholar_linkArr[0] !== "https://scholar.google.com/citations?user" ||
+      scholar_linkArr[1].length !== 12
     ) {
       scholar_link_error = true;
     } else {
@@ -141,6 +140,7 @@ export default function EditProfile(props) {
         scholars_link: scholar_link,
         interests: interests.split(","),
       };
+      console.log(payload);
 
       /**
        * Http request to update the profile based on new details.
@@ -204,7 +204,7 @@ export default function EditProfile(props) {
             style={styles.input}
             placeholder="Full Name"
             value={fullname}
-            onChange={(text) => dispatch(profileName(text))}
+            onChangeText={(text) => dispatch(profileName(text))}
           />
           <Text style={styles.label}>Google Scholar Link: </Text>
           <TextInput

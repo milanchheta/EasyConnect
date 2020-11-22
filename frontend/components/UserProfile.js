@@ -104,14 +104,17 @@ export default function UserProfile(props) {
   const jwtToken = useSelector((state) => state.login.jwtToken);
   const [activity, setactivity] = useState(false);
   var user = {};
-
   if (jwtToken != undefined && jwtToken != "" && jwtToken) {
     user = jwt_decode(jwtToken)["user"];
-    dispatch(profileName(user["full_name"]));
-    dispatch(profileInterests(user["interests"].join(",")));
-    dispatch(profileScholarLink(user["scholars_link"]));
   }
 
+  useEffect(() => {
+    if (jwtToken != undefined && jwtToken != "" && jwtToken) {
+      dispatch(profileName(user["full_name"]));
+      dispatch(profileInterests(user["interests"].join(",")));
+      dispatch(profileScholarLink(user["scholars_link"]));
+    }
+  }, []);
   /**
    * Function to assist the uploading of research paper into user profile.
    */
@@ -237,7 +240,9 @@ export default function UserProfile(props) {
             </View>
           </>
         )
-      ) : null}
+      ) : (
+        <></>
+      )}
     </ScrollView>
   );
 }
