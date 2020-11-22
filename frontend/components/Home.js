@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
-  StatusBar,
   View,
   StyleSheet,
   Text,
@@ -12,8 +11,7 @@ import {
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { updateRecommendations } from "../Actions/RecommendationsAction.js";
-import { logout } from "../Actions/LoginAction.js";
-import { Icon } from "react-native-elements";
+import BASE_URL from "./BASE_URL";
 
 /**
  * Stylesheet for the Home component.
@@ -71,7 +69,7 @@ export default function Home(props) {
        * Http request to fetch the recommendations for the user profile.
        */
       axios
-        .get("http://10.0.2.2:5000/recommendations", {
+        .get(BASE_URL + "/recommendations", {
           headers: {
             "content-type": "application/json",
             Authorization: "Bearer " + jwtToken,

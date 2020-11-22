@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
-  StatusBar,
   View,
   StyleSheet,
   Text,
@@ -11,8 +10,9 @@ import {
 
 import axios from "axios";
 
-import { useDispatch, useSelector } from "react-redux";
-import { ScrollView } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
+
+import BASE_URL from "./BASE_URL";
 
 /**
  * Stylesheet for the connection component.
@@ -69,7 +69,7 @@ export default function Connections(props) {
      * Http request to fetch a new message room id for each connected user.
      */
     axios
-      .get("http://10.0.2.2:5000/message?connection_id=" + item.id, {
+      .get(BASE_URL + "/message?connection_id=" + item.id, {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,

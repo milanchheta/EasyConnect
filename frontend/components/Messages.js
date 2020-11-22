@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
-  StatusBar,
   View,
   StyleSheet,
   Text,
   TouchableOpacity,
 } from "react-native";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { ScrollView } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 import { Icon } from "react-native-elements";
+import BASE_URL from "./BASE_URL";
 
 /**
  * Stylesheet for the messages component.
@@ -72,7 +71,7 @@ export default function Messages(props) {
        * Http request to fetch the active conversations of each user.
        */
       axios
-        .get("http://10.0.2.2:5000/message_rooms", {
+        .get(BASE_URL + "/message_rooms", {
           headers: {
             "content-type": "application/json",
             Authorization: "Bearer " + jwtToken,
@@ -97,7 +96,7 @@ export default function Messages(props) {
      * Http request to fetch all connections of the user.
      */
     axios
-      .get("http://10.0.2.2:5000/connect", {
+      .get(BASE_URL + "/connect", {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,
@@ -121,7 +120,7 @@ export default function Messages(props) {
      * Http request to fetch the connection for each message room.
      */
     axios
-      .get("http://10.0.2.2:5000/message?connection_id=" + item.id, {
+      .get(BASE_URL + "/message?connection_id=" + item.id, {
         headers: {
           "content-type": "application/json",
           Authorization: "Bearer " + jwtToken,

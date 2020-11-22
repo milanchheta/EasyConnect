@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
+import BASE_URL from "./BASE_URL";
 
 import {
   registerEmail,
@@ -18,6 +13,7 @@ import {
   registerScholarLink,
   registerInterests,
 } from "../Actions/RegisterAction";
+import BASE_URL from "./BASE_URL";
 
 /**
  * Stylesheet for the register component.
@@ -174,7 +170,7 @@ export default function Register(props) {
        * Http request for registering a new user in the system.
        */
       axios
-        .post("http://10.0.2.2:5000/register", payload, {
+        .post(BASE_URL + "/register", payload, {
           headers: {
             "content-type": "application/json",
           },

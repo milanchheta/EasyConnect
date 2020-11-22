@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  FlatList,
-  SafeAreaView,
-  StatusBar,
   View,
   StyleSheet,
   Text,
@@ -21,6 +18,7 @@ import {
 // import DocumentPicker from "react-native-document-picker";
 import * as DocumentPicker from "expo-document-picker";
 import { updateRecommendations } from "../Actions/RecommendationsAction.js";
+import BASE_URL from "./BASE_URL";
 
 const styles = StyleSheet.create({
   imageStyle: {
@@ -130,7 +128,7 @@ export default function UserProfile(props) {
            * Http request to upload the paper into the system for recommendation calculation.
            */
           await axios
-            .post("http://10.0.2.2:5000/upload", payload, {
+            .post(BASE_URL + "/upload", payload, {
               headers: {
                 enctype: "multipart/form-data",
                 "Content-type": "mulitpart/form-data",
@@ -147,7 +145,7 @@ export default function UserProfile(props) {
                  * Http request to fetch the update recommendations for the user profile.
                  */
                 axios
-                  .get("http://10.0.2.2:5000/recommendations", {
+                  .get(BASE_URL + "/recommendations", {
                     headers: {
                       "content-type": "application/json",
                       Authorization: "Bearer " + jwtToken,

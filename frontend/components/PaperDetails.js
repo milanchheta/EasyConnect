@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
-  FlatList,
   TouchableOpacity,
   View,
   ScrollView,
   Linking,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 /**
  * Stylesheet for the paper details component.

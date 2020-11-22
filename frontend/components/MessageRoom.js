@@ -1,23 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import { scale, moderateScale } from "react-native-size-matters";
-import {
-  FlatList,
-  SafeAreaView,
-  StatusBar,
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Button,
-  TextInput,
-} from "react-native";
+import { SafeAreaView, View, StyleSheet, Text, TextInput } from "react-native";
 
 import { Icon } from "react-native-elements";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
+import BASE_URL from "./BASE_URL";
 
 /**
  * Stylesheet for message room component.
@@ -127,7 +117,7 @@ export default function MessageRoom(props) {
        * Http request to update the system with the message sent.
        */
       axios
-        .post("http://10.0.2.2:5000/message", payload, {
+        .post(BASE_URL + "/message", payload, {
           headers: {
             "content-type": "application/json",
             Authorization: "Bearer " + jwtToken,
@@ -149,7 +139,7 @@ export default function MessageRoom(props) {
        * Http request to fetch the connection details of the profiles for the message room.
        */
       axios
-        .get("http://10.0.2.2:5000/message?connection_id=" + connection_id, {
+        .get(BASE_URL + "/message?connection_id=" + connection_id, {
           headers: {
             "content-type": "application/json",
             Authorization: "Bearer " + jwtToken,

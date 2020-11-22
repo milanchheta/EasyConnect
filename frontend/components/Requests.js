@@ -5,12 +5,11 @@ import {
   SafeAreaView,
   Text,
   FlatList,
-  Image,
   TouchableOpacity,
-  Linking,
 } from "react-native";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import BASE_URL from "./BASE_URL";
 
 /**
  * Stylesheet for the request page.
@@ -74,7 +73,7 @@ export default function Requests(props) {
        * Http get request to fetch all the requests for the user.
        */
       axios
-        .get("http://10.0.2.2:5000/requests", {
+        .get(BASE_URL + "/requests", {
           headers: {
             "content-type": "application/json",
             Authorization: "Bearer " + jwtToken,
@@ -102,7 +101,7 @@ export default function Requests(props) {
      * Http request to connect the two users.
      */
     axios
-      .post("http://10.0.2.2:5000/connect", payload, {
+      .post(BASE_URL + "/connect", payload, {
         headers: {
           "content-type": "application/json",
         },
