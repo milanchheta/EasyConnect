@@ -1,4 +1,4 @@
- '''
+'''
 This file was used to fetch data from google scholarly, generate 
 keywords and tos tore data in mongodb database
 '''
@@ -68,6 +68,10 @@ if __name__ == "__main__":
             author = getAurthorObj(entry["name"])
             if author==None:
                 continue
+            pub_list = getPublicationList(author)
+            abs_val = getAllAbstract(pub_list, author)
+            researcher = {}
+            papers = []
             try: 
                 '''
                 Fetch required data from scholarly returned object
