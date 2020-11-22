@@ -252,9 +252,9 @@ def get_user_profile():
 
             #Update user collection
             user_update = user.copy()
-            if len(interests) > 0: user_update["interests"] = interests
-            if full_name: user_update["full_name"] = full_name
-            if scholars_link: user_update["scholars_link"] = scholars_link
+            user_update["interests"] = interests
+            user_update["full_name"] = full_name
+            user_update["scholars_link"] = scholars_link
 
             req = {"$set": user_update}
             Users_collections.update(user, req)
