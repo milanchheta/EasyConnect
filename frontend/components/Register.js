@@ -157,7 +157,7 @@ export default function Register(props) {
     if (validate()) {
       let payload = {
         full_name: fullname.trim(),
-        email: email,
+        email: email.toLowerCase(),
         password: password,
         scholars_link: scholar_link,
         interests: interests.split(","),

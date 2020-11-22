@@ -134,7 +134,10 @@ export default function Login(props) {
    */
   const onSubmit = () => {
     if (validate()) {
-      let payload = { email: loginEmail, password: loginPassword };
+      let payload = {
+        email: loginEmail.toLowerCase(),
+        password: loginPassword,
+      };
       /**
        * Http request to validate user login in the system and store the jwt token in app storage.
        */
