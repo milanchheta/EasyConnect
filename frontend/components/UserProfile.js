@@ -117,53 +117,49 @@ export default function UserProfile(props) {
    */
   const uploadPaper = async () => {
     console.log("Upload paper");
-    try {
-      const res = await DocumentPicker.getDocumentAsync();
-      if (res.type == "cancel") {
-        alert("User Cancelled");
-      } else {
-        setactivity(true);
-        // setFile(res);
-        const payload = new FormData();
-        payload.append("name", res.name);
-        payload.append("file", {
-          uri: res.uri,
-          name: res.name,
-          type: "application/pdf",
-        });
-        console.log("User uplaoded");
+
+    const res = await DocumentPicker.getDocumentAsync();
+    if (res.type == "cancel") {
+      alert("User Cancelled");
+    } else {
+      setactivity(true);
+      // setFile(res);
+      const payload = new FormData();
+      payload.append("name", res.name);
+      payload.append("file", {
+        uri: res.uri,
+        name: res.name,
+        type: "application/pdf",
+      });
+      console.log("User uplaoded");
+      /**
+       * Http request to upload the paper into the system for recommendation calculation.
+       */
+      let res1 = await axios.post(BASE_URL + "/upload", payload, {
+        headers: {
+          enctype: "multipart/form-data",
+          "Content-type": "mulitpart/form-data",
+          Authorization: "Bearer " + jwtToken,
+        },
+      });
+      if (res1.status == 404) {
+        console.log("Error in data receieve");
+      } else if (res1.status == 200) {
+        console.log("success");
         /**
-         * Http request to upload the paper into the system for recommendation calculation.
+         * Http request to fetch the update recommendations for the user profile.
          */
-        let res1 = await axios.post(BASE_URL + "/upload", payload, {
+        let res2 = await axios.get(BASE_URL + "/recommendations", {
           headers: {
-            enctype: "multipart/form-data",
-            "Content-type": "mulitpart/form-data",
+            "content-type": "application/json",
             Authorization: "Bearer " + jwtToken,
           },
         });
-        if (res1.status == 404) {
-          console.log("Error in data receieve");
-        } else if (res1.status == 200) {
-          console.log("success");
-          /**
-           * Http request to fetch the update recommendations for the user profile.
-           */
-          let res2 = await axios.get(BASE_URL + "/recommendations", {
-            headers: {
-              "content-type": "application/json",
-              Authorization: "Bearer " + jwtToken,
-            },
-          });
-          dispatch(updateRecommendations(res2["data"]["researchers"]));
-          setactivity(false);
+        dispatch(updateRecommendations(res2["data"]["researchers"]));
+        setactivity(false);
 
-          alert("Updated Recommendations based on Paper upload");
-        }
+        alert("Updated Recommendations based on Paper upload");
       }
-    } catch (err) {
-      console.log("Error", JSON.stringify(err));
-      throw err;
     }
   };
 
@@ -175,7 +171,14 @@ export default function UserProfile(props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 25,
+      }}
+    >
       {jwtToken != undefined && jwtToken != "" && jwtToken ? (
         activity ? (
           <View style={[styles.container, styles.horizontal]}>

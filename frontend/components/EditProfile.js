@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -162,7 +163,15 @@ export default function EditProfile(props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 25,
+      }}
+      // style={styles.container}
+    >
       <Text style={styles.label}>Full Name: </Text>
       <TextInput
         style={styles.input}
@@ -192,6 +201,6 @@ export default function EditProfile(props) {
       >
         <Text style={styles.editbuttonText}>Update Profile</Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
