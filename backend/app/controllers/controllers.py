@@ -62,26 +62,34 @@ Endpoint for user registeration
 @main.route('/register', methods = ['POST'])
 @cross_origin()
 def register_user():
-    data=request.get_json()
-    email=data['email']
-    password=data['password']
-    full_name=data['full_name']
-    scholars_link=data['scholars_link']
-    interests=data['interests']
+    try:
+        data=request.get_json()
+        email=data['email']
+        password=data['password']
+        full_name=data['full_name']
+        scholars_link=data['scholars_link']
+        interests=data['interests']
 
-    id = str(uuid.uuid4())
-    user_exists=Users_collections.find_one({"email": email})
+        id = str(uuid.uuid4())
+        user_exists=Users_collections.find_one({"email": email})
 
-    if not user_exists:  
-        user_data={"id":id,"email":email,"password":generate_password_hash(password) ,"full_name":full_name,"scholars_link":scholars_link,"interests":interests, "keywords": []}
-        print(user_data)
-        update_recomendations(user_data)
-        user_id=Users_collections.insert_one(user_data)
+        if not user_exists:  
+            user_data={"id":id,"email":email,"password":generate_password_hash(password) ,"full_name":full_name,"scholars_link":scholars_link,"interests":interests, "keywords": []}
+            print(user_data)
+            res = update_recomendations(user_data)
 
-        resp = Response('User Registered Successfully', status=201, mimetype='application/json')
-    else: 
-        resp = Response('User already exists. Please Log in.', status=202, mimetype='application/json')
-    return resp
+            if res == False:
+                raise 'update recommendation error'
+            
+            user_id=Users_collections.insert_one(user_data)
+
+            resp = Response('User Registered Successfully', status=201, mimetype='application/json')
+        else: 
+            resp = Response('User already exists. Please Log in.', status=202, mimetype='application/json')
+        return resp
+    except Exception as e:
+        print ("Error" + str(e))
+        return Response('Backend Crash', status=500, mimetype='application/json')
 
 
 '''
@@ -90,24 +98,28 @@ Endpoint for user login
 @main.route('/login', methods = ['GET','POST'])
 @cross_origin()
 def login_user():
-    data=request.get_json()
-    email=data['email']
-    password=data['password']
-    user=Users_collections.find_one({"email": email},{'_id': False})
-    if not user: 
-        resp = Response('User does not exist', 401, {'WWW-Authenticate' : 'Basic realm ="User does not exist"'})
-        return resp
+    try:
+        data=request.get_json()
+        email=data['email']
+        password=data['password']
+        user=Users_collections.find_one({"email": email},{'_id': False})
+        if not user: 
+            resp = Response('User does not exist', 401, {'WWW-Authenticate' : 'Basic realm ="User does not exist"'})
+            return resp
 
-    if check_password_hash(user['password'], password): 
-        token = jwt.encode({ 
-            'user':user
-        }, SECRET_KEY) 
-   
-        resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 200) 
-        return resp
+        if check_password_hash(user['password'], password): 
+            token = jwt.encode({ 
+                'user':user
+            }, SECRET_KEY) 
+    
+            resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 200) 
+            return resp
 
-    resp=('Wrong Password', 403, {'WWW-Authenticate' : 'Basic realm ="Wrong Password !!"'}) 
-    return resp
+        resp=('Wrong Password', 403, {'WWW-Authenticate' : 'Basic realm ="Wrong Password !!"'}) 
+        return resp
+    except Exception as e: 
+        print('Error' + str(e))
+        return Response('Backend Crash', status=500, mimetype='application/json')
 
 
 '''
@@ -116,77 +128,83 @@ Endpoint for fetching user recommendations
 @main.route('/recommendations', methods = ['GET'])
 @cross_origin()
 def get_recommendations():
-    auth_header = request.headers.get('Authorization')
+    try:
+        auth_header = request.headers.get('Authorization')
 
-    if auth_header:
-        auth_token = auth_header.split(" ")[1]
-    else:
-        auth_token = ''
-
-    if auth_token != '':
-
-        user = jwt.decode(auth_token, SECRET_KEY)["user"]
-        recommendations = Recommendations_collections.find_one({"user_id": user["id"]}, {"_id": 0})
-
-        if recommendations:
-            resp = Response(json.dumps(recommendations), status=200, mimetype='application/json')
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
         else:
-            resp = Response("No data found", status=404, mimetype='application/json')
-    
-        return resp
+            auth_token = ''
+
+        if auth_token != '':
+
+            user = jwt.decode(auth_token, SECRET_KEY)["user"]
+            recommendations = Recommendations_collections.find_one({"user_id": user["id"]}, {"_id": 0})
+
+            if recommendations:
+                resp = Response(json.dumps(recommendations), status=200, mimetype='application/json')
+            else:
+                resp = Response("No data found", status=404, mimetype='application/json')
+        
+            return resp
+    except Exception as e:
+        print('Error' + str(e))
+        return Response('Backend Crash', status=500, mimetype='application/json')
 
 
 """
 Function to update the recommendations based
 """
 def update_recomendations(user):
+    try:
+        recommendation_col = Recommendations_collections.find_one({"user_id": user["id"]})
+        if user["keywords"]:
+            user_keywords = user["keywords"] + user["interests"]
+        else:
+            user_keywords = user["interests"]
 
-    recommendation_col = Recommendations_collections.find_one({"user_id": user["id"]})
-    if user["keywords"]:
-        user_keywords = user["keywords"] + user["interests"]
-    else:
-        user_keywords = user["interests"]
+        print(user_keywords)
 
-    print(user_keywords)
+        scholar_list = ScholarList_collections.find({},{'_id': 0})
+        scholar_cosine_rel = []
+        for scholar in scholar_list:
+            if scholar["scholars_link"]!=user["scholars_link"]:
+                cosine_sum = 0
+                scholar_interests=[]
+                if "interests" in scholar:
+                    scholar_interests=scholar["interests"]
+                for paper in scholar["papers"]:
+                    keywords=scholar_interests+paper["keywords"]
+                    user_keywords = list(map(lambda x: x.lower(), user_keywords))
+                    keywords = list(map(lambda item: item.lower(), keywords))
+                    cosine_sum += compute_similarity(user_keywords, keywords)
+                
+                scholar_cosine_rel.append((scholar, cosine_sum))
 
-    scholar_list = ScholarList_collections.find({},{'_id': 0})
-    scholar_cosine_rel = []
-    for scholar in scholar_list:
-        if scholar["scholars_link"]!=user["scholars_link"]:
-            cosine_sum = 0
-            scholar_interests=[]
-            if "interests" in scholar:
-                scholar_interests=scholar["interests"]
-            for paper in scholar["papers"]:
-                keywords=scholar_interests+paper["keywords"]
-                user_keywords = list(map(lambda x: x.lower(), user_keywords))
-                keywords = list(map(lambda item: item.lower(), keywords))
-                cosine_sum += compute_similarity(user_keywords, keywords)
-            
-            scholar_cosine_rel.append((scholar, cosine_sum))
+        # Find the top 10 scholars with cosine sum and update the recommendation.
+        new_scholar = sorted(scholar_cosine_rel, key=lambda item: item[1],reverse=True)
 
-    # Find the top 10 scholars with cosine sum and update the recommendation.
-    new_scholar = sorted(scholar_cosine_rel, key=lambda item: item[1],reverse=True)
+        resp = [item[0] for item in new_scholar[:10]]
 
-    resp = [item[0] for item in new_scholar[:10]]
+        if recommendation_col:
+            new_recommendation = recommendation_col.copy()
+            new_recommendation["keywords"] = user_keywords
+            new_recommendation["researchers"] = resp
+            payload = {"$set": new_recommendation}
+            Recommendations_collections.update_one(recommendation_col, payload)
 
-    if recommendation_col:
-        new_recommendation = recommendation_col.copy()
-        new_recommendation["keywords"] = user_keywords
-        new_recommendation["researchers"] = resp
-        payload = {"$set": new_recommendation}
-        Recommendations_collections.update_one(recommendation_col, payload)
-
-    # Otherwise create new recommendation.
-    else:
-        new_recommendation = {}
-        new_recommendation["user_id"] = user["id"]
-        new_recommendation["keywords"] = user_keywords
-        new_recommendation["researchers"] = resp
-        Recommendations_collections.insert_one(new_recommendation)
-    
-    return 'Done'
-
+        # Otherwise create new recommendation.
+        else:
+            new_recommendation = {}
+            new_recommendation["user_id"] = user["id"]
+            new_recommendation["keywords"] = user_keywords
+            new_recommendation["researchers"] = resp
+            Recommendations_collections.insert_one(new_recommendation)
+        
+        return True
+    except Exception as e:
+        print('Update recommendation Error' + str(e))
+        return False
 
 '''
 Endpoint to get or update user's profile details
@@ -194,84 +212,89 @@ Endpoint to get or update user's profile details
 @main.route('/profile', methods = ['GET', 'PUT'])
 @cross_origin()
 def get_user_profile():
+    try:
+        if request.method == 'GET':
+            args=request.args
+            scholars_link=args['scholars_link']
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                auth_token = auth_header.split(" ")[1]
+            else:
+                auth_token = ''
+            if auth_token != '':
+                curr_user = jwt.decode(auth_token, SECRET_KEY)["user"]
+        
+            user=Users_collections.find_one({"scholars_link":scholars_link},{"_id":False})
 
-    if request.method == 'GET':
-        args=request.args
-        scholars_link=args['scholars_link']
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            auth_token = auth_header.split(" ")[1]
-        else:
-            auth_token = ''
-        if auth_token != '':
-            curr_user = jwt.decode(auth_token, SECRET_KEY)["user"]
-     
-        user=Users_collections.find_one({"scholars_link":scholars_link},{"_id":False})
+            if user:
+                user_request=User_requests_collections.find_one({"user_id": user['id']})
+                if user_request:
+                    for item in user_request['requests']:
+                        if curr_user['id']==item['id']:
+                            return Response("REQUESTED", status=200, mimetype='application/json')
+                user_request=User_requests_collections.find_one({"user_id": curr_user['id']})
+                if user_request:
+                    for item in user_request['requests']:
+                        if user['id']==item['id']:
+                            return Response("RECEIVED", status=200, mimetype='application/json')
 
-        if user:
-            user_request=User_requests_collections.find_one({"user_id": user['id']})
-            if user_request:
-                for item in user_request['requests']:
-                    if curr_user['id']==item['id']:
-                        return Response("REQUESTED", status=200, mimetype='application/json')
-            user_request=User_requests_collections.find_one({"user_id": curr_user['id']})
-            if user_request:
-                for item in user_request['requests']:
-                    if user['id']==item['id']:
-                        return Response("RECEIVED", status=200, mimetype='application/json')
+                user_connection=Connected_users_collections.find_one({"id": curr_user['id']})
+                if user_connection:
+                    for item in user_connection['connected_to']:
+                        if user['id']==item['id']:
+                            return Response("CONNECTED", status=200, mimetype='application/json')
+                return Response(json.dumps(user), status=200, mimetype='application/json')
 
-            user_connection=Connected_users_collections.find_one({"id": curr_user['id']})
-            if user_connection:
-                for item in user_connection['connected_to']:
-                    if user['id']==item['id']:
-                        return Response("CONNECTED", status=200, mimetype='application/json')
-            return Response(json.dumps(user), status=200, mimetype='application/json')
-
-        else: 
-            resp = Response("user does not exists", status=404, mimetype='application/json')
-
-        return resp
-
-    # Update user profile
-    if request.method == 'PUT':
-        data = request.get_json()
-        full_name = data['full_name']
-        scholars_link = data['scholars_link']
-        interests = data['interests']
-
-        auth_header = request.headers.get('Authorization')
-
-        if auth_header:
-            auth_token = auth_header.split(" ")[1]
-        else:
-            auth_token = ''
-
-        if auth_token != '':
-
-            user = jwt.decode(auth_token, SECRET_KEY)["user"]
-
-            #Update user collection
-            user_update = user.copy()
-            user_update["interests"] = interests
-            user_update["full_name"] = full_name
-            user_update["scholars_link"] = scholars_link
-
-            req = {"$set": user_update}
-            Users_collections.update(user, req)
-
-            update_recomendations(user_update)
-
-            token = jwt.encode({ 
-                'user':user_update
-            }, SECRET_KEY) 
-
-            resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 200)
+            else: 
+                resp = Response("user does not exists", status=404, mimetype='application/json')
 
             return resp
-        else:
-            return Response("Failed Update", status=403, mimetype='application/json')
 
 
+        # Update user profile
+        if request.method == 'PUT':
+            data = request.get_json()
+            full_name = data['full_name']
+            scholars_link = data['scholars_link']
+            interests = data['interests']
+
+            auth_header = request.headers.get('Authorization')
+
+            if auth_header:
+                auth_token = auth_header.split(" ")[1]
+            else:
+                auth_token = ''
+
+            if auth_token != '':
+
+                user = jwt.decode(auth_token, SECRET_KEY)["user"]
+
+                #Update user collection
+                user_update = user.copy()
+                user_update["interests"] = interests
+                user_update["full_name"] = full_name
+                user_update["scholars_link"] = scholars_link
+
+                req = {"$set": user_update}
+                Users_collections.update(user, req)
+
+                update_res = update_recomendations(user_update)
+                if update_res == False:
+                    raise 'Update recommendation error'
+
+                token = jwt.encode({ 
+                    'user':user_update
+                }, SECRET_KEY) 
+
+                resp =Response(json.dumps({'token' : token.decode('UTF-8')}), 200)
+
+                return resp
+            else:
+                return Response("Failed Update", status=403, mimetype='application/json')
+
+    except Exception as e:
+        print("Error in profile" + str(e))
+        return Response('Server error', status=500, mimetype='application/json')
 
 '''
 Endpoint to get ongoing message rooms and conversations
@@ -279,36 +302,39 @@ Endpoint to get ongoing message rooms and conversations
 @main.route('/message_rooms', methods = ['GET'])
 @cross_origin()
 def message_rooms():
-    if request.method == "GET":
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            auth_token = auth_header.split(" ")[1]
-        else:
-            auth_token = ''
-        if auth_token != '':
-            user = jwt.decode(auth_token, SECRET_KEY)["user"]
-        user_id=user['id']
-        res=[]
+    try:
+        if request.method == "GET":
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                auth_token = auth_header.split(" ")[1]
+            else:
+                auth_token = ''
+            if auth_token != '':
+                user = jwt.decode(auth_token, SECRET_KEY)["user"]
+            user_id=user['id']
+            res=[]
 
-        messages_1=list(User_messages_collections.find({"user_1": user_id},{"_id":False}))
-        for entry in messages_1:
-            print(entry)
+            messages_1=list(User_messages_collections.find({"user_1": user_id},{"_id":False}))
+            for entry in messages_1:
+                print(entry)
 
-            user=Users_collections.find_one({"id": entry["user_2"]},{'_id': False})
-            if user:
-                res.append(user)
+                user=Users_collections.find_one({"id": entry["user_2"]},{'_id': False})
+                if user:
+                    res.append(user)
 
-        messages_2=list(User_messages_collections.find({"user_2": user_id},{"_id":False}))
-        for entry in messages_2:
-            print(entry)
-            user=Users_collections.find_one({"id": entry["user_1"]},{'_id': False})
-            if user:
-                res.append(user)
+            messages_2=list(User_messages_collections.find({"user_2": user_id},{"_id":False}))
+            for entry in messages_2:
+                print(entry)
+                user=Users_collections.find_one({"id": entry["user_1"]},{'_id': False})
+                if user:
+                    res.append(user)
 
-        print(messages_1,messages_2)
-        resp = Response(json.dumps(res), status=200, mimetype='application/json')
-        return resp
-
+            print(messages_1,messages_2)
+            resp = Response(json.dumps(res), status=200, mimetype='application/json')
+            return resp
+    except Exception as e:
+        print('Error with message room' + str(e))
+        return Response('Error with backend', status=500, mimetype='application/json')
 
 '''
 Endpoint to get messages with a user and post messages
@@ -316,61 +342,64 @@ Endpoint to get messages with a user and post messages
 @main.route('/message', methods = ['POST', 'GET'])
 @cross_origin()
 def message():
-
-    ## send message
-    if request.method == 'POST':
-        args=request.args
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            auth_token = auth_header.split(" ")[1]
-        else:
-            auth_token = ''
-        if auth_token != '':
-            user = jwt.decode(auth_token, SECRET_KEY)["user"]
-        user_id=user['id']
-        data=request.get_json()
-        message_room_id=data["message_room_id"]
-        message=data["message"]
-        message_pair=User_messages_rooms_collections.find_one({"message_room_id":message_room_id},{"_id":False})
-        message_pair["messages"].append({"sender_id":user_id,"message":message, "timestamp": datetime.now().strftime("%m/%d/%Y, %H:%M:%S")})
-        User_messages_rooms_collections.update_one({"message_room_id":message_room_id},{"$set":{"messages":message_pair["messages"]}})
-        resp = Response(json.dumps({"sender_id":user_id,"message":message, "timestamp": datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}), status=200, mimetype='application/json')
-        return resp
-
-    ## get message room id
-    if request.method == "GET":
-        args=request.args
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            auth_token = auth_header.split(" ")[1]
-        else:
-            auth_token = ''
-        if auth_token != '':
-            user = jwt.decode(auth_token, SECRET_KEY)["user"]
-        user_id=user['id']
-
-        connection_id=args['connection_id']
-        if connection_id=="":
-            connection_data=Users_collections.find_one({"scholars_link":args["scholars_link"]},{"_id":False})
-            connection_id=connection_data['id']
-        message_pair=User_messages_collections.find_one({"user_1": user_id,"user_2":connection_id },{"_id":False})
-        if not message_pair:
-            message_pair=User_messages_collections.find_one({"user_2": user_id,"user_1":connection_id },{"_id":False})
-        if not message_pair:
-            message_room_id=str(uuid.uuid4())
-            User_messages_collections.insert_one({"user_2": user_id,"user_1":connection_id, "message_room_id":message_room_id})
-            User_messages_rooms_collections.insert_one({"message_room_id":message_room_id,"messages":[]})
-            resp = Response(json.dumps({"message_room_id":message_room_id,"messages":[],"connection_id":connection_id}), status=200, mimetype='application/json')
-
-        else:
-            message_room_id=message_pair['message_room_id']
+    try:
+        ## send message
+        if request.method == 'POST':
+            args=request.args
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                auth_token = auth_header.split(" ")[1]
+            else:
+                auth_token = ''
+            if auth_token != '':
+                user = jwt.decode(auth_token, SECRET_KEY)["user"]
+            user_id=user['id']
+            data=request.get_json()
+            message_room_id=data["message_room_id"]
+            message=data["message"]
             message_pair=User_messages_rooms_collections.find_one({"message_room_id":message_room_id},{"_id":False})
-            message_pair["connection_id"]=connection_id
-            print(message_pair)
-            print(json.dumps(message_pair))
-            resp=Response(json.dumps(message_pair), status=200, mimetype='application/json')
+            message_pair["messages"].append({"sender_id":user_id,"message":message, "timestamp": datetime.now().strftime("%m/%d/%Y, %H:%M:%S")})
+            User_messages_rooms_collections.update_one({"message_room_id":message_room_id},{"$set":{"messages":message_pair["messages"]}})
+            resp = Response(json.dumps({"sender_id":user_id,"message":message, "timestamp": datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}), status=200, mimetype='application/json')
+            return resp
 
-        return resp
+        ## get message room id
+        if request.method == "GET":
+            args=request.args
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                auth_token = auth_header.split(" ")[1]
+            else:
+                auth_token = ''
+            if auth_token != '':
+                user = jwt.decode(auth_token, SECRET_KEY)["user"]
+            user_id=user['id']
+
+            connection_id=args['connection_id']
+            if connection_id=="":
+                connection_data=Users_collections.find_one({"scholars_link":args["scholars_link"]},{"_id":False})
+                connection_id=connection_data['id']
+            message_pair=User_messages_collections.find_one({"user_1": user_id,"user_2":connection_id },{"_id":False})
+            if not message_pair:
+                message_pair=User_messages_collections.find_one({"user_2": user_id,"user_1":connection_id },{"_id":False})
+            if not message_pair:
+                message_room_id=str(uuid.uuid4())
+                User_messages_collections.insert_one({"user_2": user_id,"user_1":connection_id, "message_room_id":message_room_id})
+                User_messages_rooms_collections.insert_one({"message_room_id":message_room_id,"messages":[]})
+                resp = Response(json.dumps({"message_room_id":message_room_id,"messages":[],"connection_id":connection_id}), status=200, mimetype='application/json')
+
+            else:
+                message_room_id=message_pair['message_room_id']
+                message_pair=User_messages_rooms_collections.find_one({"message_room_id":message_room_id},{"_id":False})
+                message_pair["connection_id"]=connection_id
+                print(message_pair)
+                print(json.dumps(message_pair))
+                resp=Response(json.dumps(message_pair), status=200, mimetype='application/json')
+
+            return resp
+    except Exception as e:
+        print('Error with message' + str(e))
+        return Response('Error with backend', status=500, mimetype='application/json')
         
 '''
 Endpoint to to accept connections and get conenctions
@@ -378,57 +407,61 @@ Endpoint to to accept connections and get conenctions
 @main.route('/connect', methods = ['POST', 'GET'])
 @cross_origin()
 def connect_user():
-    ##accept connection request
-    if request.method == 'POST':
-        data = request.get_json()
-        user_1_data = data['accpeted_user']
-        user_2_data=jwt.decode(data['jwt_token'], SECRET_KEY)["user"]
-        print(user_1_data)
-        user_1_id=user_1_data["id"]
-        user_2_id=user_2_data["id"]
+    try:
+        ##accept connection request
+        if request.method == 'POST':
+            data = request.get_json()
+            user_1_data = data['accpeted_user']
+            user_2_data=jwt.decode(data['jwt_token'], SECRET_KEY)["user"]
+            print(user_1_data)
+            user_1_id=user_1_data["id"]
+            user_2_id=user_2_data["id"]
+            
+            # Connected_users_collections
+            user_1=Connected_users_collections.find_one({"id": user_1_id})
+            user_2=Connected_users_collections.find_one({"id": user_2_id})
+
+            if not user_1:
+                Connected_users_collections.insert_one({"id":user_1_id,"connected_to":[{"id":user_2_id,"full_name":user_2_data["full_name"],"email":user_2_data["email"]}]})
+            else:
+                user_1["connected_to"].append({"id":user_2_id,"full_name":user_2_data["full_name"],"email":user_2_data["email"]})
+                Connected_users_collections.update_one({"id":user_1_id},{"$set":{"connected_to":user_1["connected_to"]}})
+
+            if not user_2:
+                Connected_users_collections.insert_one({"id":user_2_id,"connected_to":[user_1_data]})
+            else:
+                user_2["connected_to"].append(user_1_data)
+                Connected_users_collections.update_one({"id":user_2_id},{"$set":{"connected_to":user_2["connected_to"]}})
+            user_2_requests=User_requests_collections.find_one({"user_id":user_2_id})
+
+
+            for i in range(len(user_2_requests['requests'])):
+                if user_2_requests['requests'][i]['id']==user_1_id:
+                    break
+            del user_2_requests['requests'][i]
+            User_requests_collections.update_one({"user_id": user_2_id}, {"$set":{"requests":user_2_requests['requests']}})
+
+            resp = Response("Connection Accepted Successfully", status=200, mimetype='application/json')
+            return resp
         
-        # Connected_users_collections
-        user_1=Connected_users_collections.find_one({"id": user_1_id})
-        user_2=Connected_users_collections.find_one({"id": user_2_id})
-
-        if not user_1:
-            Connected_users_collections.insert_one({"id":user_1_id,"connected_to":[{"id":user_2_id,"full_name":user_2_data["full_name"],"email":user_2_data["email"]}]})
-        else:
-            user_1["connected_to"].append({"id":user_2_id,"full_name":user_2_data["full_name"],"email":user_2_data["email"]})
-            Connected_users_collections.update_one({"id":user_1_id},{"$set":{"connected_to":user_1["connected_to"]}})
-
-        if not user_2:
-            Connected_users_collections.insert_one({"id":user_2_id,"connected_to":[user_1_data]})
-        else:
-            user_2["connected_to"].append(user_1_data)
-            Connected_users_collections.update_one({"id":user_2_id},{"$set":{"connected_to":user_2["connected_to"]}})
-        user_2_requests=User_requests_collections.find_one({"user_id":user_2_id})
-
-
-        for i in range(len(user_2_requests['requests'])):
-            if user_2_requests['requests'][i]['id']==user_1_id:
-                break
-        del user_2_requests['requests'][i]
-        User_requests_collections.update_one({"user_id": user_2_id}, {"$set":{"requests":user_2_requests['requests']}})
-
-        resp = Response("Connection Accepted Successfully", status=200, mimetype='application/json')
-        return resp
-    
-    ## get list of conencted users
-    if request.method == 'GET':
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            jwt_token = auth_header.split(" ")[1]                
-            user_data=jwt.decode(jwt_token, SECRET_KEY)
-        user=None
-        if user_data!=None:
-            user_data=user_data["user"]
-            user=Connected_users_collections.find_one({"id": user_data['id']})
-        if user!=None:
-            resp=Response(json.dumps(user['connected_to']), status=200, mimetype='application/json')
-        else:
-            resp = Response(json.dumps([]), status=200, mimetype='application/json')
-        return resp
+        ## get list of conencted users
+        if request.method == 'GET':
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                jwt_token = auth_header.split(" ")[1]                
+                user_data=jwt.decode(jwt_token, SECRET_KEY)
+            user=None
+            if user_data!=None:
+                user_data=user_data["user"]
+                user=Connected_users_collections.find_one({"id": user_data['id']})
+            if user!=None:
+                resp=Response(json.dumps(user['connected_to']), status=200, mimetype='application/json')
+            else:
+                resp = Response(json.dumps([]), status=200, mimetype='application/json')
+            return resp
+    except Exception as e:
+        print('Error in connect' + str(e))
+        return Response('Error with backend', status=500, mimetype='application/json')
 
 
 '''
@@ -437,42 +470,46 @@ Endpoint to post and get connection requests
 @main.route('/requests', methods = ['GET', 'POST'])
 @cross_origin()
 def connection_requests():
-    ## send request to connect to a user
-    if request.method == 'POST':
-        data = request.get_json()
-        requesting_user=jwt.decode(data['requesting_user_jwt'], SECRET_KEY)["user"]
-        requesting_user_data={"id":requesting_user['id'], "email":requesting_user['email'],"full_name":requesting_user['full_name']}
-        requested_to=data['id']
-        user=User_requests_collections.find_one({"user_id": requested_to})
+    try:
+        ## send request to connect to a user
+        if request.method == 'POST':
+            data = request.get_json()
+            requesting_user=jwt.decode(data['requesting_user_jwt'], SECRET_KEY)["user"]
+            requesting_user_data={"id":requesting_user['id'], "email":requesting_user['email'],"full_name":requesting_user['full_name']}
+            requested_to=data['id']
+            user=User_requests_collections.find_one({"user_id": requested_to})
 
-        if not user:
-            user={}
-            user['user_id']=requested_to
-            user['requests']=[requesting_user_data]
-            User_requests_collections.insert_one(user)
+            if not user:
+                user={}
+                user['user_id']=requested_to
+                user['requests']=[requesting_user_data]
+                User_requests_collections.insert_one(user)
+                resp = Response("Request Sent Successfully", status=200, mimetype='application/json')
+                return resp
+            user['requests'].append(requesting_user_data)
+            User_requests_collections.update_one({"user_id": requested_to}, {"$set":{"requests":user['requests']}})
             resp = Response("Request Sent Successfully", status=200, mimetype='application/json')
             return resp
-        user['requests'].append(requesting_user_data)
-        User_requests_collections.update_one({"user_id": requested_to}, {"$set":{"requests":user['requests']}})
-        resp = Response("Request Sent Successfully", status=200, mimetype='application/json')
+
+        ## get list of connection requests
+        if request.method == 'GET':
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                jwt_token = auth_header.split(" ")[1]                
+                user_data=jwt.decode(jwt_token, SECRET_KEY)
+            user=None
+            if user_data!=None:
+                user_data=user_data["user"]
+                user=User_requests_collections.find_one({"user_id": user_data['id']})
+
+            if user!=None:
+                resp=Response(json.dumps(user['requests']), status=200, mimetype='application/json')
+            else:
+                resp = Response(json.dumps([]), status=200, mimetype='application/json')
         return resp
-
-    ## get list of connection requests
-    if request.method == 'GET':
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            jwt_token = auth_header.split(" ")[1]                
-            user_data=jwt.decode(jwt_token, SECRET_KEY)
-        user=None
-        if user_data!=None:
-            user_data=user_data["user"]
-            user=User_requests_collections.find_one({"user_id": user_data['id']})
-
-        if user!=None:
-            resp=Response(json.dumps(user['requests']), status=200, mimetype='application/json')
-        else:
-            resp = Response(json.dumps([]), status=200, mimetype='application/json')
-    return resp
+    except Exception as e:
+        print('Error with connect requests' + str(e))
+        return Response('Error with backend', status=500, mimetype='application/json')
 
 
 '''
@@ -481,63 +518,69 @@ Endpoint to to upload a new paper and generate keywirds for the same
 @main.route('/upload', methods = ['POST'])
 @cross_origin()
 def upload_paper():
-    if request.method == 'POST':
-        f = request.files['file']
+    try:
+        if request.method == 'POST':
+            f = request.files['file']
 
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            auth_token = auth_header.split(" ")[1]
-        else:
-            auth_token = ''
-        if auth_token != '':
-            user = jwt.decode(auth_token, SECRET_KEY)["user"]
-        user_id=user['id']
-
-        user = Users_collections.find_one({"id": user_id})
-
-        if (f != None):
-            # print(data)
-            filename = f.filename
-            f.save(filename)
-
-            pdfFile = open(filename, 'rb')
-            pdfReader = PyPDF2.PdfFileReader(pdfFile)
-
-            pageNum = pdfReader.numPages
-            text = ''
-            for page in range(pageNum-1):
-                pageObj = pdfReader.getPage(page)
-                text += pageObj.extractText()
-
-            pdfText = text.split(' ')
-            # print(pdfText)
-            finalText = ' '.join(pdfText[1:])
-            # print(finalText)
-
-            keywords = populate_keyword(finalText)
-            print("paper keys",keywords)
-
-            if "keywords" in user:
-                # user["keywords"].append(keywords)
-                old_keywords = user["keywords"]
-                for keyword in keywords:
-                    if keyword not in old_keywords:
-                        user["keywords"].append(keyword)
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                auth_token = auth_header.split(" ")[1]
             else:
-                user["keywords"] = keywords
-            
-            print("user keys",user["keywords"])
+                auth_token = ''
+            if auth_token != '':
+                user = jwt.decode(auth_token, SECRET_KEY)["user"]
+            user_id=user['id']
 
-            Users_collections.update_one({"id": user_id}, {"$set": user})
+            user = Users_collections.find_one({"id": user_id})
 
-            res = update_recomendations(user)
+            if (f != None):
+                # print(data)
+                filename = f.filename
+                f.save(filename)
 
-            # if res == 'Done': 
-            #     os.remove(filename)
+                pdfFile = open(filename, 'rb')
+                pdfReader = PyPDF2.PdfFileReader(pdfFile)
 
-            return Response('received file', status=200, mimetype='application/json')
+                pageNum = pdfReader.numPages
+                text = ''
+                for page in range(pageNum-1):
+                    pageObj = pdfReader.getPage(page)
+                    text += pageObj.extractText()
 
-        else:
-            return Response('Error receiving file', status=404, mimetype='application/json')
+                pdfText = text.split(' ')
+                # print(pdfText)
+                finalText = ' '.join(pdfText[1:])
+                # print(finalText)
 
+                keywords = populate_keyword(finalText)
+                print("paper keys",keywords)
+
+                if "keywords" in user:
+                    # user["keywords"].append(keywords)
+                    old_keywords = user["keywords"]
+                    for keyword in keywords:
+                        if keyword not in old_keywords:
+                            user["keywords"].append(keyword)
+                else:
+                    user["keywords"] = keywords
+                
+                print("user keys",user["keywords"])
+
+                Users_collections.update_one({"id": user_id}, {"$set": user})
+
+                res = update_recomendations(user)
+
+                if res == False:
+                    raise 'Update recommendation error'
+
+                # if res == 'Done': 
+                #     os.remove(filename)
+
+                return Response('received file', status=200, mimetype='application/json')
+
+            else:
+                return Response('Error receiving file', status=404, mimetype='application/json')
+    except Exception as e:
+        print('Error with upload paper' + str(e))
+        return Response("Error with backend", status=500, mimetype='application/json')
 
