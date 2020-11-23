@@ -220,9 +220,6 @@ export default function Register(props) {
       onPress={() => {
         Keyboard.dismiss();
       }}
-      onScroll={() => {
-        Keyboard.dismiss();
-      }}
     >
       {activity ? (
         <View style={[styles.container, styles.horizontal]}>

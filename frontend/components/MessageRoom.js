@@ -13,7 +13,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 
 import { useSelector } from "react-redux";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import BASE_URL from "./BASE_URL";
 
 /**
@@ -171,7 +171,13 @@ export default function MessageRoom(props) {
       }}
     >
       <View style={styles.titlecontainer}>
-        <Text style={styles.title}>{full_name}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            alert("User profile redirect under construction.");
+          }}
+        >
+          <Text style={styles.title}>{full_name}</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView
         ref={scrollRef}
