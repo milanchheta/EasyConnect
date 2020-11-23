@@ -80,7 +80,7 @@ def register_user():
 
             if res == False:
                 raise 'update recommendation error'
-            
+
             user_id=Users_collections.insert_one(user_data)
 
             resp = Response('User Registered Successfully', status=201, mimetype='application/json')
@@ -163,7 +163,7 @@ def update_recomendations(user):
         else:
             user_keywords = user["interests"]
 
-        print(user_keywords)
+        # print(user_keywords)
 
         scholar_list = ScholarList_collections.find({},{'_id': 0})
         scholar_cosine_rel = []
@@ -184,7 +184,7 @@ def update_recomendations(user):
         # Find the top 10 scholars with cosine sum and update the recommendation.
         new_scholar = sorted(scholar_cosine_rel, key=lambda item: item[1],reverse=True)
 
-        resp = [item[0] for item in new_scholar[:10]]
+        resp = [item[0] for item in new_scholar[:20]]
 
         if recommendation_col:
             new_recommendation = recommendation_col.copy()
@@ -555,16 +555,18 @@ def upload_paper():
                 keywords = populate_keyword(finalText)
                 print("paper keys",keywords)
 
-                if "keywords" in user:
-                    # user["keywords"].append(keywords)
-                    old_keywords = user["keywords"]
-                    for keyword in keywords:
-                        if keyword not in old_keywords:
-                            user["keywords"].append(keyword)
-                else:
-                    user["keywords"] = keywords
+                # if "keywords" in user:
+                #     # user["keywords"].append(keywords)
+                #     old_keywords = user["keywords"]
+                #     for keyword in keywords:
+                #         if keyword not in old_keywords:
+                #             user["keywords"].append(keyword)
+                # else:
+                #     user["keywords"] = keywords
+            
+                user["keywords"] = keywords
                 
-                print("user keys",user["keywords"])
+                # print("user keys",user["keywords"])
 
                 Users_collections.update_one({"id": user_id}, {"$set": user})
 
@@ -581,6 +583,6 @@ def upload_paper():
             else:
                 return Response('Error receiving file', status=404, mimetype='application/json')
     except Exception as e:
-        print('Error with upload paper' + str(e))
+        print('Error with upload paper ' + str(e))
         return Response("Error with backend", status=500, mimetype='application/json')
 

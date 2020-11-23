@@ -75,7 +75,7 @@ def compute_similarity(user_keywords, researcher_keywords):
     user_list = []
     researcher_list = []
     rvector = set(user_keywords).union(set(researcher_keywords))
-    print(rvector)
+    # print(rvector)
     for word in rvector: 
         if word in user_keywords: user_list.append(1) # create a vector 
         else: user_list.append(0) 
