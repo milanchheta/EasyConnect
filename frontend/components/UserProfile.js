@@ -162,6 +162,10 @@ export default function UserProfile(props) {
         setactivity(false);
 
         alert("Updated Recommendations based on Paper upload");
+      } else if (res1.status == 500) {
+        alert("Paper Upload fail");
+      } else {
+        alert("Paper Upload fail");
       }
     }
   };

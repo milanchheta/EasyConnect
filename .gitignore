@@ -15,5 +15,5 @@ web-build/
 .DS_Store
 backend/venv/
 venv
-
+.apk
 .idea
